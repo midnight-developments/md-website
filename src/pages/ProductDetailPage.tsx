@@ -93,6 +93,7 @@ export default function ProductDetailPage() {
                         {product.tags.map((tag) => (
                             <Badge
                                 key={tag}
+                                size="sm"
                                 variant={tag.toLowerCase() as any}
                             >
                                 {tag.toUpperCase()}
@@ -124,7 +125,7 @@ export default function ProductDetailPage() {
                             <p className="text-sm font-semibold text-primary-foreground mb-2">Requirements</p>
                             <div className="flex flex-wrap gap-2">
                                 {product.requirements.map((req) => (
-                                    <Badge key={req} variant="outline">
+                                    <Badge key={req} variant="outline" >
                                         {req}
                                     </Badge>
                                 ))}

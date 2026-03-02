@@ -51,9 +51,10 @@ const SheetContent = React.forwardRef<
                         }}
                         className={cn(`
                             fixed inset-y-0 right-0 z-50
-                            h-full w-full max-w-md p-6
-                            bg-background border-l-2 border-border
-                            shadow-lg
+                            flex flex-col gap-6
+                            h-full w-full max-w-lg p-6
+                            bg-indigo-950/15 border-l-2 border-border
+                            shadow-lg backdrop-blur-3xl
                         `, className)}
                     >
                         {children}
@@ -75,7 +76,7 @@ const SheetContent = React.forwardRef<
 SheetContent.displayName = "SheetContent"
 
 const SheetHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-    <div className={cn("flex flex-col space-y-2 mb-6", className)} {...props} />
+    <div className={cn("flex flex-col ", className)} {...props} />
 )
 SheetHeader.displayName = "SheetHeader"
 
@@ -85,7 +86,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <DialogPrimitive.Title
         ref={ref}
-        className={cn("text-lg font-semibold text-primary-foreground", className)}
+        className={cn("text-3xl font-semibold text-primary-foreground", className)}
         {...props}
     />
 ))
@@ -97,7 +98,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <DialogPrimitive.Description
         ref={ref}
-        className={cn("text-sm text-muted-foreground", className)}
+        className={cn("text-xl text-secondary-foreground", className)}
         {...props}
     />
 ))

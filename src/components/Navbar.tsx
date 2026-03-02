@@ -92,10 +92,10 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                     {/* Currency Selector */}
                     <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger className="hidden sm:flex w-18 gap-1 text-muted-foreground">
+                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-primary-foreground bg-transparent border-none p-0">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="mt-1">
                             {currencies.map((c) => (
                                 <SelectItem key={c} value={c}>
                                     {c}

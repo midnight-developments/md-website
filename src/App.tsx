@@ -31,7 +31,7 @@ function AppContent() {
   return (
     <>
       <Layout>
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" >
           {element && (
             <motion.div
               key={location.pathname}

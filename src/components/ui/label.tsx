@@ -6,32 +6,34 @@ const labelVariants = cva(
     {
         variants: {
             variant: {
-                input: `text-sm font-medium leading-none text-primary-foreground cursor-pointer`,
-                regular: `text-medium leading-normal text-primary-foreground`,
-                secondary: `text-sm font-normal leading-normal text-secondary-foreground`,
+                input: `text-[0.92rem] font-medium text-primary-foreground cursor-pointer group-data-[disabled=true]/field:opacity-50`,
+                primary: `text-base font-medium leading-normal text-primary-foreground`,
+                secondary: `text-base font-normal leading-normal text-secondary-foreground`,
+                tertiary: `text-sm font-normal leading-tight text-muted-foreground`,
+                price: `text-lg font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent`,
             },
         },
         defaultVariants: {
-            variant: "regular",
+            variant: "primary",
         },
     }
 )
 
 const Label = ({
     className,
-    variant,
-    htmlFor,
+    variant = "primary",
+    htmlFor = "",
     ...props
 }: {
-    className?: string;
-    variant?: "input" | "regular" | "secondary";
-    htmlFor?: string;
-    [key: string]: any;
+    className?: string
+    variant?: "input" | "primary" | "secondary" | "tertiary"
+    htmlFor?: string
+    [key: string]: any
 }) => {
     const Tag = htmlFor ? "label" : "p";
     return (
         <Tag
-            className={cn(labelVariants({ variant, className }))}
+            className={cn(labelVariants({ variant }), className)}
             htmlFor={htmlFor}
             {...props}
         />

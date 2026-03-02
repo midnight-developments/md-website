@@ -60,14 +60,14 @@ export default function HomePage() {
                             reliable functionality and seamless integration for QBCore, QBox and ESX.
                         </p>
 
-                        <div className="flex flex-wrap gap-4 mt-4    ">
-                            <Button variant="primary" asChild className="px-6! py-5!">
+                        <div className="flex flex-wrap gap-4 mt-4  ">
+                            <Button variant="primary" asChild className="px-6! py-3!">
                                 <Link to="/scripts">
                                     Explore Scripts
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
                             </Button>
-                            <Button variant="outline" asChild className="px-6! py-5.25! mt-[-0.05rem]!">
+                            <Button variant="outline" asChild className="px-6! py-3! mt-[-0.05rem]!">
                                 <a href="https://discord.gg/" target="_blank" rel="noopener noreferrer">
                                     <img src={discord} alt="Discord" className="h-5 w-5" />
                                     Join Discord

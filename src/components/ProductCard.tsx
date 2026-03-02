@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext"
 import { useCart } from "@/context/CartContext"
 import type { Product } from "@/data/products"
 import { Link } from "react-router"
+import { Label } from "./ui/label"
 
 interface ProductCardProps {
     product: Product
@@ -49,7 +50,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                             <Badge
                                 key={tag}
                                 variant={tag.toLowerCase() as "qbcore" | "qbox" | "esx" | "standalone"}
-                                className=""
+                                size="sm"
                             >
                                 {tag.toUpperCase()}
                             </Badge>
@@ -58,12 +59,12 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                 <div className="mb-2 flex flex-col gap-0.75 ">
                     <div className="flex items-center justify-between text-lg">
-                        <Link to={detailPath} className="font-semibold text-primary-foreground  transition-colors truncate">
+                        <Link to={detailPath} className="font-semibold text-primary-foreground uppercase transition-colors truncate">
                             {product.name}
                         </Link>
-                        <span className="font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent">
+                        <Label variant="price">
                             ${product.price.toFixed(2)}
-                        </span>
+                        </Label>
                     </div>
                     <p className="text-[0.875rem] font-light text-muted-foreground max-w-2xs line-clamp-2 leading-[1.25]">
                         {product.shortDescription}
