@@ -32,17 +32,15 @@ function AppContent() {
     <>
       <Layout>
         <AnimatePresence mode="wait" >
-          {element && (
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-            >
-              {element}
-            </motion.div>
-          )}
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            {element}
+          </motion.div>
         </AnimatePresence>
       </Layout>
       <Toaster />

@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react"
 import { Link } from "react-router"
+import { motion } from "framer-motion"
 import { Sparkles, ArrowRight, Palette, RefreshCw, Puzzle, Headphones } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -37,30 +39,88 @@ const features = [
     },
 ]
 
-export default function HomePage() {
-    return (
-        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 pt-10 lg:pt-24">
-            {/* Hero Section */}
-            <section className="flex flex-col gap-16 items-center justify-center">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    {/* Left */}
-                    <div className="flex flex-col gap-6">
-                        <h1 className=" text-5xl lg:text-6xl font-bold leading-14 lg:leading-17">
-                            Where Premium Scripts Meet{" "}
-                            <span
-                                className="text-transparent bg-clip-text bg-[image:var(--background-image-accent-gradient)]"
-                                style={{ filter: "drop-shadow(0 0 24px color-mix(in srgb, var(--brand-base), transparent 70%))" }}
-                            >
-                                Flawless Aesthetics
-                            </span>
-                        </h1>
+const containerVariants = {
+    show: {
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.25
+        },
+    },
+}
 
-                        <p className="text-lg text-secondary-foreground max-w-xl">
+const itemVariants: any = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
+}
+
+export default function HomePage() {
+    const [typedText, setTypedText] = useState("")
+    const [showCursor, setShowCursor] = useState(true)
+    const fullText = "Flawless Aesthetics"
+
+    useEffect(() => {
+        let i = 0
+        let typingTimeout: ReturnType<typeof setTimeout>
+
+        const typeNextLetter = () => {
+            setTypedText(fullText.slice(0, i + 1))
+            i++
+
+            if (i < fullText.length) {
+                const delay = Math.floor(Math.random() * (100 - 60 + 1)) + 60
+                typingTimeout = setTimeout(typeNextLetter, delay)
+            } else {
+                typingTimeout = setTimeout(() => setShowCursor(false), 1500)
+            }
+        }
+
+        const initialTimeout = setTimeout(typeNextLetter, 1250)
+
+        return () => {
+            clearTimeout(initialTimeout)
+            clearTimeout(typingTimeout)
+        }
+    }, [])
+
+    return (
+        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-10 lg:pt-24">
+            <motion.section
+                className="flex flex-col gap-16 items-center justify-center"
+                initial="hidden"
+                animate="show"
+                variants={containerVariants}
+            >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="flex flex-col gap-4">
+                        <motion.h1 variants={itemVariants} className=" text-5xl lg:text-6xl font-bold leading-14 lg:leading-17">
+                            Where Premium Scripts Meet{" "}
+                            <span className="relative inline-block">
+                                <span className="opacity-0">{fullText}</span>
+                                <span
+                                    className="absolute inset-0 z-10 text-transparent bg-clip-text bg-[image:var(--background-image-accent-gradient)] whitespace-nowrap"
+                                    style={{ filter: "drop-shadow(0 0 24px color-mix(in srgb, var(--brand-base), transparent 70%))" }}
+                                >
+                                    {typedText}
+                                </span>
+                                <span className="absolute inset-0 z-20 whitespace-nowrap text-transparent pointer-events-none">
+                                    {typedText}
+                                    {showCursor && (
+                                        <motion.span
+                                            className="inline-block relative w-[4px] h-[0.8em] bg-accent ml-1 align-middle -mt-1.5"
+                                            animate={{ opacity: [1, 0, 1] }}
+                                            transition={{ repeat: Infinity, duration: 0.8 }}
+                                        />
+                                    )}
+                                </span>
+                            </span>
+                        </motion.h1>
+
+                        <motion.p variants={itemVariants} className="text-lg text-secondary-foreground max-w-xl">
                             Midnight Dev offers premium FiveM scripts built around modern UI design,
                             reliable functionality and seamless integration for QBCore, QBox and ESX.
-                        </p>
+                        </motion.p>
 
-                        <div className="flex flex-wrap gap-4 mt-4  ">
+                        <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mt-4  ">
                             <Button variant="primary" asChild className="px-6! py-3!">
                                 <Link to="/scripts">
                                     Explore Scripts
@@ -73,19 +133,20 @@ export default function HomePage() {
                                     Join Discord
                                 </a>
                             </Button>
-                        </div>
+                        </motion.div>
                     </div>
 
-                    <div className="hidden lg:flex items-center justify-center">
+                    <motion.div variants={itemVariants} className="hidden lg:flex items-center justify-center">
                         <div className="w-full h-80 border-2 border-dashed border-border rounded-xl flex items-center justify-center text-muted-foreground text-sm">
                             <span className="opacity-40 tracking-widest uppercase text-xs">3D Visual Placeholder</span>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
 
-                <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <motion.div variants={containerVariants} className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {features.map((feature) => (
-                        <div
+                        <motion.div
+                            variants={itemVariants}
                             key={feature.title}
                             className="relative overflow-hidden flex gap-4 p-5 rounded-md bg-card-bg border-2 border-card hover:border-accent/20 transition-colors duration-300"
                         >
@@ -107,23 +168,28 @@ export default function HomePage() {
                                 <h4 className="font-semibold text-primary-foreground text-[0.95rem]">{feature.title}</h4>
                                 <p className="text-[0.875rem] font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{feature.description}</p>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
-            </section>
+                </motion.div>
+            </motion.section>
 
-            <AccentSeparator />
+            <AccentSeparator className="my-24" />
 
             {/* Featured Products */}
-            <section>
+            <motion.section
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={containerVariants}
+            >
                 <div className="flex flex-col gap-10 items-center justify-center">
-                    <div className="text-center">
+                    <motion.div variants={itemVariants} className="text-center">
                         <Badge className="gap-2 px-4 py-1.5 mb-4">
                             <Sparkles className="h-3.5 w-3.5" />
                             Our most popular products
                         </Badge>
                         <h2 className="text-3xl sm:text-4xl font-bold">Featured Products</h2>
-                    </div>
+                    </motion.div>
 
                     <Carousel
                         opts={{ align: "start", loop: true }}
@@ -138,16 +204,16 @@ export default function HomePage() {
                         </CarouselContent>
                     </Carousel>
 
-                    <div className="flex justify-center">
+                    <motion.div variants={itemVariants} className="flex justify-center">
                         <Button variant="outline" asChild>
                             <Link to="/scripts">
                                 View all products
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
                         </Button>
-                    </div>
+                    </motion.div>
                 </div>
-            </section>
+            </motion.section>
         </div>
     )
 }

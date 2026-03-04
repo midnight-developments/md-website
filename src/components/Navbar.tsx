@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
 import { Link, useLocation } from "react-router"
 import { motion } from "framer-motion"
-import { ShoppingCart, ChevronDown, User, LogOut, MessageCircle, Menu, X } from "lucide-react"
+import { ShoppingCart, ChevronDown, LogOut, Menu, X, History } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,6 +21,7 @@ import {
 import { useAuth } from "@/context/AuthContext"
 import { useCart } from "@/context/CartContext"
 import fivemLogo from "@/assets/fivem-logo.png"
+import discordLogo from "@/assets/discord.svg"
 
 const navLinks = [
     { label: "Home", to: "/" },
@@ -53,15 +55,12 @@ export default function Navbar() {
     }, [location])
 
     return (
-        <motion.nav
-            className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-            animate={{
-                backgroundColor: scrolled ? "rgba(10, 10, 10, 0.6)" : "rgba(10, 10, 15, 0)",
-                backdropFilter: scrolled ? "blur(40px)" : "blur(0px)",
-                borderBottomWidth: "2px",
-                borderBottomColor: scrolled ? "rgba(255,255,255,0.075)" : "rgba(255,255,255,0)",
-            }}
-            transition={{ duration: 0.3 }}
+        <nav
+            className={cn(
+                "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b-2",
+                scrolled ? "bg-black/50" : "bg-transparent",
+                (scrolled || mobileOpen) ? "backdrop-blur-3xl border-border" : "backdrop-blur-none border-transparent"
+            )}
         >
             <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
                 {/* Left */}
@@ -89,8 +88,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Right */}
-                <div className="flex items-center gap-3">
-                    {/* Currency Selector */}
+                <div className="flex items-center gap-2">
                     <Select value={currency} onValueChange={setCurrency}>
                         <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-primary-foreground bg-transparent border-none p-0">
                             <SelectValue />
@@ -109,7 +107,7 @@ export default function Navbar() {
                             {/* Cart */}
                             <Button
                                 variant="ghost"
-                                className="relative"
+                                className="relative p-4"
                                 onClick={() => setCartOpen(true)}
                             >
                                 <ShoppingCart className="h-5 w-5" />
@@ -120,25 +118,24 @@ export default function Navbar() {
                                 )}
                             </Button>
 
-                            {/* User Dropdown */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="gap-2">
-                                        <img src={avatar} alt="" className="h-6 w-6 rounded-full" />
+                                    <Button variant="ghost" className="gap-2 p-4">
+                                        <img src={avatar} alt="" className="size-6 rounded-full" />
                                         <span className="hidden sm:inline text-sm">{username}</span>
                                         <ChevronDown className="h-3 w-3" />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end" className="w-56">
                                     <DropdownMenuItem>
-                                        <User className="mr-2 h-4 w-4" /> Manage Orders
+                                        <History className="size-4 mr-1.5 ml-0.5" strokeWidth={2} /> View Purchase History
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={connectDiscord}>
-                                        <MessageCircle className="mr-2 h-4 w-4" /> Connect Discord
+                                    <DropdownMenuItem onClick={connectDiscord} className="group">
+                                        <img src={discordLogo} alt="" className="size-5 mr-1 opacity-50 grayscale group-focus:grayscale-0 group-focus:opacity-100" /> Connect Discord
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={logout}>
-                                        <LogOut className="mr-2 h-4 w-4" /> Log Out
+                                        <LogOut className="size-4 mr-1.5 ml-0.5" strokeWidth={2} /> Log Out
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -161,13 +158,12 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
             {mobileOpen && (
                 <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="lg:hidden border-t-2 border-border bg-background/95 backdrop-blur-md"
+                    className="lg:hidden border-t-2 border-border bg-transparent backdrop-blur-lg"
                 >
                     <div className="px-6 py-4 flex flex-col gap-3">
                         {navLinks.map((link) => (
@@ -183,6 +179,6 @@ export default function Navbar() {
                     </div>
                 </motion.div>
             )}
-        </motion.nav>
+        </nav>
     )
 }

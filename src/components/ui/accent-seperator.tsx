@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 
 export default function AccentSeparator({ className }: { className?: string }) {
     return (
-        <div className={cn("my-24 w-full", className)}>
+        <div className={cn("w-full", className)}>
             <div
                 className="h-[3px] w-full rounded-full"
                 style={{

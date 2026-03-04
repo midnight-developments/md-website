@@ -24,20 +24,18 @@ const legalLinks = [
 
 export default function Footer() {
     return (
-        <footer className="pt-16 mt-32 border-t-2 border-border">
-            <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pb-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    {/* Left: Links */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                        {/* Pages */}
-                        <div>
-                            <h4 className="text-sm font-semibold text-primary-foreground mb-4">Pages</h4>
-                            <ul className="space-y-2">
+        <footer className="w-full py-10 lg:py-18 mt-24 bg-black/30 backdrop-blur-xl border-t-2 border-border ">
+            <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+                <div className="flex flex-col md:flex-row justify-between gap-10">
+                    <div className="w-full max-w-xl flex flex-col sm:flex-row gap-10 justify-between">
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-base font-semibold text-primary-foreground ">PAGES</h4>
+                            <ul className="flex flex-col gap-1.5">
                                 {pageLinks.map((link) => (
                                     <li key={link.to}>
                                         <Link
                                             to={link.to}
-                                            className="text-sm text-muted-foreground hover:text-primary-foreground transition-colors"
+                                            className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
                                         >
                                             {link.label}
                                         </Link>
@@ -46,17 +44,16 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* Socials */}
-                        <div>
-                            <h4 className="text-sm font-semibold text-primary-foreground mb-4">Socials</h4>
-                            <ul className="space-y-2">
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-base font-semibold text-primary-foreground ">SOCIALS</h4>
+                            <ul className="flex flex-col gap-1.5">
                                 {socialLinks.map((link) => (
                                     <li key={link.label}>
                                         <a
                                             href={link.href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-sm text-muted-foreground hover:text-primary-foreground transition-colors flex items-center gap-2"
+                                            className="text-base text-muted-foreground hover:text-primary-foreground transition-colors flex items-center gap-2"
                                         >
                                             {link.label}
                                         </a>
@@ -65,17 +62,16 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* Legal */}
-                        <div>
-                            <h4 className="text-sm font-semibold text-primary-foreground mb-4">Legal</h4>
-                            <ul className="space-y-2">
+                        <div className="flex flex-col gap-4">
+                            <h4 className="text-base font-semibold text-primary-foreground ">LEGAL</h4>
+                            <ul className="flex flex-col gap-1.5">
                                 {legalLinks.map((link) => (
                                     <li key={link.label}>
                                         <a
                                             href={link.href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-sm text-muted-foreground hover:text-primary-foreground transition-colors"
+                                            className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
                                         >
                                             {link.label}
                                         </a>
@@ -85,29 +81,20 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Right: Tebex Disclaimer */}
-                    <div className="max-w-md lg:ml-auto">
-                        <p className="text-sm text-muted-foreground mb-4">
-                            This website and its operator are not affiliated, endorsed, or sponsored by Tebex Limited.
-                            Tebex is a third-party platform used to process purchases made on this website. All transactions
-                            are subject to Tebex's Terms of Service and Privacy Policy. For questions regarding billing,
-                            refunds, or payment processing, please refer to Tebex's support channels.
+                    <div className="w-full max-w-xl text-base">
+                        <p className="text-muted-foreground mb-4">
+                            Copyright © 2025 Midnight Dev
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                            Prices shown on this website may not reflect the exact amount charged due to currency
-                            conversion rates, regional taxes, or fees applied by the payment provider. The final amount
-                            will be displayed during checkout on the Tebex payment page.
+                        <p className="text-muted-foreground mb-4">
+                            This website's checkout process is operated by Tebex Limited, a third-party payment provider, who handle purchases, product fulfilment, billing support and refunds, allowing us to easily distribute FiveM assets. By completing a purchase, you agree to Tebex's Terms and Conditions and Privacy Policy.
+                        </p>
+                        <p className="text-muted-foreground">
+                            All payments are processed in USD. Prices shown in other currencies are estimates based on weekly-updated exchange rates. The final amount charged may vary depending on your bank or payment provider's exchange rate and fees.
                         </p>
                     </div>
                 </div>
-
-                {/* Copyright */}
-                <div className="mt-12 pt-6 border-t-2 border-border">
-                    <p className="text-sm text-primary-foreground">
-                        Copyright © 2025 Midnight Dev
-                    </p>
-                </div>
             </div>
+
         </footer>
     )
 }

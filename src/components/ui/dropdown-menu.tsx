@@ -67,7 +67,7 @@ const DropdownMenuItem = React.forwardRef<
         ref={ref}
         className={cn(`
             relative rounded-xs
-            w-auto py-1.5 mr-1 px-2
+            w-auto py-1.5  px-2
             flex items-center gap-2
             bg-transparent outline-none
             text-sm text-muted-foreground select-none

@@ -26,7 +26,7 @@ const Label = ({
     ...props
 }: {
     className?: string
-    variant?: "input" | "primary" | "secondary" | "tertiary"
+    variant?: "input" | "primary" | "secondary" | "tertiary" | "price"
     htmlFor?: string
     [key: string]: any
 }) => {
