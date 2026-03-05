@@ -7,6 +7,21 @@ import { useCart } from "@/context/CartContext"
 import { getProductBySlug } from "@/data/products"
 import { useState } from "react"
 import AccentSeparator from "@/components/ui/accent-seperator"
+import { motion } from "framer-motion"
+
+const containerVariants = {
+    show: {
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.25
+        },
+    },
+}
+
+const itemVariants: any = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
+}
 
 export default function ProductDetailPage() {
     const { slug } = useParams<{ slug: string }>()
@@ -47,7 +62,7 @@ export default function ProductDetailPage() {
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-12">
 
 
-            <div className="flex gap-12">
+            <div className="flex gap-10">
                 <div className="w-1/2 flex flex-col gap-3">
                     <div className="aspect-video bg-white/[0.03] border-2 border-border rounded-md flex items-center justify-center text-muted-foreground">
                         <span className="text-sm opacity-40 tracking-widest uppercase">
@@ -86,10 +101,10 @@ export default function ProductDetailPage() {
                     </div>
 
                     {/* Name */}
-                    <h1 className="text-3xl sm:text-4xl font-bold">{product.name}</h1>
+                    <h1 className="text-4xl sm:text-[2.625rem] font-bold">{product.name}</h1>
 
                     {/* Price */}
-                    <p className="text-2xl font-bold text-accent">${product.price.toFixed(2)}</p>
+                    <p className="text-3xl font-bold text-accent">${product.price.toFixed(2)}</p>
 
                     {/* Actions */}
                     <div className="flex flex-wrap gap-3">
@@ -101,6 +116,10 @@ export default function ProductDetailPage() {
                             <BookOpen className="h-4 w-4" />
                             Documentation
                         </Button>
+                    </div>
+
+                    <div className="order-border pt-4">
+                        <p className="text-base text-muted-foreground leading-relaxed">{product.description}</p>
                     </div>
 
                     {/* Requirements */}
@@ -118,39 +137,43 @@ export default function ProductDetailPage() {
                     )}
 
                     {/* Description */}
-                    <div className="border-t-2 border-border pt-4">
-                        <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
-                    </div>
+
                 </div>
             </div>
 
             <AccentSeparator className="mt-24 mb-20 " />
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">The Cool Stuff</h2>
-
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">
+                The Cool Stuff
+            </h2>
 
             {product.features.length > 0 && (
                 <div className="flex flex-col gap-16">
                     {product.features.map((feature, i) => {
                         const isImageLeft = i % 2 === 0
                         return (
-                            <div
+                            <motion.div
+                                initial="hidden"
+                                whileInView="show"
+                                viewport={{ once: true, margin: "-100px" }}
+                                variants={containerVariants}
                                 key={feature.title}
                                 className={`grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 lg:gap-14 items-center bg-white/5 p-6 md:p-8 rounded-xl ${isImageLeft ? "lg:pr-12" : "lg:pl-12"}`}
                             >
-                                <div
+                                <motion.div
+                                    variants={itemVariants}
                                     className={`aspect-video bg-white/[0.03] border-2 border-border rounded-md flex items-center justify-center text-muted-foreground ${!isImageLeft ? "lg:order-2" : ""
                                         }`}
                                 >
                                     <span className="text-sm opacity-40 tracking-widest uppercase">Feature Image</span>
-                                </div>
+                                </motion.div>
 
                                 {/* Text */}
-                                <div className={!isImageLeft ? "lg:order-1" : ""}>
+                                <motion.div variants={itemVariants} className={!isImageLeft ? "lg:order-1" : ""}>
                                     <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">{feature.title}</h3>
                                     <p className="text-xl text-muted-foreground leading-normal md:leading-relaxed">{feature.description}</p>
-                                </div>
-                            </div>
+                                </motion.div>
+                            </motion.div>
                         )
                     })}
                 </div>

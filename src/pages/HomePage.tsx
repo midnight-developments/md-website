@@ -97,8 +97,7 @@ export default function HomePage() {
                             <span className="relative inline-block">
                                 <span className="opacity-0">{fullText}</span>
                                 <span
-                                    className="absolute inset-0 z-10 text-transparent bg-clip-text bg-[image:var(--background-image-accent-gradient)] whitespace-nowrap"
-                                    style={{ filter: "drop-shadow(0 0 24px color-mix(in srgb, var(--brand-base), transparent 70%))" }}
+                                    className="absolute inset-0 z-10 text-transparent bg-clip-text bg-accent-gradient text-shadow-accent/40 whitespace-nowrap"
                                 >
                                     {typedText}
                                 </span>
