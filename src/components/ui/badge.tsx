@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
@@ -20,8 +21,9 @@ const badgeVariants = cva(
                 standalone: "border-0 bg-green-500/15 text-green-300 ",
             },
             size: {
-                default: "px-4 py-1.25 text-[13px]",
+                default: "px-4 py-1.25 text-[13.5px]",
                 sm: "px-2.5 py-0.5 text-[11px]",
+                md: "px-3.25 py-0.75 text-[12px]",
             },
         },
         defaultVariants: {
