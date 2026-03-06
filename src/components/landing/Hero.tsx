@@ -48,8 +48,8 @@ export default function Hero() {
         >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
                 <div className="flex flex-col gap-4">
-                    <motion.h1 variants={itemVariants} className=" text-5xl lg:text-6xl font-bold leading-14 lg:leading-17">
-                        Where Premium Scripts Meet{" "}
+                    <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl lg:text-6xl font-[650] leading-[1.025] tracking-tight">
+                        <span className="bg-gradient-to-r from-white to-white/90 text-transparent bg-clip-text">Where Premium Scripts Meet</span>{" "}
                         <span className="relative inline-block">
                             <span className="opacity-0">{fullText}</span>
                             <span
@@ -76,13 +76,13 @@ export default function Hero() {
                     </motion.p>
 
                     <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mt-4  ">
-                        <Button variant="primary" asChild className="px-6! py-3!">
+                        <Button variant="primary" asChild className="px-6! py-2.5!">
                             <Link href="/scripts">
                                 Explore Scripts
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
                         </Button>
-                        <Button variant="outline" asChild className="px-6! py-3! mt-[-0.05rem]!">
+                        <Button variant="outline" asChild className="px-6! py-2.5! mt-[-0.05rem]!">
                             <a href="https://discord.gg/" target="_blank" rel="noopener noreferrer">
                                 <img src={discord.src} alt="Discord" className="h-5 w-5" />
                                 Join Discord

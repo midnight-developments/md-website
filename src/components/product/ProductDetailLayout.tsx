@@ -12,7 +12,7 @@ export default function ProductDetailLayout({ product }: { product: Product }) {
                 <ProductInformation product={product} />
             </div>
 
-            <AccentSeparator className="mt-24 mb-20 " />
+            <AccentSeparator className="mt-20 mb-16 " />
 
             <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">
                 The Cool Stuff

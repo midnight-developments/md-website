@@ -35,12 +35,12 @@ export default function ProductInformation({ product }: { product: Product }) {
                 </div>
 
                 <div className="flex flex-col gap-0.75">
-                    <h1 className="text-4xl sm:text-[2.825rem] font-bold">{product.name}</h1>
-                    <p className="text-3xl font-bold text-accent">${product.price.toFixed(2)}</p>
+                    <h1 className="text-4xl sm:text-[2.825rem] font-semibold">{product.name}</h1>
+                    <p className="text-3xl sm:text-[2rem] font-bold text-accent">${product.price.toFixed(2)}</p>
                 </div>
             </div>
 
-            <p className="text-[1.05rem] text-muted-foreground leading-relaxed">{product.description}</p>
+            <p className="text-[1.05rem] text-muted-foreground leading-normal">{product.description}</p>
 
 
             {product.requirements.length > 0 && (

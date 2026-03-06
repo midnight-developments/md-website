@@ -1,4 +1,3 @@
-"use client";
 import ProductsLayout from "@/components/products/ProductsLayout"
 import { bundles } from "@/data/products"
 

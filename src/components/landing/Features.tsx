@@ -43,8 +43,8 @@ export default function Features() {
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            opacity: 0.15,
-                            filter: "blur(30px)",
+                            opacity: 0.8,
+                            filter: "blur(80px) hue-rotate(45deg)",
                         }}
                     />
                     <div className="relative shrink-0 p-2.5 h-fit rounded-lg bg-accent/10">
