@@ -35,7 +35,7 @@ export default function ProductInformation({ product }: { product: Product }) {
                 </div>
 
                 <div className="flex flex-col gap-0.75">
-                    <h1 className="text-4xl sm:text-[2.825rem] font-semibold">{product.name}</h1>
+                    <h1 className="text-4xl sm:text-[2.625rem] font-semibold">{product.name}</h1>
                     <p className="text-3xl sm:text-[2rem] font-bold text-accent">${product.price.toFixed(2)}</p>
                 </div>
             </div>
@@ -85,14 +85,14 @@ export default function ProductInformation({ product }: { product: Product }) {
                 </div>
             )}
             <div className="flex flex-wrap gap-3 lg:absolute lg:bottom-0 lg:w-full mt-4 lg:mt-0">
-                <Button variant="primary" className="w-full py-3 text-lg gap-4 font-semibold" onClick={handleAddToCart}>
+                <Button variant="primary" className="w-full py-3 text-lg gap-4  font-normal" onClick={handleAddToCart}>
                     <ShoppingCart className="size-5!" strokeWidth={2.5} />
-                    ADD TO CART
+                    Add To Cart
                 </Button>
-                <Button variant="outline" className="w-full py-3 text-lg gap-4 font-semibold" asChild>
+                <Button variant="outline" className="w-full py-3 text-lg gap-4 font-normal" asChild>
                     <a href="https://midnight-dev.gitbook.io/midnight-dev/" target="_blank" rel="noopener noreferrer">
                         <BookOpen className="size-5!" />
-                        DOCUMENTATION
+                        Documentation
                     </a>
                 </Button>
             </div>

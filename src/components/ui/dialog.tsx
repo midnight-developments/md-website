@@ -27,7 +27,7 @@ const DialogOverlay = React.forwardRef<
             transition={{ duration: 0.15 }}
             className={cn(
                 `fixed inset-0 z-50
-                bg-black/80`,
+                bg-black/30 backdrop-blur-lg`,
                 className
             )}
             {...props}
@@ -116,7 +116,7 @@ const DialogTitle = React.forwardRef<
     <DialogPrimitive.Title
         ref={ref}
         className={cn(
-            `text-lg font-semibold leading-none tracking-tight`,
+            `text-xl font-semibold leading-none tracking-tight mb-3`,
             className
         )}
         {...props}
@@ -131,7 +131,7 @@ const DialogDescription = React.forwardRef<
     <DialogPrimitive.Description
         ref={ref}
         className={cn(
-            `text-sm text-muted-foreground`,
+            `text-base text-muted-foreground leading-tight`,
             className
         )}
         {...props}

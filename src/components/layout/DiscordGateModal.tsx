@@ -10,11 +10,12 @@ import {
 } from "@/components/ui/dialog"
 import { useCart } from "@/context/CartContext"
 import { useAuth } from "@/context/AuthContext"
+import discord from "@/assets/discord.svg"
 
 const benefits = [
     { icon: Gift, title: "Automatic Role Assignment", description: "Get your purchased product roles instantly" },
-    { icon: Headphones, title: "Priority Support", description: "Access dedicated support channels for customers" },
-    { icon: Shield, title: "Exclusive Discounts", description: "Members-only deals and early access to new products" },
+    { icon: Headphones, title: "Priority Support", description: "Access support channels faster" },
+    { icon: Shield, title: "Customer Only Channels", description: "Access exclusive channels for customers" },
 ]
 
 export default function DiscordGateModal() {
@@ -31,32 +32,37 @@ export default function DiscordGateModal() {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <MessageCircle className="h-5 w-5 text-accent" />
-                        Connect Discord to Continue
+                        Connect Discord? <span >🥺</span>
                     </DialogTitle>
                     <DialogDescription>
-                        Link your Discord account to unlock your purchase benefits and access support.
+                        Link your Discord account to unlock your purchase benefits and access support
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-3 py-4">
+                <div className="flex flex-col gap-3">
                     {benefits.map((b) => (
-                        <div key={b.title} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border-2 border-border">
-                            <div className="p-2 rounded-lg bg-accent/10">
-                                <b.icon className="h-4 w-4 text-accent" />
+                        <div key={b.title} className="flex items-center gap-3 p-3  rounded-md bg-white/[0.03] border-2 border-border">
+                            <div className="p-2 rounded bg-accent/10">
+                                <b.icon className="size-6 text-accent" />
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-primary-foreground">{b.title}</p>
-                                <p className="text-xs text-muted-foreground">{b.description}</p>
+                                <p className="text-base font-medium text-primary-foreground">{b.title}</p>
+                                <p className="text-sm text-muted-foreground">{b.description}</p>
                             </div>
                         </div>
                     ))}
                 </div>
 
-                <Button variant="primary" className="w-full" size="lg" onClick={handleConnect}>
-                    <MessageCircle className="h-4 w-4" />
-                    Connect Discord
-                </Button>
+                <div className="flex flex-col gap-3">
+                    <Button variant="primary" className="w-full" size="lg" onClick={handleConnect}>
+                        <img src={discord.src} alt="Discord" className="size-6" />
+                        Connect Discord
+                    </Button>
+                    <Button variant="ghost" className="w-full font-normal text-muted-foreground  hover:underline transition-none" onClick={() => setDiscordModalOpen(false)}>
+                        I'll do it later
+                    </Button>
+                </div>
+
             </DialogContent>
         </Dialog>
     )
