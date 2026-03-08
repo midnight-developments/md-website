@@ -1,54 +1,83 @@
 "use client";
-import React, { createContext, useContext, useState, useCallback } from "react"
-import type { Product } from "@/data/products"
-
-export interface CartItem {
-    product: Product
-    quantity: number
-}
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
+import type { Product } from "@/services/tebex/products"
+import { toast } from "sonner"
+import {
+    getBasketOrNull,
+    addPackageToBasket,
+    removePackageFromBasket,
+    clearBasket,
+    type TebexBasket
+} from "@/services/tebex/baskets"
 
 interface CartContextType {
-    items: CartItem[]
-    addItem: (product: Product) => void
-    removeItem: (productId: string) => void
-    clearCart: () => void
+    basket: TebexBasket | null
+    isLoading: boolean
+    addItem: (productId: number) => Promise<void>
+    removeItem: (productId: number) => Promise<void>
+    clearCart: () => Promise<void>
     totalItems: number
     subtotal: number
     isCartOpen: boolean
     setCartOpen: (open: boolean) => void
-    isDiscordModalOpen: boolean
-    setDiscordModalOpen: (open: boolean) => void
 }
 
 const CartContext = createContext<CartContextType | null>(null)
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-    const [items, setItems] = useState<CartItem[]>([])
+    const [basket, setBasket] = useState<TebexBasket | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
     const [isCartOpen, setCartOpen] = useState(false)
-    const [isDiscordModalOpen, setDiscordModalOpen] = useState(false)
 
-    const addItem = useCallback((product: Product) => {
-        setItems((prev) => {
-            const existing = prev.find((i) => i.product.id === product.id)
-            if (existing) return prev
-            return [...prev, { product, quantity: 1 }]
+    useEffect(() => {
+        getBasketOrNull().then((b) => {
+            setBasket(b)
+            setIsLoading(false)
+        }).catch((e) => {
+            console.error("Failed to load basket", e)
+            setIsLoading(false)
         })
-        setCartOpen(true)
     }, [])
 
-    const removeItem = useCallback((productId: string) => {
-        setItems((prev) => prev.filter((i) => i.product.id !== productId))
+    const addItem = useCallback(async (productId: number) => {
+        try {
+            const updated = await addPackageToBasket(productId, 1)
+            setBasket(updated)
+            setCartOpen(true)
+            toast.success("Added to cart!")
+        } catch (error: any) {
+            toast.error("Failed to add item to cart", {
+                description: error instanceof Error ? error.message : String(error)
+            })
+            throw error;
+        }
     }, [])
 
-    const clearCart = useCallback(() => setItems([]), [])
+    const removeItem = useCallback(async (productId: number) => {
+        try {
+            const updated = await removePackageFromBasket(productId)
+            setBasket(updated)
+            toast.success("Removed from cart")
+        } catch (error: any) {
+            toast.error("Failed to remove item from cart", {
+                description: error instanceof Error ? error.message : String(error)
+            })
+        }
+    }, [])
 
-    const totalItems = items.length
-    const subtotal = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0)
+    const clearCart = useCallback(async () => {
+        await clearBasket()
+        setBasket(null)
+    }, [])
+
+    const totalItems = basket?.packages?.reduce((sum, p) => sum + p.in_basket.quantity, 0) || 0
+    const subtotal = basket?.base_price || 0
 
     return (
         <CartContext.Provider
             value={{
-                items,
+                basket,
+                isLoading,
                 addItem,
                 removeItem,
                 clearCart,
@@ -56,8 +85,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 subtotal,
                 isCartOpen,
                 setCartOpen,
-                isDiscordModalOpen,
-                setDiscordModalOpen,
             }}
         >
             {children}

@@ -10,10 +10,10 @@ import {
     CarouselContent,
     CarouselItem,
 } from "@/components/ui/carousel"
-import { featuredProducts } from "@/data/products"
+import { Product } from "@/services/tebex/products"
 import { itemVariants, containerVariants } from "../animation-variants"
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts({ products }: { products: Product[] }) {
     return (
         <motion.section
             initial="hidden"
@@ -35,7 +35,7 @@ export default function FeaturedProducts() {
                     className="w-full"
                 >
                     <CarouselContent>
-                        {featuredProducts.map((product) => (
+                        {products.map((product) => (
                             <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
                                 <ProductCard product={product} />
                             </CarouselItem>

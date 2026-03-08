@@ -1,10 +1,12 @@
-"use client";
+import { useTheme } from "next-themes"
 import { Toaster as Sonner } from "sonner"
 import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react"
 
 const Toaster = ({
     ...props
 }) => {
+    const { theme = "system" } = useTheme()
+
     return (
         <Sonner
             style={{
@@ -17,7 +19,7 @@ const Toaster = ({
                 classNames: {
                     toast:
                         "group toast group-[.toaster]:bg-popover-bg group-[.toaster]:text-foreground group-[.toaster]:border-popover group-[.toaster]:shadow-lg group-[.toaster]:border-2! items-start! gap-3!",
-                    title: "text-[0.9rem] font-medium!",
+                    title: "text-[0.9rem] font-medium! text-primary-foreground!",
                     description: "group-[.toast]:text-muted-foreground!",
                     actionButton:
                         "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",

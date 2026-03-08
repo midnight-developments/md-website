@@ -1,14 +1,17 @@
 "use client";
-import React, { createContext, useContext, useState, useCallback } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
+import { useCart } from "@/context/CartContext"
+import { getAuthUrl } from "@/services/tebex/baskets"
+import { toast } from "sonner";
+import { useRouter } from "next/navigation"
 
-interface AuthState {
+interface AuthContextType {
     isLoggedIn: boolean
     username: string
     avatar: string
     isDiscordConnected: boolean
-}
-
-interface AuthContextType extends AuthState {
+    isDiscordModalOpen: boolean
+    setDiscordModalOpen: (open: boolean) => void
     login: () => void
     logout: () => void
     connectDiscord: () => void
@@ -17,37 +20,62 @@ interface AuthContextType extends AuthState {
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [auth, setAuth] = useState<AuthState>({
-        isLoggedIn: false,
-        username: "",
-        avatar: "",
-        isDiscordConnected: false,
-    })
+    const { basket, clearCart } = useCart()
+    const router = useRouter()
+    const [isDiscordConnected, setIsDiscordConnected] = useState(false)
+    const [isDiscordModalOpen, setDiscordModalOpenState] = useState(false)
+    const [hasAttemptedModal, setHasAttemptedModal] = useState(false)
 
-    const login = useCallback(() => {
-        setAuth({
-            isLoggedIn: true,
-            username: "Player_123",
-            avatar: "https://i.pravatar.cc/40?u=fivem",
-            isDiscordConnected: false,
-        })
+    const setDiscordModalOpen = useCallback((open: boolean) => {
+        if (open) {
+            if (hasAttemptedModal) return
+            setHasAttemptedModal(true)
+        }
+        setDiscordModalOpenState(open)
+    }, [hasAttemptedModal])
+
+    const isLoggedIn = !!basket?.username_id
+    const username = basket?.username || ""
+    const avatar = isLoggedIn ? `https://forum.cfx.re/user_avatar/forum.cfx.re/${username}/288/5708323_2.png` : ""
+
+    const login = useCallback(async () => {
+        const toastId = toast.info("Redirecting to CFX.re...")
+        try {
+            const currentUrl = window.location.href;
+            const url = await getAuthUrl(currentUrl);
+            if (url) {
+                window.location.href = url;
+            } else {
+                toast.error("Failed to fetch Tebex Auth URL", { id: toastId });
+            }
+        } catch (error) {
+            console.error("Failed to fetch Tebex Auth URL:", error);
+            toast.error("Failed to fetch Tebex Auth URL", { id: toastId });
+        }
     }, [])
 
-    const logout = useCallback(() => {
-        setAuth({
-            isLoggedIn: false,
-            username: "",
-            avatar: "",
-            isDiscordConnected: false,
-        })
-    }, [])
+    const logout = useCallback(async () => {
+        await clearCart()
+        toast.success("Logged out successfully")
+        router.refresh()
+    }, [clearCart, router])
 
     const connectDiscord = useCallback(() => {
-        setAuth((prev) => ({ ...prev, isDiscordConnected: true }))
+        setIsDiscordConnected(true)
     }, [])
 
     return (
-        <AuthContext.Provider value={{ ...auth, login, logout, connectDiscord }}>
+        <AuthContext.Provider value={{
+            isLoggedIn,
+            username,
+            avatar,
+            isDiscordConnected,
+            isDiscordModalOpen,
+            setDiscordModalOpen,
+            login,
+            logout,
+            connectDiscord
+        }}>
             {children}
         </AuthContext.Provider>
     )

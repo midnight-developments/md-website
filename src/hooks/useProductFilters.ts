@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react"
-import type { Product } from "@/data/products"
+import type { Product } from "@/services/tebex/products"
+import { parseTebexDescription } from "@/lib/utils"
 
 export const SortType = {
     Default: "default",
@@ -17,9 +18,11 @@ export function useProductFilters(products: Product[]) {
 
     const processedProducts = useMemo(() => {
         let result = products.filter((p) => {
+            const parsed = parseTebexDescription(p.description);
+            const about = parsed?.about || "";
             const matchSearch =
                 p.name.toLowerCase().includes(search.toLowerCase()) ||
-                p.shortDescription.toLowerCase().includes(search.toLowerCase())
+                about.toLowerCase().includes(search.toLowerCase())
             return matchSearch
         })
 
@@ -28,9 +31,9 @@ export function useProductFilters(products: Product[]) {
         } else if (sortBy === SortType.NameDesc) {
             result.sort((a, b) => b.name.localeCompare(a.name))
         } else if (sortBy === SortType.PriceAsc) {
-            result.sort((a, b) => a.price - b.price)
+            result.sort((a, b) => a.base_price - b.base_price)
         } else if (sortBy === SortType.PriceDesc) {
-            result.sort((a, b) => b.price - a.price)
+            result.sort((a, b) => b.base_price - a.base_price)
         }
 
         return result

@@ -115,7 +115,7 @@ export default function Navbar() {
                 {/* Right */}
                 <div className="flex items-center gap-2">
                     <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-primary-foreground bg-transparent border-none p-0">
+                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-primary-foreground backdrop-blur-none! shadow-none! bg-transparent border-none p-0">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="mt-1">
@@ -129,7 +129,6 @@ export default function Navbar() {
 
                     {isLoggedIn ? (
                         <>
-                            {/* Cart */}
                             <Button
                                 variant="ghost"
                                 className="relative p-4"
@@ -137,7 +136,7 @@ export default function Navbar() {
                             >
                                 <ShoppingCart className="h-5 w-5" />
                                 {totalItems > 0 && (
-                                    <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-[10px] font-bold flex items-center justify-center text-primary-foreground">
+                                    <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-accent text-[10px] font-bold flex items-center justify-center text-primary-foreground">
                                         {totalItems}
                                     </span>
                                 )}

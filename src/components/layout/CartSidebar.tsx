@@ -1,5 +1,6 @@
 "use client";
-import { Trash2 } from "lucide-react"
+import { useState } from "react"
+import { Trash2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Sheet,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/sheet"
 import { useCart } from "@/context/CartContext"
 import tebexLogo from "@/assets/tebex-logo.png"
+import { parseTebexDescription } from "@/lib/utils"
 
 import paypalLogo from "@/assets/paypal.svg"
 import gpayLogo from "@/assets/google-pay.svg"
@@ -20,9 +22,25 @@ import amexLogo from "@/assets/amex.svg"
 
 
 export default function CartSidebar() {
-    const { items, removeItem, subtotal, totalItems, isCartOpen, setCartOpen } = useCart()
-    const taxes = subtotal * 0.0
-    const total = subtotal + taxes
+    const { basket, removeItem, subtotal, totalItems, isCartOpen, setCartOpen } = useCart()
+    const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
+
+    const taxes = basket?.sales_tax || 0
+    const total = basket?.total_price || subtotal
+    const items = basket?.packages || []
+
+    const handleRemove = async (id: number) => {
+        setRemovingIds(prev => new Set(prev).add(id))
+        try {
+            await removeItem(id)
+        } finally {
+            setRemovingIds(prev => {
+                const next = new Set(prev)
+                next.delete(id)
+                return next
+            })
+        }
+    }
 
     return (
         <Sheet open={isCartOpen} onOpenChange={setCartOpen}>
@@ -39,40 +57,54 @@ export default function CartSidebar() {
                         </p>
                     ) : (
                         <div className="flex flex-col gap-3.5">
-                            {items.map((item) => (
-                                <div
-                                    key={item.product.id}
-                                    className="flex items-stretch gap-3 p-3 rounded-md bg-card-bg border-2 border-card"
-                                >
-                                    <div className="w-32 aspect-video rounded bg-white/5 shrink-0 flex items-center justify-center text-muted-foreground text-xs">
-                                        IMG
-                                    </div>
-                                    <div className="flex flex-col gap-1 justify-between  ">
-                                        <div className="flex items-start justify-between">
-                                            <p className="transition-colors duration-200 font-medium text-primary-foreground text-lg uppercase truncate pr-2 leading-tight">
-                                                {item.product.name}
-                                            </p>
-                                            <button
-                                                onClick={() => removeItem(item.product.id)}
-                                                className="text-muted-foreground hover:text-error-foreground transition-colors shrink-0 cursor-pointer"
-                                                aria-label="Remove item"
-                                            >
-                                                <Trash2 className="size-4.5" />
-                                            </button>
+                            {items.map((item) => {
+                                const parsedData = item.description ? parseTebexDescription(item.description) : null;
+                                return (
+                                    <div
+                                        key={item.id}
+                                        className={`flex items-stretch gap-3 p-3 rounded-md bg-card-bg border-2 border-card transition-opacity duration-200 ${removingIds.has(item.id) ? "opacity-30 pointer-events-none" : ""
+                                            }`}
+                                    >
+                                        <div className="w-40 aspect-video rounded bg-white/5 border-2 border-black/1 shrink-0 flex items-center justify-center overflow-hidden text-muted-foreground text-xs">
+                                            {item.image ? (
+                                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                "IMG"
+                                            )}
                                         </div>
+                                        <div className="flex flex-col gap-1 justify-between  ">
+                                            <div className="flex items-start justify-between">
+                                                <p className="transition-colors duration-200 font-medium text-primary-foreground text-lg uppercase truncate pr-2 leading-tight">
+                                                    {item.name || "Unknown Item"}
+                                                    {item.in_basket.quantity > 1 && <span className="ml-2 text-sm text-muted-foreground">x{item.in_basket.quantity}</span>}
+                                                </p>
+                                                <button
+                                                    onClick={() => handleRemove(item.id)}
+                                                    className="text-muted-foreground hover:text-error-foreground transition-colors shrink-0 cursor-pointer disabled:opacity-50"
+                                                    aria-label="Remove item"
+                                                    disabled={removingIds.has(item.id)}
+                                                >
+                                                    {removingIds.has(item.id) ? (
+                                                        <Loader2 className="size-4.5 animate-spin" />
+                                                    ) : (
+                                                        <Trash2 className="size-4.5" />
+                                                    )}
+                                                </button>
+                                            </div>
 
-                                        <p className="transition-colors duration-200 text-sm font-normal leading-tight text-muted-foreground line-clamp-2 pr-12">
-                                            {item.product.shortDescription}
-                                        </p>
-
-                                        <div className="flex justify-start ">
-                                            <p className="transition-colors duration-200 text-lg font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent">
-                                                {item.product.price.toFixed(2)} USD
+                                            <p className="transition-colors duration-200 text-sm font-normal leading-tight text-muted-foreground line-clamp-2 pr-12">
+                                                {parsedData?.about || ""}
                                             </p>
+
+                                            <div className="flex justify-start ">
+                                                <p className="transition-colors duration-200 text-lg font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent">
+                                                    {(item.in_basket.price || 0).toFixed(2)} USD
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     )}
                 </div>
@@ -83,21 +115,23 @@ export default function CartSidebar() {
                     <div className="flex flex-col gap-1.5 ">
                         <p className="transition-colors duration-200 text-base font-normal leading-normal text-secondary-foreground flex justify-between ">
                             <span>Subtotal</span>
-                            <span>{subtotal.toFixed(2)} USD</span>
+                            <span>{(subtotal || 0).toFixed(2)} USD</span>
                         </p>
                         <p className="transition-colors duration-200 text-base font-normal leading-normal text-secondary-foreground flex justify-between ">
                             <span>Taxes</span>
-                            <span>{taxes.toFixed(2)} USD</span>
+                            <span>{(taxes || 0).toFixed(2)} USD</span>
                         </p>
                         <p className="transition-colors duration-200 font-medium leading-normal flex justify-between text-xl text-primary-foreground border-border">
                             <span>Total</span>
-                            <span>{total.toFixed(2)} USD</span>
+                            <span>{(total || 0).toFixed(2)} USD</span>
                         </p>
                     </div>
 
-                    <Button variant="primary" className="w-full py-3.5 text-xl">
-                        <img src={tebexLogo.src} alt="Tebex" className="w-3! " />
-                        CHECKOUT
+                    <Button variant="primary" className="w-full py-3.5 text-xl" asChild>
+                        <a href={basket?.links?.checkout || "#"} target="_blank" rel="noopener noreferrer">
+                            <img src={tebexLogo.src} alt="Tebex" className="w-3! " />
+                            CHECKOUT
+                        </a>
                     </Button>
 
                     <div className="max-w-85 mx-auto flex justify-center gap-5.5">

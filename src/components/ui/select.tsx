@@ -38,8 +38,9 @@ const SelectTrigger = React.forwardRef<
         data-slot="select-trigger"
         data-size={size}
         className={cn(
-            "cursor-pointer",
-            !props.asChild && BASE_INPUT_STYLES,
+            BASE_INPUT_STYLES,
+            "flex items-center justify-between shadow-sm cursor-pointer",
+            size === "sm" && "h-8 px-2 text-xs",
             className
         )}
         {...props}
@@ -50,7 +51,7 @@ const SelectTrigger = React.forwardRef<
             <>
                 {children}
                 <SelectPrimitive.Icon asChild>
-                    <ChevronDownIcon className="size-4 shrink-0 mt-0.5" />
+                    <ChevronDownIcon className="size-4 shrink-0 opacity-50" />
                 </SelectPrimitive.Icon>
             </>
         )}

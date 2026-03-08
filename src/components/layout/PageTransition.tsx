@@ -1,10 +1,10 @@
-// app/PageTransition.tsx
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { useContext, useRef } from "react";
+import { useContext, useRef, useEffect } from "react";
 import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useLenis } from "lenis/react";
 
 function FrozenRoute({ children }: { children: React.ReactNode }) {
     const context = useContext(LayoutRouterContext);
@@ -19,6 +19,15 @@ function FrozenRoute({ children }: { children: React.ReactNode }) {
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const lenis = useLenis();
+
+    useEffect(() => {
+        if (lenis) {
+            lenis.scrollTo(0, { immediate: false });
+        } else {
+            window.scrollTo(0, 0);
+        }
+    }, [pathname, lenis]);
 
     return (
         <AnimatePresence mode="wait">

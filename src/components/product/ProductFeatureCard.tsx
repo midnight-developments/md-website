@@ -1,10 +1,16 @@
 "use client";
 import { motion } from "framer-motion"
 import { containerVariants, itemVariants } from "@/components/animation-variants"
-import { ProductFeature } from "@/data/products"
+
+
+interface ParsedHighlight {
+    name: string;
+    icon?: string;
+    content: string;
+}
 
 interface ProductFeatureCardProps {
-    feature: ProductFeature;
+    feature: ParsedHighlight;
     index: number;
 }
 
@@ -28,8 +34,8 @@ export default function ProductFeatureCard({ feature, index }: ProductFeatureCar
 
             {/* Text */}
             <motion.div variants={itemVariants as any} className={!isImageLeft ? "lg:order-1" : ""}>
-                <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-xl text-muted-foreground leading-normal md:leading-relaxed">{feature.description}</p>
+                <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3">{feature.name}</h3>
+                <p className="text-xl text-muted-foreground leading-normal md:leading-relaxed">{feature.content}</p>
             </motion.div>
         </motion.div>
     )

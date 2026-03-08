@@ -1,13 +1,17 @@
-"use client";
-import { useParams } from "next/navigation"
-import { getProductBySlug } from "@/data/products"
+// ./src/app/scripts/[slug]/page.tsx
+import { getProductBySlug } from "@/services/tebex/products"
 import Link from "next/link";
 import { Button } from "@/components/ui/button"
 import ProductDetailLayout from "@/components/product/ProductDetailLayout"
 
-export default function ProductDetailPage() {
-    const { slug } = useParams<{ slug: string }>()
-    const product = getProductBySlug(slug || "")
+interface PageProps {
+    params: Promise<{ slug: string }>
+}
+
+export default async function ProductDetailPage({ params }: PageProps) {
+    const { slug } = await params;
+
+    const product = await getProductBySlug(slug);
 
     if (!product) {
         return (

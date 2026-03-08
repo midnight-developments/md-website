@@ -19,8 +19,7 @@ const benefits = [
 ]
 
 export default function DiscordGateModal() {
-    const { isDiscordModalOpen, setDiscordModalOpen } = useCart()
-    const { connectDiscord } = useAuth()
+    const { connectDiscord, isDiscordModalOpen, setDiscordModalOpen } = useAuth()
 
     const handleConnect = () => {
         connectDiscord()

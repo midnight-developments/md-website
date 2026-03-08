@@ -1,29 +1,20 @@
 "use client";
-import { ShoppingCart, BookOpen, Code, Server, Infinity, Folder } from "lucide-react"
+import { BookOpen } from "lucide-react"
+import * as LucideIcons from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { useAuth } from "@/context/AuthContext"
-import { useCart } from "@/context/CartContext"
-import { Product } from "@/data/products"
+import { Product } from "@/services/tebex/products"
+import { parseTebexDescription, cn } from "@/lib/utils"
+import AddToCartButton from "@/components/products/AddToCartButton"
 
 export default function ProductInformation({ product }: { product: Product }) {
-    const { isLoggedIn, isDiscordConnected } = useAuth()
-    const { addItem, setDiscordModalOpen } = useCart()
-
-    const handleAddToCart = () => {
-        if (!isLoggedIn) return
-        if (!isDiscordConnected) {
-            setDiscordModalOpen(true)
-            return
-        }
-        addItem(product)
-    }
+    const parsedData = parseTebexDescription(product.description)
 
     return (
         <div className=" flex flex-col gap-4 relative">
             <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap gap-1.5">
-                    {product.tags.map((tag) => (
+                    {(parsedData?.tags || []).map((tag: string) => (
                         <Badge
                             key={tag}
                             size="md"
@@ -36,26 +27,25 @@ export default function ProductInformation({ product }: { product: Product }) {
 
                 <div className="flex flex-col gap-0.75">
                     <h1 className="text-4xl sm:text-[2.625rem] font-semibold">{product.name}</h1>
-                    <p className="text-3xl sm:text-[2rem] font-bold text-accent">${product.price.toFixed(2)}</p>
+                    <p className="text-3xl sm:text-[2rem] font-bold text-accent">${product.base_price.toFixed(2)}</p>
                 </div>
             </div>
 
-            <p className="text-[1.05rem] text-muted-foreground leading-normal">{product.description}</p>
+            <p className="text-[1.05rem] text-muted-foreground leading-normal">{parsedData?.about || ""}</p>
 
-
-            {product.requirements.length > 0 && (
+            {(parsedData?.requirements && parsedData.requirements.length > 0) && (
                 <div className="flex flex-col gap-2 mt-2">
                     <p className="uppercase tracking-wide text-muted-foreground text-sm font-bold ">REQUIREMENTS</p>
                     <div className="flex flex-wrap gap-2">
-                        {product.requirements.map((req: any, index: number) => {
-                            const getIcon = () => {
-                                switch (req.type) {
-                                    case "framework": return <Code className="w-3.5 h-3.5 mr-1.5" />
-                                    case "server_version": return <Server className="w-3.5 h-3.5 mr-1.5" />
-                                    case "onesync": return <Infinity className="w-3.5 h-3.5 mr-1.5" />
-                                    case "resource": return <Folder className="w-3.5 h-3.5 mr-1.5" />
-                                }
-                            }
+                        {parsedData.requirements.map((req: any, index: number) => {
+                            const IconComponent = (LucideIcons as any)[req.icon]
+
+                            const badgeContent = (
+                                <>
+                                    {IconComponent && <IconComponent className="w-3.5 h-3.5 mr-1.5" />}
+                                    {req.label}
+                                </>
+                            )
 
                             if (req.link) {
                                 return (
@@ -67,8 +57,7 @@ export default function ProductInformation({ product }: { product: Product }) {
                                         className="group"
                                     >
                                         <Badge variant="outline" className="flex items-center group-hover:underline underline-offset-2">
-                                            {getIcon()}
-                                            {req.name}
+                                            {badgeContent}
                                         </Badge>
                                     </a>
                                 )
@@ -76,19 +65,19 @@ export default function ProductInformation({ product }: { product: Product }) {
 
                             return (
                                 <Badge key={index} variant="outline" className="flex items-center">
-                                    {getIcon()}
-                                    {req.name}
+                                    {badgeContent}
                                 </Badge>
                             )
                         })}
                     </div>
                 </div>
             )}
+
             <div className="flex flex-wrap gap-3 lg:absolute lg:bottom-0 lg:w-full mt-4 lg:mt-0">
-                <Button variant="primary" className="w-full py-3 text-lg gap-4  font-normal" onClick={handleAddToCart}>
-                    <ShoppingCart className="size-5!" strokeWidth={2.5} />
-                    Add To Cart
-                </Button>
+                <AddToCartButton
+                    product={product}
+                    className="py-3 text-lg gap-4 font-normal"
+                />
                 <Button variant="outline" className="w-full py-3 text-lg gap-4 font-normal" asChild>
                     <a href="https://midnight-dev.gitbook.io/midnight-dev/" target="_blank" rel="noopener noreferrer">
                         <BookOpen className="size-5!" />

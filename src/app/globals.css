@@ -33,12 +33,12 @@
 
   --color-modal-bg: rgb(10, 10, 10);
   --color-modal: var(--color-border);
-  --color-popover-bg: rgb(16, 16, 22);
+  --color-popover-bg: rgb(6, 6, 10);
   --color-popover: var(--color-border);
   --color-card-bg: rgba(38, 38, 38, 0.25);
   --color-card: var(--color-border);
 
-  --color-input-bg: rgba(0, 0, 0, 0.15);
+  --color-input-bg: rgba(0, 0, 0, 0.2);
   --color-input: rgba(255, 255, 255, 0.1);
   --color-input-hover: rgb(64, 64, 64);
   --color-input-active: rgb(255, 255, 255);

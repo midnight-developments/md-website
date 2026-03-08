@@ -3,7 +3,7 @@ import ProductSearch from "@/components/products/ProductSearch"
 import ProductSort from "@/components/products/ProductSort"
 import ProductGrid from "@/components/products/ProductGrid"
 import { useProductFilters } from "@/hooks/useProductFilters"
-import type { Product } from "@/data/products"
+import type { Product } from "@/services/tebex/products"
 
 interface ProductsLayoutProps {
     title: string
@@ -21,7 +21,7 @@ export default function ProductsLayout({
     const { search, setSearch, sortBy, setSortBy, processedProducts } = useProductFilters(products);
 
     return (
-        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-8 lg:pt-12">
+        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-8 lg:pt-12 min-h-[calc(100vh-16rem)]">
             <h1 className="text-3xl sm:text-4xl font-bold mb-6">{title}</h1>
 
             <div className="flex flex-col md:flex-row gap-3 mb-8">
