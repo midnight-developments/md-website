@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 const BASKET_COOKIE_NAME = "tebex_basket_id";
 
@@ -34,33 +34,42 @@ export interface TebexBasket {
     };
 }
 
+const TEBEX_TOKEN = process.env.TEBEX_PUBLIC_KEY;
+
+export async function handleTebexError(response: Response, defaultMessage: string) {
+    if (response.ok) return;
+    const errorData = await response.json().catch(() => ({}));
+    const message = errorData.error_message || errorData.detail || defaultMessage;
+    throw new Error(message);
+}
+
 export interface TebexAuthLink {
     name: string;
     url: string;
 }
 
-function getApiUrl(path: string) {
-    const token = process.env.TEBEX_PUBLIC_KEY;
-    if (!token) throw new Error("TEBEX_PUBLIC_KEY is not defined in environment variables");
-    return `https://headless.tebex.io/api/accounts/${token}${path}`;
+async function getBaseUrl() {
+    const host = (await headers()).get("host");
+    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+    return `${protocol}://${host}`;
 }
 
-export async function createBasket(returnUrl?: string, cancelUrl?: string): Promise<TebexBasket> {
-    const res = await fetch(getApiUrl("/baskets"), {
+export async function createBasket(returnUrl?: string, cancelUrl?: string, custom: Record<string, any> = {}): Promise<TebexBasket> {
+    const baseUrl = await getBaseUrl();
+    const response = await fetch(`https://headless.tebex.io/api/accounts/${TEBEX_TOKEN}/baskets`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            complete_url: returnUrl || "http://localhost:3000",
-            cancel_url: cancelUrl || "http://localhost:3000",
+            complete_url: returnUrl || baseUrl,
+            cancel_url: cancelUrl || baseUrl,
             complete_auto_redirect: true,
+            custom: custom
         }),
     });
 
-    if (!res.ok) {
-        throw new Error("Failed to create Tebex Basket");
-    }
+    await handleTebexError(response, "Failed to create Tebex Basket");
 
-    const data = await res.json();
+    const data = await response.json();
     const basket = data.data as TebexBasket;
 
     const cookieStore = await cookies();
@@ -76,40 +85,35 @@ export async function createBasket(returnUrl?: string, cancelUrl?: string): Prom
 }
 
 export async function getBasket(basketId: string): Promise<TebexBasket | null> {
-    const res = await fetch(getApiUrl(`/baskets/${basketId}`), {
+    const response = await fetch(`https://headless.tebex.io/api/accounts/${TEBEX_TOKEN}/baskets/${basketId}`, {
         cache: "no-store",
     });
 
-    if (!res.ok) {
-        return null;
-    }
+    if (!response.ok) return null;
 
-    const data = await res.json();
+    const data = await response.json();
     return data.data as TebexBasket;
 }
 
 export async function getBasketOrNull(): Promise<TebexBasket | null> {
     const cookieStore = await cookies();
     const existingId = cookieStore.get(BASKET_COOKIE_NAME)?.value;
-
-    if (existingId) {
-        return await getBasket(existingId);
-    }
-
-    return null;
+    return existingId ? await getBasket(existingId) : null;
 }
 
 export async function clearBasket() {
-    const cookieStore = await cookies();
-    cookieStore.delete(BASKET_COOKIE_NAME);
+    (await cookies()).delete(BASKET_COOKIE_NAME);
 }
 
-export async function addPackageToBasket(packageId: number, quantity: number = 1): Promise<TebexBasket> {
-    let basket = await getBasketOrNull();
+export async function addPackageToBasket(packageId: number, quantity: number = 1, basketIdent?: string): Promise<TebexBasket> {
+    const existingId = basketIdent || (await cookies()).get(BASKET_COOKIE_NAME)?.value;
+    let basket = existingId ? await getBasket(existingId) : null;
+
     if (!basket) {
         basket = await createBasket();
     }
-    const res = await fetch(`https://headless.tebex.io/api/baskets/${basket.ident}/packages`, {
+
+    const response = await fetch(`https://headless.tebex.io/api/baskets/${basket.ident}/packages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -118,19 +122,17 @@ export async function addPackageToBasket(packageId: number, quantity: number = 1
         }),
     });
 
-    if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail);
-    }
+    await handleTebexError(response, "Failed to add package to basket");
 
-    const data = await res.json();
+    const data = await response.json();
     return data.data as TebexBasket;
 }
 
 export async function removePackageFromBasket(packageId: number): Promise<TebexBasket> {
     const basket = await getBasketOrNull();
     if (!basket) throw new Error("No basket found to remove from");
-    const res = await fetch(`https://headless.tebex.io/api/baskets/${basket.ident}/packages/remove`, {
+
+    const response = await fetch(`https://headless.tebex.io/api/baskets/${basket.ident}/packages/remove`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -138,12 +140,9 @@ export async function removePackageFromBasket(packageId: number): Promise<TebexB
         }),
     });
 
-    if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error_message || errorData.detail || "Failed to remove package from basket");
-    }
+    await handleTebexError(response, "Failed to remove package from basket");
 
-    const data = await res.json();
+    const data = await response.json();
     return data.data as TebexBasket;
 }
 
@@ -152,32 +151,37 @@ export async function getAuthUrl(returnUrl: string): Promise<string> {
     if (!basket) {
         basket = await createBasket(returnUrl);
     }
-    const res = await fetch(getApiUrl(`/baskets/${basket.ident}/auth?returnUrl=${encodeURIComponent(returnUrl)}`), {
+
+    const response = await fetch(`https://headless.tebex.io/api/accounts/${TEBEX_TOKEN}/baskets/${basket.ident}/auth?returnUrl=${encodeURIComponent(returnUrl)}`, {
         cache: "no-store",
     });
 
-    if (!res.ok) {
-        throw new Error("Failed to get auth URL");
-    }
+    await handleTebexError(response, "Failed to get auth URL");
 
-    const data = await res.json() as TebexAuthLink[];
+    const data = await response.json() as TebexAuthLink[];
     return data[0]?.url || "";
 }
 
+export async function refreshBasket(returnUrl?: string, custom: Record<string, any> = {}): Promise<{ basket: TebexBasket; authUrl: string | null }> {
+    const baseUrl = await getBaseUrl();
+    const actualReturnUrl = returnUrl || baseUrl;
 
-export async function refreshBasket(returnUrl: string = "http://localhost:3000"): Promise<{ basket: TebexBasket; authUrl: string | null }> {
     const oldBasket = await getBasketOrNull();
     const items = oldBasket?.packages.map(p => ({ id: p.id, qty: p.in_basket.quantity })) || [];
 
-    let basket = await createBasket(returnUrl);
+    const basket = await createBasket(actualReturnUrl, undefined, custom);
 
-    for (const item of items) {
-        await addPackageToBasket(item.id, item.qty);
+    if (items.length > 0) {
+        await Promise.all(items.map(item => addPackageToBasket(item.id, item.qty, basket.ident)));
     }
 
-    const authUrl = await getAuthUrl(returnUrl);
-
-    const finalBasketBeforeAuth = await getBasketOrNull() || basket;
+    const authUrl = await getAuthUrl(actualReturnUrl);
+    const finalBasketBeforeAuth = await getBasket(basket.ident) || basket;
 
     return { basket: finalBasketBeforeAuth, authUrl };
+}
+
+export async function migrateBasketWithDiscord(discordId: string): Promise<TebexBasket> {
+    const result = await refreshBasket(undefined, { discord_id: discordId });
+    return result.basket;
 }

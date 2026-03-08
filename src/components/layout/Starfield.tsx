@@ -17,7 +17,7 @@ const options: ISourceOptions = {
         }
     },
     particles: {
-        number: { value: 70 },
+        number: { value: 80 },
         move: { enable: true, speed: 0.3, direction: "none" },
         shape: { type: "circle" },
         opacity: { value: { min: 0.1, max: 0.5 } },

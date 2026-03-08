@@ -22,7 +22,7 @@ import amexLogo from "@/assets/amex.svg"
 
 
 export default function CartSidebar() {
-    const { basket, removeItem, subtotal, totalItems, isCartOpen, setCartOpen } = useCart()
+    const { basket, removeItem, subtotal, totalItems, isCartOpen, setCartOpen, checkout } = useCart()
     const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
 
     const taxes = basket?.sales_tax || 0
@@ -127,11 +127,13 @@ export default function CartSidebar() {
                         </p>
                     </div>
 
-                    <Button variant="primary" className="w-full py-3.5 text-xl" asChild>
-                        <a href={basket?.links?.checkout || "#"} target="_blank" rel="noopener noreferrer">
-                            <img src={tebexLogo.src} alt="Tebex" className="w-3! " />
-                            CHECKOUT
-                        </a>
+                    <Button
+                        variant="primary"
+                        className="w-full py-3.5 text-xl"
+                        onClick={checkout}
+                    >
+                        <img src={tebexLogo.src} alt="Tebex" className="w-3! " />
+                        CHECKOUT
                     </Button>
 
                     <div className="max-w-85 mx-auto flex justify-center gap-5.5">

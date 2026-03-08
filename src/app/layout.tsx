@@ -1,35 +1,44 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { PageTransition } from "../components/layout/PageTransition";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { getBasketOrNull } from "@/services/tebex/baskets";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: "Midnight Store",
   description: "Where Premium Scripts Meet Flawless Aesthetics",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const basket = await getBasketOrNull();
+
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          src={`https://js.tebex.io/v/1.js?public_key=${process.env.TEBEX_PUBLIC_KEY}`}
+          async
+        />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
-        <Providers>
+        <NextTopLoader
+          color="#6464e6"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={4}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #6464e6,0 0 5px #6464e6"
+        />
+        <Providers initialBasket={basket}>
           {children}
         </Providers>
       </body>

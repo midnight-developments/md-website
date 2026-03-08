@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link";
 import { usePathname as useLocation } from "next/navigation"
 import { motion } from "framer-motion"
-import { ShoppingCart, ChevronDown, LogOut, Menu, X, History } from "lucide-react"
+import { ShoppingCart, ChevronDown, LogOut, Menu, X, History, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
@@ -39,9 +39,17 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
     const [currency, setCurrency] = useState("USD")
-    const { isLoggedIn, username, avatar, login, logout, connectDiscord } = useAuth()
+    const { isLoggedIn, username, avatar, login, logout, connectDiscord, disconnectDiscord, isDiscordConnected, discordUser } = useAuth()
     const { totalItems, setCartOpen } = useCart()
     const location = useLocation()
+
+    const toggleDiscord = () => {
+        if (isDiscordConnected) {
+            disconnectDiscord()
+        } else {
+            connectDiscord()
+        }
+    }
 
     useEffect(() => {
         const onScroll = (e: any) => {
@@ -154,8 +162,14 @@ export default function Navbar() {
                                     <DropdownMenuItem>
                                         <History className="size-4 mr-1.5 ml-0.5" strokeWidth={2} /> View Purchase History
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={connectDiscord} className="group">
-                                        <img src={discordLogo.src} alt="" className="size-5 mr-1 opacity-50 grayscale group-focus:grayscale-0 group-focus:opacity-100" /> Connect Discord
+                                    <DropdownMenuItem onClick={toggleDiscord} className="group">
+                                        <div className="flex items-center gap-1.5 flex-1">
+                                            <img src={discordLogo.src} alt="" className={cn("size-5 mr-1.5", isDiscordConnected ? "opacity-100" : "opacity-50 grayscale group-focus:grayscale-0 group-focus:opacity-100")} />
+                                            <span className="flex-1">
+                                                {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
+                                            </span>
+                                            {isDiscordConnected && <Check className="size-3.5 text-accent" />}
+                                        </div>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={logout}>

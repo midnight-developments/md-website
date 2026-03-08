@@ -1,5 +1,7 @@
 import 'server-only';
 
+const TEBEX_TOKEN = process.env.TEBEX_PUBLIC_KEY;
+
 const FEATURED_PRODUCT_IDS = [6803877, 6512955, 6553764];
 const SCRIPTS_CATEGORY_ID = 2780998;
 const BUNDLES_CATEGORY_ID = 2781001;
@@ -61,8 +63,7 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
 }
 
 export async function getProductById(id: number): Promise<Product | undefined> {
-    const token = process.env.TEBEX_PUBLIC_KEY;
-    const url = `https://headless.tebex.io/api/accounts/${token}/packages/${id}`;
+    const url = `https://headless.tebex.io/api/accounts/${TEBEX_TOKEN}/packages/${id}`;
 
     const res = await fetch(url, { next: { revalidate: 3600 } });
     if (res.ok) {
@@ -73,8 +74,7 @@ export async function getProductById(id: number): Promise<Product | undefined> {
 }
 
 export async function getProductsByCategory(categoryId: number | string): Promise<Product[]> {
-    const token = process.env.TEBEX_PUBLIC_KEY;
-    const url = `https://headless.tebex.io/api/accounts/${token}/categories/${categoryId}?includePackages=1`;
+    const url = `https://headless.tebex.io/api/accounts/${TEBEX_TOKEN}/categories/${categoryId}?includePackages=1`;
 
     const res = await fetch(url, { next: { revalidate: 3600 } });
     if (res.ok) {
@@ -85,8 +85,7 @@ export async function getProductsByCategory(categoryId: number | string): Promis
 }
 
 export async function getAllProducts(): Promise<Product[]> {
-    const token = process.env.TEBEX_PUBLIC_KEY;
-    const url = `https://headless.tebex.io/api/accounts/${token}/packages`;
+    const url = `https://headless.tebex.io/api/accounts/${TEBEX_TOKEN}/packages`;
 
     const res = await fetch(url, { next: { revalidate: 3600 } });
     if (res.ok) {

@@ -7,12 +7,14 @@ import {
     addPackageToBasket,
     removePackageFromBasket,
     clearBasket,
+    createBasket,
+    getAuthUrl,
     type TebexBasket
 } from "@/services/tebex/baskets"
 
+
 interface CartContextType {
     basket: TebexBasket | null
-    isLoading: boolean
     addItem: (productId: number) => Promise<void>
     removeItem: (productId: number) => Promise<void>
     clearCart: () => Promise<void>
@@ -20,24 +22,21 @@ interface CartContextType {
     subtotal: number
     isCartOpen: boolean
     setCartOpen: (open: boolean) => void
+    checkout: () => void
 }
 
 const CartContext = createContext<CartContextType | null>(null)
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
-    const [basket, setBasket] = useState<TebexBasket | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
+export function CartProvider({
+    children,
+    initialBasket = null
+}: {
+    children: React.ReactNode,
+    initialBasket: TebexBasket | null
+}) {
+    const [basket, setBasket] = useState<TebexBasket | null>(initialBasket)
     const [isCartOpen, setCartOpen] = useState(false)
 
-    useEffect(() => {
-        getBasketOrNull().then((b) => {
-            setBasket(b)
-            setIsLoading(false)
-        }).catch((e) => {
-            console.error("Failed to load basket", e)
-            setIsLoading(false)
-        })
-    }, [])
 
     const addItem = useCallback(async (productId: number) => {
         try {
@@ -70,6 +69,46 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setBasket(null)
     }, [])
 
+    const checkout = useCallback(async () => {
+        if (basket?.ident) {
+            if (typeof window !== "undefined" && window.Tebex?.checkout) {
+                window.Tebex.checkout.init({
+                    ident: basket.ident,
+                    theme: "dark",
+                    colors: [
+                        { name: "primary", color: "#101010" },
+                        { name: "secondary", color: "#6464e6" }
+                    ]
+                });
+                window.Tebex.checkout.on("payment_complete", async () => {
+                    console.log("Purchase complete! Previous basket:", basket);
+                    const wasLoggedIn = !!basket?.username_id;
+
+                    await clearCart();
+                    const newBasket = await createBasket();
+                    setBasket(newBasket);
+
+                    if (wasLoggedIn) {
+                        try {
+                            const authUrl = await getAuthUrl(window.location.href);
+                            if (authUrl) {
+                                window.location.href = authUrl;
+                            }
+                        } catch (error) {
+                            console.error("Failed to re-authenticate:", error);
+                        }
+                    }
+
+                    toast.success("Purchase successful!");
+                });
+
+                window.Tebex.checkout.launch();
+            } else {
+                window.open(basket.links?.checkout, "_blank");
+            }
+        }
+    }, [basket, clearCart])
+
     const totalItems = basket?.packages?.reduce((sum, p) => sum + p.in_basket.quantity, 0) || 0
     const subtotal = basket?.base_price || 0
 
@@ -77,7 +116,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         <CartContext.Provider
             value={{
                 basket,
-                isLoading,
                 addItem,
                 removeItem,
                 clearCart,
@@ -85,6 +123,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 subtotal,
                 isCartOpen,
                 setCartOpen,
+                checkout
             }}
         >
             {children}
