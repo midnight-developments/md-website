@@ -10,6 +10,8 @@ import {
     SheetDescription,
 } from "@/components/ui/sheet"
 import { useCart } from "@/context/CartContext"
+import { useAuth } from "@/context/AuthContext"
+import { useCurrency } from "@/context/CurrencyContext"
 import tebexLogo from "@/assets/tebex-logo.png"
 import { parseTebexDescription } from "@/lib/utils"
 
@@ -23,6 +25,8 @@ import amexLogo from "@/assets/amex.svg"
 
 export default function CartSidebar() {
     const { basket, removeItem, subtotal, totalItems, isCartOpen, setCartOpen, checkout } = useCart()
+    const { isDiscordConnected, setDiscordModalOpen } = useAuth()
+    const { formatPrice } = useCurrency()
     const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
 
     const taxes = basket?.sales_tax || 0
@@ -39,6 +43,14 @@ export default function CartSidebar() {
                 next.delete(id)
                 return next
             })
+        }
+    }
+
+    const handleCheckout = () => {
+        if (!isDiscordConnected) {
+            setDiscordModalOpen(true)
+        } else {
+            checkout()
         }
     }
 
@@ -98,7 +110,7 @@ export default function CartSidebar() {
 
                                             <div className="flex justify-start ">
                                                 <p className="transition-colors duration-200 text-lg font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent">
-                                                    {(item.in_basket.price || 0).toFixed(2)} USD
+                                                    {formatPrice(item.in_basket.price)}
                                                 </p>
                                             </div>
                                         </div>
@@ -115,22 +127,22 @@ export default function CartSidebar() {
                     <div className="flex flex-col gap-1.5 ">
                         <p className="transition-colors duration-200 text-base font-normal leading-normal text-secondary-foreground flex justify-between ">
                             <span>Subtotal</span>
-                            <span>{(subtotal || 0).toFixed(2)} USD</span>
+                            <span>{formatPrice(subtotal || 0)}</span>
                         </p>
                         <p className="transition-colors duration-200 text-base font-normal leading-normal text-secondary-foreground flex justify-between ">
                             <span>Taxes</span>
-                            <span>{(taxes || 0).toFixed(2)} USD</span>
+                            <span>{formatPrice(taxes || 0)}</span>
                         </p>
                         <p className="transition-colors duration-200 font-medium leading-normal flex justify-between text-xl text-primary-foreground border-border">
                             <span>Total</span>
-                            <span>{(total || 0).toFixed(2)} USD</span>
+                            <span>{formatPrice(total || 0)}</span>
                         </p>
                     </div>
 
                     <Button
                         variant="primary"
                         className="w-full py-3.5 text-xl"
-                        onClick={checkout}
+                        onClick={handleCheckout}
                     >
                         <img src={tebexLogo.src} alt="Tebex" className="w-3! " />
                         CHECKOUT

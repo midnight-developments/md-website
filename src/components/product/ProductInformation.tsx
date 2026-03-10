@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Product } from "@/services/tebex/products"
 import { parseTebexDescription, cn } from "@/lib/utils"
+import { useCurrency } from "@/context/CurrencyContext"
 import AddToCartButton from "@/components/products/AddToCartButton"
 
 export default function ProductInformation({ product }: { product: Product }) {
+    const { formatPrice } = useCurrency()
     const parsedData = parseTebexDescription(product.description)
 
     return (
@@ -26,12 +28,14 @@ export default function ProductInformation({ product }: { product: Product }) {
                 </div>
 
                 <div className="flex flex-col gap-0.75">
-                    <h1 className="text-4xl sm:text-[2.625rem] font-semibold">{product.name}</h1>
-                    <p className="text-3xl sm:text-[2rem] font-bold text-accent">${product.base_price.toFixed(2)}</p>
+                    <h1 className="text-4xl sm:text-[2.625rem] font-semibold uppercase tracking-[-0.02em]">{product.name}</h1>
+                    <p className="text-3xl sm:text-[2rem] font-bold text-accent">
+                        {formatPrice(product.base_price)}
+                    </p>
                 </div>
             </div>
 
-            <p className="text-[1.05rem] text-muted-foreground leading-normal">{parsedData?.about || ""}</p>
+            <p className="text-[1.05rem] text-muted-foreground leading-normal -mt-1">{parsedData?.about || ""}</p>
 
             {(parsedData?.requirements && parsedData.requirements.length > 0) && (
                 <div className="flex flex-col gap-2 mt-2">

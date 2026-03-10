@@ -20,10 +20,16 @@ const benefits = [
 
 export default function DiscordGateModal() {
     const { connectDiscord, isDiscordModalOpen, setDiscordModalOpen } = useAuth()
+    const { checkout } = useCart()
 
     const handleConnect = () => {
         connectDiscord()
         setDiscordModalOpen(false)
+    }
+
+    const handleSkip = () => {
+        setDiscordModalOpen(false)
+        checkout()
     }
 
     return (
@@ -57,7 +63,7 @@ export default function DiscordGateModal() {
                         <img src={discord.src} alt="Discord" className="size-6" />
                         Connect Discord
                     </Button>
-                    <Button variant="ghost" className="w-full font-normal text-muted-foreground  hover:underline transition-none" onClick={() => setDiscordModalOpen(false)}>
+                    <Button variant="ghost" className="w-full font-normal text-muted-foreground  hover:underline transition-none" onClick={handleSkip}>
                         I'll do it later
                     </Button>
                 </div>

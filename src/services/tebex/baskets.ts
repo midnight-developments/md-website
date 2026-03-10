@@ -166,14 +166,7 @@ export async function refreshBasket(returnUrl?: string, custom: Record<string, a
     const baseUrl = await getBaseUrl();
     const actualReturnUrl = returnUrl || baseUrl;
 
-    const oldBasket = await getBasketOrNull();
-    const items = oldBasket?.packages.map(p => ({ id: p.id, qty: p.in_basket.quantity })) || [];
-
     const basket = await createBasket(actualReturnUrl, undefined, custom);
-
-    if (items.length > 0) {
-        await Promise.all(items.map(item => addPackageToBasket(item.id, item.qty, basket.ident)));
-    }
 
     const authUrl = await getAuthUrl(actualReturnUrl);
     const finalBasketBeforeAuth = await getBasket(basket.ident) || basket;
@@ -181,7 +174,6 @@ export async function refreshBasket(returnUrl?: string, custom: Record<string, a
     return { basket: finalBasketBeforeAuth, authUrl };
 }
 
-export async function migrateBasketWithDiscord(discordId: string): Promise<TebexBasket> {
-    const result = await refreshBasket(undefined, { discord_id: discordId });
-    return result.basket;
+export async function migrateBasketWithDiscord(discordId: string, returnUrl?: string): Promise<{ basket: TebexBasket; authUrl: string | null }> {
+    return refreshBasket(returnUrl, { discord_id: discordId });
 }

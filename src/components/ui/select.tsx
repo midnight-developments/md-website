@@ -68,23 +68,29 @@ const SelectContent = React.forwardRef<
             ref={ref}
             data-slot="select-content"
             sideOffset={sideOffset}
-            className={cn(
-                "relative z-50 max-h-96 overflow-hidden rounded-sm box-border w-full",
-                position === "popper" && "w-[var(--radix-select-trigger-width)] min-w-full",
-                "bg-popover-bg border-2 border-popover text-primary-foreground shadow-lg backdrop-blur-3xl",
-                "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2",
-                "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-                className
-            )}
+            className={cn(`
+                relative z-50 overflow-hidden rounded-sm
+                p-1
+                bg-popover-bg border-2 border-popover
+                text-primary-foreground
+                data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2
+                data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95
+                shadow-lg backdrop-blur-3xl
+            `,
+                position === "popper" &&
+                "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+                className)}
             position={position}
             {...props}
         >
             <SelectPrimitive.Viewport
                 className={cn(
-                    "p-1",
+                    "overflow-y-auto scrollbar-none",
                     position === "popper" &&
-                    "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] box-border"
+                    "h-full w-full min-w-[var(--radix-select-trigger-width)]"
                 )}
+                // @ts-ignore - Prevent Lenis from hijacking the scroll
+                data-lenis-prevent=""
             >
                 {children}
             </SelectPrimitive.Viewport>
@@ -102,8 +108,8 @@ const SelectItem = React.forwardRef<
         data-slot="select-item"
         className={cn(`
             relative rounded-xs
-            w-auto py-1.5 mr-1 px-2
-            flex items-center
+            w-auto py-1.5 px-2
+            flex items-center gap-2
             bg-transparent outline-none
             text-sm text-muted-foreground select-none
             focus:bg-accent-gradient focus:text-primary-foreground
@@ -113,16 +119,10 @@ const SelectItem = React.forwardRef<
         `, className)}
         {...props}
     >
-        <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
-            <SelectPrimitive.ItemIndicator>
-            </SelectPrimitive.ItemIndicator>
-        </span>
         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
 ))
 SelectItem.displayName = SelectPrimitive.Item.displayName
-
-
 
 export {
     Select,

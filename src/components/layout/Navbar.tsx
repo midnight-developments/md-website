@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/select"
 import { useAuth } from "@/context/AuthContext"
 import { useCart } from "@/context/CartContext"
+import { useCurrency, CURRENCIES, type Currency } from "@/context/CurrencyContext"
 import fivemLogo from "@/assets/fivem-logo.png"
 import discordLogo from "@/assets/discord.svg"
 
@@ -33,12 +34,8 @@ const navLinks = [
     { label: "Documentation", href: "https://midnight-dev.gitbook.io/midnight-dev/", isExternal: true },
 ]
 
-const currencies = ["USD", "EUR", "GBP", "CAD", "AUD"]
-
 export default function Navbar() {
-    const [scrolled, setScrolled] = useState(false)
-    const [mobileOpen, setMobileOpen] = useState(false)
-    const [currency, setCurrency] = useState("USD")
+    const { currency, setCurrency } = useCurrency()
     const { isLoggedIn, username, avatar, login, logout, connectDiscord, disconnectDiscord, isDiscordConnected, discordUser } = useAuth()
     const { totalItems, setCartOpen } = useCart()
     const location = useLocation()
@@ -51,13 +48,20 @@ export default function Navbar() {
         }
     }
 
+    const [scrolled, setScrolled] = useState(false)
+    const [mobileOpen, setMobileOpen] = useState(false)
+
     useEffect(() => {
         const onScroll = (e: any) => {
-            const scrollY = e.target.scrollTop || window.scrollY
-            setScrolled(scrollY > 20)
+            if (e.target !== window && e.target !== document) return;
+            setScrolled(window.scrollY > 20)
         }
         window.addEventListener("scroll", onScroll, true)
         return () => window.removeEventListener("scroll", onScroll, true)
+    }, [])
+
+    useEffect(() => {
+        setScrolled(window.scrollY > 20)
     }, [])
 
     useEffect(() => {
@@ -122,12 +126,15 @@ export default function Navbar() {
 
                 {/* Right */}
                 <div className="flex items-center gap-2">
-                    <Select value={currency} onValueChange={setCurrency}>
-                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-primary-foreground backdrop-blur-none! shadow-none! bg-transparent border-none p-0">
+                    <Select
+                        value={currency}
+                        onValueChange={(v) => setCurrency(v as Currency)}
+                    >
+                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-primary-foreground backdrop-blur-none! shadow-none! bg-transparent border-none p-0 outline-none!">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="mt-1">
-                            {currencies.map((c) => (
+                        <SelectContent className="max-h-48 overflow-y-auto">
+                            {CURRENCIES.map((c) => (
                                 <SelectItem key={c} value={c}>
                                     {c}
                                 </SelectItem>
@@ -139,7 +146,7 @@ export default function Navbar() {
                         <>
                             <Button
                                 variant="ghost"
-                                className="relative p-4"
+                                className="relative p-4 outline-none! shadow-none!"
                                 onClick={() => setCartOpen(true)}
                             >
                                 <ShoppingCart className="h-5 w-5" />
@@ -152,7 +159,7 @@ export default function Navbar() {
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="gap-2 p-4">
+                                    <Button variant="ghost" className="gap-2 p-4 outline-none! shadow-none!">
                                         <img src={avatar} alt="" className="size-6 rounded-full" />
                                         <span className="hidden sm:inline text-sm">{username}</span>
                                         <ChevronDown className="h-3 w-3" />
@@ -168,7 +175,6 @@ export default function Navbar() {
                                             <span className="flex-1">
                                                 {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
                                             </span>
-                                            {isDiscordConnected && <Check className="size-3.5 text-accent" />}
                                         </div>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />

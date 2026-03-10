@@ -11,7 +11,7 @@ export default function ProductDetailLayout({ product }: { product: Product }) {
     return (
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 ">
-                <ProductGallery />
+                <ProductGallery video={parsedData.video} image={product.image} media={product.media} />
                 <ProductInformation product={product} />
             </div>
 

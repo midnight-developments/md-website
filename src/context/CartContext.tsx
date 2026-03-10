@@ -37,6 +37,44 @@ export function CartProvider({
     const [basket, setBasket] = useState<TebexBasket | null>(initialBasket)
     const [isCartOpen, setCartOpen] = useState(false)
 
+    useEffect(() => {
+        if (initialBasket) {
+            setBasket(initialBasket)
+
+            const hasAuth = !!(initialBasket.username_id || (initialBasket as any).customer);
+            if (hasAuth && typeof window !== 'undefined') {
+                const pendingItemsStr = localStorage.getItem("tebex_pending_items");
+                if (pendingItemsStr) {
+                    try {
+                        const parsedItems = JSON.parse(pendingItemsStr) as { id: number, qty: number }[];
+                        if (parsedItems.length > 0) {
+                            const restoreCart = async () => {
+                                let localBasket = initialBasket;
+                                for (const item of parsedItems) {
+                                    try {
+                                        const updated = await addPackageToBasket(item.id, item.qty, localBasket.ident);
+                                        localBasket = updated;
+                                    } catch (e) {
+                                        console.error("Failed restoring item to cart:", e);
+                                    }
+                                }
+                                setBasket(localBasket);
+                                localStorage.removeItem("tebex_pending_items");
+                                const discordName = localStorage.getItem("discordUsername");
+                                toast.success(`Successfully connected as ${discordName}`);
+                            };
+                            restoreCart();
+                        } else {
+                            localStorage.removeItem("tebex_pending_items");
+                        }
+                    } catch (e) {
+                        localStorage.removeItem("tebex_pending_items");
+                    }
+                }
+            }
+        }
+    }, [initialBasket])
+
 
     const addItem = useCallback(async (productId: number) => {
         try {

@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react"
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from "react"
 import { useCart } from "@/context/CartContext"
 import { getAuthUrl, migrateBasketWithDiscord } from "@/services/tebex/baskets"
 import { exchangeDiscordCode } from "@/services/discord"
@@ -26,12 +26,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { basket, clearCart } = useCart()
     const router = useRouter()
     const searchParams = useSearchParams()
+    const hasCalled = useRef(false);
 
     const [discordUser, setDiscordUser] = useState<{ id: string, username: string, avatar: string | null } | null>(null)
-    const [isDiscordModalOpen, setDiscordModalOpenState] = useState(false)
-    const [hasAttemptedModal, setHasAttemptedModal] = useState(false)
+    const [isDiscordModalOpen, setDiscordModalOpen] = useState(false)
 
-    // Load discord user from localStorage on mount
     useEffect(() => {
         const id = localStorage.getItem("discordID")
         const username = localStorage.getItem("discordUsername")
@@ -42,16 +41,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     }, [])
 
-    // Catch Discord OAuth code in URL
     useEffect(() => {
         const code = searchParams.get("code")
-        if (code) {
+
+        if (code && !hasCalled.current) {
+            hasCalled.current = true;
+
+            const cleanUrl = window.location.origin + window.location.pathname
+            window.history.replaceState({}, document.title, window.location.pathname)
+
             const handleDiscordAuth = async () => {
                 const toastId = toast.loading("Connecting Discord...")
+
                 try {
                     const data = await exchangeDiscordCode(
                         code,
-                        window.location.origin + window.location.pathname
+                        cleanUrl
                     )
 
                     if (data.id && data.username) {
@@ -61,36 +66,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
                         setDiscordUser({ id: data.id, username: data.username, avatar: data.avatar })
 
-                        // Re-create basket with discord ID
                         try {
-                            await migrateBasketWithDiscord(data.id)
-                            router.refresh()
+                            const oldItems = basket?.packages?.map(p => ({ id: p.id, qty: p.in_basket.quantity })) || []
+                            if (oldItems.length > 0) {
+                                localStorage.setItem("tebex_pending_items", JSON.stringify(oldItems))
+                            }
+
+                            const result = await migrateBasketWithDiscord(data.id, window.location.href)
+
+                            if (result.authUrl) {
+                                toast.loading("Refreshing basket data...", { id: toastId })
+                                window.location.href = result.authUrl
+                            } else {
+                                toast.error("Failed to update basket data with Discord", { id: toastId })
+                            }
                         } catch (e) {
-                            console.error("Failed to migrate basket with discord id:", e)
+                            toast.error(e instanceof Error ? e.message : "Failed to update basket data with Discord", { id: toastId })
                         }
-
-                        toast.success(`Connected as ${data.username}`, { id: toastId })
-
-                        // Clean up URL
-                        const cleanUrl = window.location.origin + window.location.pathname
-                        window.history.replaceState(null, "", cleanUrl)
                     }
                 } catch (error: any) {
-                    console.error("Discord Auth Error:", error)
                     toast.error(error.message || "Failed to connect Discord", { id: toastId })
                 }
             }
             handleDiscordAuth()
         }
-    }, [searchParams])
+    }, [searchParams, router])
 
-    const setDiscordModalOpen = useCallback((open: boolean) => {
-        if (open) {
-            if (hasAttemptedModal) return
-            setHasAttemptedModal(true)
-        }
-        setDiscordModalOpenState(open)
-    }, [hasAttemptedModal])
 
     const isLoggedIn = !!basket?.username_id
     const isDiscordConnected = !!discordUser
@@ -98,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const avatar = isLoggedIn ? `https://forum.cfx.re/user_avatar/forum.cfx.re/${username}/288/5708323_2.png` : ""
 
     const login = useCallback(async () => {
-        const toastId = toast.info("Redirecting to CFX.re...")
+        const toastId = toast.loading("Redirecting to CFX.re...")
         try {
             const currentUrl = window.location.href;
             const url = await getAuthUrl(currentUrl);
@@ -123,7 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || '1410523462585548894'
         const currentUrl = window.location.origin + window.location.pathname
         const encodedRedirectUrl = encodeURIComponent(currentUrl)
-        const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirectUrl}&scope=identify`
+        const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirectUrl}&scope=identify&prompt=consent`
         window.location.href = oauthUrl
     }, [])
 

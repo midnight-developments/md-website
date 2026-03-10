@@ -1,5 +1,5 @@
 import { Toaster as Sonner } from "sonner"
-import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react"
+import { AlertTriangle, CheckCircle, Info, Loader2, XCircle } from "lucide-react"
 
 const Toaster = ({
     ...props
@@ -26,7 +26,8 @@ const Toaster = ({
                     success: "group-[.toaster]:bg-success/10! backdrop-blur-3xl  group-[.toaster]:border-success/20! group-[.toaster]:border-2 group-[.toaster]:shadow-success!",
                     error: "group-[.toaster]:bg-error/10! backdrop-blur-3xl group-[.toaster]:border-error/20! group-[.toaster]:border-2 group-[.toaster]:shadow-error!",
                     warning: "group-[.toaster]:bg-warning/10! backdrop-blur-3xl group-[.toaster]:border-warning/20! group-[.toaster]:border-2 group-[.toaster]:shadow-warning!",
-                    info: "group-[.toaster]:bg-info/10! backdrop-blur-3xl group-[.toaster]:border-info/20! group-[.toaster]:border-2 group-[.toaster]:shadow-info!",
+                    info: "group-[.toaster]:bg-info/15! backdrop-blur-3xl group-[.toaster]:border-info/20! group-[.toaster]:border-2 group-[.toaster]:shadow-info!",
+                    loading: "group-[.toaster]:bg-accent/15! backdrop-blur-3xl group-[.toaster]:border-accent/20! group-[.toaster]:border-2 group-[.toaster]:shadow-accent/10!",
                 },
             }}
             icons={{
@@ -34,6 +35,7 @@ const Toaster = ({
                 info: <Info className="w-4 h-4 text-info-foreground mt-1" />,
                 warning: <AlertTriangle className="w-4 h-4 text-warning-foreground mt-1" />,
                 error: <XCircle className="w-4 h-4 text-error-foreground mt-1" />,
+                loading: <Loader2 className="w-4 h-4 text-accent-foreground mt-1 animate-spin" />,
             }}
             {...props} />
     );

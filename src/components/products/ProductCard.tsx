@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { parseTebexDescription, cn } from "@/lib/utils"
 import type { Product } from "@/services/tebex/products"
+import { useCurrency } from "@/context/CurrencyContext"
 import AddToCartButton from "./AddToCartButton"
 
 interface ProductCardProps {
@@ -11,6 +12,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+    const { formatPrice } = useCurrency();
     const parsedData = parseTebexDescription(product.description);
 
     const isBundle = product.category?.name?.toLowerCase().includes("bundle")
@@ -59,7 +61,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                                 {product.name}
                             </p>
                             <Label variant="price">
-                                ${product.base_price.toFixed(2)}
+                                {formatPrice(product.base_price)}
                             </Label>
                         </div>
                         <p className="text-[0.9rem] font-light text-secondary-foreground max-w-2xs line-clamp-2 leading-[1.35]">
