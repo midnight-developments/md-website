@@ -5,28 +5,35 @@ import { useLenis } from "lenis/react"
 export default function CustomScrollbar() {
     const thumbRef = useRef<HTMLDivElement>(null)
     const trackRef = useRef<HTMLDivElement>(null)
-    const [isVisible, setIsVisible] = useState(false)
-    const [thumbHeight, setThumbHeight] = useState(50)
     const [isDragging, setIsDragging] = useState(false)
 
+    // Using refs instead of state to bypass massive React re-render loops on RAF tick
+    const thumbHeightRef = useRef(50)
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const startYRef = useRef(0)
     const startScrollRef = useRef(0)
+    const lastScrollRef = useRef(-1)
 
     const lenis = useLenis((lenis) => {
-        if (!thumbRef.current) return
+        if (!thumbRef.current || !trackRef.current) return
 
         const innerHeight = window.innerHeight
         const scrollHeight = document.documentElement.scrollHeight
 
         if (scrollHeight <= innerHeight) {
-            if (isVisible && !isDragging) setIsVisible(false)
+            if (!isDragging) {
+                trackRef.current.style.opacity = '0'
+            }
             return
         }
 
         const heightRatio = innerHeight / scrollHeight
         const newThumbHeight = Math.max(heightRatio * innerHeight, 40)
-        setThumbHeight(newThumbHeight)
+
+        if (thumbHeightRef.current !== newThumbHeight) {
+            thumbHeightRef.current = newThumbHeight
+            thumbRef.current.style.height = `${newThumbHeight}px`
+        }
 
         const maxScroll = scrollHeight - innerHeight
         const progress = Math.min(Math.max(lenis.scroll / maxScroll, 0), 1)
@@ -35,12 +42,18 @@ export default function CustomScrollbar() {
 
         thumbRef.current.style.transform = `translate3d(0, ${thumbY}px, 0)`
 
-        if (!isDragging) {
-            setIsVisible(true)
-            if (timeoutRef.current) clearTimeout(timeoutRef.current)
-            timeoutRef.current = setTimeout(() => {
-                setIsVisible(false)
-            }, 400)
+        // Only flash the visible scrollbar if actively moving up or down
+        if (lastScrollRef.current !== lenis.scroll) {
+            lastScrollRef.current = lenis.scroll
+            if (!isDragging) {
+                trackRef.current.style.opacity = '1'
+                if (timeoutRef.current) clearTimeout(timeoutRef.current)
+                timeoutRef.current = setTimeout(() => {
+                    if (!isDragging && trackRef.current) {
+                        trackRef.current.style.opacity = '0'
+                    }
+                }, 800)
+            }
         }
     })
 
@@ -49,7 +62,7 @@ export default function CustomScrollbar() {
         e.preventDefault()
         e.stopPropagation()
         setIsDragging(true)
-        setIsVisible(true)
+        if (trackRef.current) trackRef.current.style.opacity = '1'
         startYRef.current = e.clientY
         startScrollRef.current = lenis.scroll
     }
@@ -62,7 +75,7 @@ export default function CustomScrollbar() {
             const innerHeight = window.innerHeight
             const scrollHeight = document.documentElement.scrollHeight
             const maxScroll = scrollHeight - innerHeight
-            const maxThumbY = innerHeight - thumbHeight
+            const maxThumbY = innerHeight - thumbHeightRef.current
             const scrollPerThumbPixel = maxScroll / maxThumbY
 
             const deltaY = e.clientY - startYRef.current
@@ -76,8 +89,8 @@ export default function CustomScrollbar() {
             setIsDragging(false)
             if (timeoutRef.current) clearTimeout(timeoutRef.current)
             timeoutRef.current = setTimeout(() => {
-                setIsVisible(false)
-            }, 400)
+                if (trackRef.current) trackRef.current.style.opacity = '0'
+            }, 800)
         }
 
         document.addEventListener('pointermove', handlePointerMove, { passive: false })
@@ -87,7 +100,7 @@ export default function CustomScrollbar() {
             document.removeEventListener('pointermove', handlePointerMove)
             document.removeEventListener('pointerup', handlePointerUp)
         }
-    }, [isDragging, lenis, thumbHeight])
+    }, [isDragging, lenis])
 
     const handleTrackClick = (e: React.PointerEvent) => {
         if (!lenis || !trackRef.current) return
@@ -99,8 +112,8 @@ export default function CustomScrollbar() {
         const trackRect = trackRef.current.getBoundingClientRect()
         const clickY = e.clientY - trackRect.top
 
-        const maxThumbY = innerHeight - thumbHeight
-        const targetThumbY = clickY - (thumbHeight / 2)
+        const maxThumbY = innerHeight - thumbHeightRef.current
+        const targetThumbY = clickY - (thumbHeightRef.current / 2)
         const progress = Math.max(0, Math.min(targetThumbY / maxThumbY, 1))
 
         const maxScroll = scrollHeight - innerHeight
@@ -110,19 +123,18 @@ export default function CustomScrollbar() {
     return (
         <div
             ref={trackRef}
-            className={`fixed right-0 top-0 bottom-0 w-3 z-[9999] transition-opacity duration-500 ease-out ${isVisible || isDragging ? 'opacity-100' : 'opacity-0'
-                }`}
+            className={`fixed right-0 top-0 bottom-0 w-3 z-[9999] transition-opacity duration-500 ease-out opacity-0 ${isDragging ? '!opacity-100' : ''}`}
             onPointerDown={handleTrackClick}
             onMouseEnter={() => {
-                setIsVisible(true)
+                if (trackRef.current) trackRef.current.style.opacity = '1'
                 if (timeoutRef.current) clearTimeout(timeoutRef.current)
             }}
             onMouseLeave={() => {
                 if (!isDragging) {
                     if (timeoutRef.current) clearTimeout(timeoutRef.current)
                     timeoutRef.current = setTimeout(() => {
-                        setIsVisible(false)
-                    }, 400)
+                        if (trackRef.current) trackRef.current.style.opacity = '0'
+                    }, 800)
                 }
             }}
         >
@@ -131,7 +143,7 @@ export default function CustomScrollbar() {
                 onPointerDown={handlePointerDown}
                 className="absolute right-0.5 w-2 bg-[var(--brand-base)]/50 hover:bg-[var(--brand-base)]/80 rounded-full cursor-grab active:cursor-grabbing transition-colors duration-200"
                 style={{
-                    height: thumbHeight,
+                    height: thumbHeightRef.current,
                     boxShadow: "0 0 10px rgba(100, 100, 230, 0.2)"
                 }}
             />

@@ -99,6 +99,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const avatar = isLoggedIn ? `https://forum.cfx.re/user_avatar/forum.cfx.re/${username}/288/5708323_2.png` : ""
 
     const login = useCallback(async () => {
+        localStorage.removeItem("discordID")
+        localStorage.removeItem("discordUsername")
+        localStorage.removeItem("discordAvatar")
+        setDiscordUser(null)
+
         const toastId = toast.loading("Redirecting to CFX.re...")
         try {
             const currentUrl = window.location.href;

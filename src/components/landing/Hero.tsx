@@ -2,12 +2,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import discord from "@/assets/discord.svg"
 import { containerVariants, itemVariants } from "../animation-variants"
 import VisualPlaceholder from "./VisualPlaceholder"
 import Features from "./Features"
+import PromoBadge from "@/components/layout/PromoBadge"
 
 
 export default function Hero() {
@@ -41,13 +43,17 @@ export default function Hero() {
 
     return (
         <motion.section
-            className="flex flex-col gap-16 items-center justify-center"
+            className="flex flex-col gap-22 items-center justify-center"
             initial="hidden"
             animate="show"
             variants={containerVariants}
         >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
-                <div className="flex flex-col gap-4">
+            <div className="flex flex-col lg:flex-row gap-8 items-center w-full">
+                <div className="flex flex-col gap-4 w-full lg:w-[55%]">
+                    <motion.div variants={itemVariants}>
+                        <PromoBadge className="flex xl:hidden" />
+                    </motion.div>
+
                     <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl lg:text-6xl font-[650] leading-[1.025] tracking-tight">
                         <span className="bg-gradient-to-r from-white to-white/90 text-transparent bg-clip-text">Where Premium Scripts Meet</span>{" "}
                         <span className="relative inline-block">

@@ -3,7 +3,9 @@ import { useState, useEffect } from "react"
 import Link from "next/link";
 import { usePathname as useLocation } from "next/navigation"
 import { motion } from "framer-motion"
-import { ShoppingCart, ChevronDown, LogOut, Menu, X, History, Check } from "lucide-react"
+import { ShoppingCart, ChevronDown, LogOut, Menu, X, History, Check, } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import PromoBadge from "@/components/layout/PromoBadge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
@@ -88,9 +90,11 @@ export default function Navbar() {
                         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                     </Button>
 
-                    <Link href="/" className="text-xl font-bold text-primary-foreground tracking-tight">
-                        Midnight<span className="text-accent">Dev</span>
+                    <Link href="/" className="text-xl font-bold text-primary-foreground tracking-tight flex items-center gap-0.25 shrink-0">
+                        <img src="/logo.webp" alt="Logo" className="h-8 mr-1" />
+                        Midnight<span className="text-accent-foreground">Dev</span>
                     </Link>
+
                     <div className="hidden lg:flex items-center gap-1 h-full">
                         {navLinks.map((link) => {
                             if ('isExternal' in link) {
@@ -102,7 +106,12 @@ export default function Navbar() {
                                         rel="noopener noreferrer"
                                         className="py-1.75 px-4 flex items-center text-sm font-medium transition-all border-b-2 text-muted-foreground border-transparent hover:text-primary-foreground"
                                     >
-                                        {link.label}
+                                        {link.label === "Documentation" ? (
+                                            <>
+                                                <span className="lg:hidden xl:inline">Documentation</span>
+                                                <span className="hidden lg:inline xl:hidden">Docs</span>
+                                            </>
+                                        ) : link.label}
                                     </a>
                                 )
                             }
@@ -117,15 +126,22 @@ export default function Navbar() {
                                         : "text-muted-foreground border-transparent"
                                         }`}
                                 >
-                                    {link.label}
+                                    {link.label === "Documentation" ? (
+                                        <>
+                                            <span className="lg:hidden xl:inline">Documentation</span>
+                                            <span className="hidden lg:inline xl:hidden">Docs</span>
+                                        </>
+                                    ) : link.label}
                                 </Link>
                             )
                         })}
                     </div>
+
+                    <PromoBadge className="hidden xl:block ml-0 xl:-ml-4 mt-0.5" />
                 </div>
 
                 {/* Right */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-0 xl:gap-2">
                     <Select
                         value={currency}
                         onValueChange={(v) => setCurrency(v as Currency)}
@@ -146,7 +162,7 @@ export default function Navbar() {
                         <>
                             <Button
                                 variant="ghost"
-                                className="relative p-4 outline-none! shadow-none!"
+                                className="relative p-2 xl:p-4 outline-none! shadow-none!"
                                 onClick={() => setCartOpen(true)}
                             >
                                 <ShoppingCart className="h-5 w-5" />
@@ -212,7 +228,12 @@ export default function Navbar() {
                                         rel="noopener noreferrer"
                                         className="text-lg font-medium py-1.5 transition-colors text-muted-foreground"
                                     >
-                                        {link.label}
+                                        {link.label === "Documentation" ? (
+                                            <>
+                                                <span className="lg:hidden xl:inline">Documentation</span>
+                                                <span className="hidden lg:inline xl:hidden">Docs</span>
+                                            </>
+                                        ) : link.label}
                                     </a>
                                 )
                             }
@@ -223,11 +244,18 @@ export default function Navbar() {
                                     className={`text-lg font-medium py-1.5 transition-colors ${location === link.href ? "text-primary-foreground" : "text-muted-foreground"
                                         }`}
                                 >
-                                    {link.label}
+                                    {link.label === "Documentation" ? (
+                                        <>
+                                            <span className="lg:hidden xl:inline">Documentation</span>
+                                            <span className="hidden lg:inline xl:hidden">Docs</span>
+                                        </>
+                                    ) : link.label}
                                 </Link>
                             )
                         })}
                     </div>
+
+
                 </motion.div>
             )}
         </nav>

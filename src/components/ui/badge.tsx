@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
     `rounded-full border-2
-    inline-flex gap-1 items-center
+    inline-flex items-center
     font-medium
     transition-colors`,
     {
         variants: {
             variant: {
-                default: "border-accent/20 bg-accent/15 text-accent-foreground",
+                default: "border-accent/25 bg-accent/15 text-accent-foreground shadow-accent/20 brightness-[120%]",
                 secondary: "border-border bg-white/5 text-secondary-foreground",
                 outline: "border-border text-muted-foreground",
                 destructive: "border-transparent bg-error/15 text-error-foreground",
@@ -20,9 +20,9 @@ const badgeVariants = cva(
                 standalone: "border-0 bg-green-500/15 text-green-300 ",
             },
             size: {
-                default: "px-4 py-1.25 text-[13.5px]",
-                sm: "px-2.5 py-0.5 text-[11px]",
-                md: "px-3.25 py-0.75 text-[12px]",
+                default: "px-4 py-1.25 text-[13.5px] gap-2",
+                sm: "px-2.5 py-0.5 text-[11px] gap-1",
+                md: "px-3.25 py-0.75 text-[12px] gap-1.5",
             },
         },
         defaultVariants: {

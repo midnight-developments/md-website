@@ -123,7 +123,13 @@ export function CartProvider({
                     const wasLoggedIn = !!basket?.username_id;
 
                     await clearCart();
-                    const newBasket = await createBasket();
+                    const discordId = localStorage.getItem("discordID");
+                    let newBasket;
+                    if (discordId) {
+                        newBasket = await createBasket(window.location.href, window.location.href, { discord_id: discordId });
+                    } else {
+                        newBasket = await createBasket();
+                    }
                     setBasket(newBasket);
 
                     if (wasLoggedIn) {

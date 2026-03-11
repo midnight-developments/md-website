@@ -38,7 +38,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Navbar />
             <CartSidebar />
             <DiscordGateModal />
-            <main className="mt-16 flex-grow ">
+            <main className="mt-20 flex-grow ">
                 <PageTransition>
                     {children}
                 </PageTransition>

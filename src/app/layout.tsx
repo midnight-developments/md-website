@@ -3,6 +3,12 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { getBasketOrNull } from "@/services/tebex/baskets";
 import NextTopLoader from "nextjs-toploader";
+import { Caveat } from "next/font/google";
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-caveat",
+});
 
 export const metadata: Metadata = {
   title: "Midnight Store",
@@ -25,7 +31,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className="antialiased"
+        className={`antialiased ${caveat.variable}`}
       >
         <NextTopLoader
           color="#6464e6"

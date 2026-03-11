@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
 
     if (type === "payment.completed") {
         const transaction_id = subject.transaction_id
-        const discord_id = subject.custom?.discord_id || null
+        const discord_id = subject.custom?.discord_id
 
         try {
             const { error: supabaseError } = await supabase

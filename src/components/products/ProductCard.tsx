@@ -24,23 +24,26 @@ export default function ProductCard({ product }: ProductCardProps) {
 
     return (
         <div
-            className="relative backdrop-blur-xl bg-card-bg border-2 border-card/50 rounded-md overflow-hidden group hover:border-accent transition-colors duration-300"
+            className="relative flex flex-col h-full backdrop-blur-xl bg-card-bg border-2 border-card/50 rounded-md overflow-hidden group hover:border-accent transition-colors duration-300"
         >
-            <Link href={detailPath}>
-                <div className="aspect-video bg-white/[0.03] flex items-center justify-center text-muted-foreground text-sm cursor-pointer group-hover:bg-white/[0.05] transition-colors overflow-hidden">
+            <Link href={detailPath} className="flex flex-col flex-1">
+                <div className="relative aspect-video bg-white/[0.03] flex items-center justify-center text-muted-foreground text-sm cursor-pointer group-hover:bg-white/[0.05] transition-colors overflow-hidden">
                     {primaryImage ? (
-                        <img
-                            src={primaryImage}
-                            alt={product.name}
-                            className="w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] hue-rotate-[230deg] "
-                            loading="lazy"
-                        />
+                        <>
+                            <img
+                                src={primaryImage}
+                                alt={product.name}
+                                className="w-full h-full object-cover transition-all duration-500 ease-out group-hover:scale-[1.03] hue-rotate-[230deg]"
+                                loading="lazy"
+                            />
+                            <div className="absolute top-0 bottom-0 left-0 w-[250%] -translate-x-[100%] bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 group-hover:translate-x-[150%] transition-transform duration-0 group-hover:duration-1000 group-hover:delay-150 ease-in-out z-10 pointer-events-none" />
+                        </>
                     ) : (
                         <span className="text-xs tracking-widest uppercase opacity-40">No Primary Image Found</span>
                     )}
                 </div>
 
-                <div className="p-4.5 flex flex-col gap-2.5">
+                <div className="px-4.5 pt-4.5 pb-2.5 flex flex-col gap-2.5 flex-1">
                     <div className="flex flex-wrap gap-1.5 -ml-0.25">
                         {(parsedData?.tags || [])
                             .filter((tag: string) => ["qbcore", "qbox", "esx", "standalone"].includes(tag.toLowerCase()))
@@ -68,10 +71,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                             {parsedData?.about || ""}
                         </p>
                     </div>
-
-                    <AddToCartButton product={product} />
                 </div>
             </Link>
+
+            <div className="px-4.5 pb-4.5 mt-auto">
+                <AddToCartButton product={product} />
+            </div>
 
         </div>
     )
