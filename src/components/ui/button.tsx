@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils"
 import { BASE_INPUT_STYLES } from "@/lib/style-constants"
 
 const buttonVariants = cva(
-    `relative  rounded
-  px-4 py-1.75
+    `relative rounded
   inline-flex items-center justify-center gap-3
   text-sm font-medium antialiased 
   backdrop-blur-md cursor-pointer
@@ -38,9 +37,16 @@ const buttonVariants = cva(
                 ghost: `p-0 backdrop-blur-none`,
                 link: `text-primary underline-offset-4 hover:underline`,
             },
+            size: {
+                default: "px-4 py-1.75",
+                sm: "px-3 py-1 text-xs",
+                lg: "px-6 py-2.5 text-base",
+                icon: "h-8 w-8 p-0",
+            },
         },
         defaultVariants: {
             variant: "outline",
+            size: "default",
         },
     }
 )
@@ -49,7 +55,6 @@ export interface ButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
     asChild?: boolean
-    size?: any
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -58,7 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         return (
             <Comp
                 ref={ref}
-                className={cn(buttonVariants({ variant, className }))}
+                className={cn(buttonVariants({ variant, size, className }))}
                 {...props}
             >
                 {children}

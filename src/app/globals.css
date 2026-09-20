@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-outfit: "Outfit", sans-serif;
+  --font-outfit: var(--font-outfit), sans-serif;
   --font-caveat: font-family(var(--font-caveat), cursive);
 
   --brand-light: rgb(120, 120, 255);
@@ -36,7 +35,7 @@
   --color-modal: var(--color-border);
   --color-popover-bg: rgb(6, 6, 10);
   --color-popover: var(--color-border);
-  --color-card-bg: rgba(50, 50, 80, 0.25);
+  --color-card-bg: rgba(50, 50, 50, 0.25);
   --color-card: var(--color-border);
 
   --color-input-bg: rgba(0, 0, 0, 0.2);

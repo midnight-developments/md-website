@@ -1,6 +1,6 @@
 "use client";
 import ProductCard from "@/components/products/ProductCard"
-import type { Product } from "@/services/tebex/products"
+import type { Product } from "@/types/tebex"
 
 interface ProductGridProps {
     products: Product[]

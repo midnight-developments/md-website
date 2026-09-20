@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react"
+import Image from "next/image"
 import { Trash2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +14,7 @@ import { useCart } from "@/context/CartContext"
 import { useAuth } from "@/context/AuthContext"
 import { useCurrency } from "@/context/CurrencyContext"
 import tebexLogo from "@/assets/tebex-logo.png"
-import { parseTebexDescription } from "@/lib/utils"
+import { stripHtml } from "@/lib/utils"
 
 import paypalLogo from "@/assets/paypal.svg"
 import gpayLogo from "@/assets/google-pay.svg"
@@ -24,13 +25,13 @@ import amexLogo from "@/assets/amex.svg"
 
 
 export default function CartSidebar() {
-    const { basket, removeItem, subtotal, totalItems, isCartOpen, setCartOpen, checkout } = useCart()
+    const { basket, removeItem, subtotal, totalPrice, totalItems, isCartOpen, setCartOpen, checkout } = useCart()
     const { isDiscordConnected, setDiscordModalOpen } = useAuth()
     const { formatPrice } = useCurrency()
     const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
 
     const taxes = basket?.sales_tax || 0
-    const total = basket?.total_price || subtotal
+    const total = totalPrice
     const items = basket?.packages || []
 
     const handleRemove = async (id: number) => {
@@ -70,16 +71,15 @@ export default function CartSidebar() {
                     ) : (
                         <div className="flex flex-col gap-3.5">
                             {items.map((item) => {
-                                const parsedData = item.description ? parseTebexDescription(item.description) : null;
                                 return (
                                     <div
                                         key={item.id}
                                         className={`flex items-stretch gap-3 p-3 rounded-md bg-card-bg border-2 border-card transition-opacity duration-200 ${removingIds.has(item.id) ? "opacity-30 pointer-events-none" : ""
                                             }`}
                                     >
-                                        <div className="w-40 aspect-video rounded bg-white/5 border-2 border-black/1 shrink-0 flex items-center justify-center overflow-hidden text-muted-foreground text-xs">
+                                        <div className="relative w-40 aspect-video rounded bg-white/5 border-2 border-black/1 shrink-0 flex items-center justify-center overflow-hidden text-muted-foreground text-xs">
                                             {item.image ? (
-                                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                                <Image src={item.image} alt={item.name} fill sizes="160px" className="object-cover" />
                                             ) : (
                                                 "IMG"
                                             )}
@@ -105,7 +105,7 @@ export default function CartSidebar() {
                                             </div>
 
                                             <p className="transition-colors duration-200 text-sm font-normal leading-tight text-muted-foreground line-clamp-2 pr-12">
-                                                {parsedData?.about || ""}
+                                                {stripHtml(item.description)}
                                             </p>
 
                                             <div className="flex justify-start ">

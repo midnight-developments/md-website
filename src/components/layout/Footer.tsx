@@ -2,17 +2,17 @@ import Link from "next/link"
 import { Youtube, Instagram, Mail, Globe } from "lucide-react"
 
 const pageLinks = [
-    { label: "Home", href: "/" },
-    { label: "Scripts", href: "/scripts" },
-    { label: "Bundles", href: "/bundles" },
-    { label: "Subscriptions", href: "/subscriptions" },
-    { label: "Documentation", href: "/docs" },
+    { label: "Home", href: "/", isExternal: false },
+    { label: "Scripts", href: "/scripts", isExternal: false },
+    { label: "Bundles", href: "/bundles", isExternal: false },
+    { label: "Subscriptions", href: "/subscriptions", isExternal: false },
+    { label: "Documentation", href: "https://midnight-dev.gitbook.io/midnight-dev/", isExternal: true },
 ]
 
 const socialLinks = [
-    { label: "YouTube", icon: Youtube, href: "#" },
-    { label: "Cfx.Re", icon: Globe, href: "#" },
-    { label: "Instagram", icon: Instagram, href: "#" },
+    { label: "YouTube", icon: Youtube, href: "https://youtube.com" },
+    { label: "Cfx.Re", icon: Globe, href: "https://forum.cfx.re" },
+    { label: "Instagram", icon: Instagram, href: "https://instagram.com" },
     { label: "Email", icon: Mail, href: "mailto:contact@midnightdev.net" },
 ]
 
@@ -23,29 +23,42 @@ const legalLinks = [
 ]
 
 export default function Footer() {
+    const currentYear = new Date().getFullYear();
+
     return (
-        <footer className="w-full py-10 lg:py-18 mt-24 bg-black/30 backdrop-blur-xl border-t-2 border-border ">
+        <footer className="w-full py-10 lg:py-18 mt-24 bg-black/30 backdrop-blur-xl border-t-2 border-border">
             <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
                 <div className="flex flex-col md:flex-row justify-between gap-10">
                     <div className="w-full max-w-xl flex flex-col sm:flex-row gap-10 justify-between">
                         <div className="flex flex-col gap-4">
-                            <h4 className="text-base font-semibold text-primary-foreground ">PAGES</h4>
+                            <h4 className="text-base font-semibold text-primary-foreground">PAGES</h4>
                             <ul className="flex flex-col gap-1.5">
                                 {pageLinks.map((link) => (
-                                    <li key={link.href}>
-                                        <Link
-                                            href={link.href}
-                                            className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
+                                    <li key={link.label}>
+                                        {link.isExternal ? (
+                                            <a
+                                                href={link.href}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
+                                            >
+                                                {link.label}
+                                            </a>
+                                        ) : (
+                                            <Link
+                                                href={link.href}
+                                                className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
+                                            >
+                                                {link.label}
+                                            </Link>
+                                        )}
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <h4 className="text-base font-semibold text-primary-foreground ">SOCIALS</h4>
+                            <h4 className="text-base font-semibold text-primary-foreground">SOCIALS</h4>
                             <ul className="flex flex-col gap-1.5">
                                 {socialLinks.map((link) => (
                                     <li key={link.label}>
@@ -63,7 +76,7 @@ export default function Footer() {
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <h4 className="text-base font-semibold text-primary-foreground ">LEGAL</h4>
+                            <h4 className="text-base font-semibold text-primary-foreground">LEGAL</h4>
                             <ul className="flex flex-col gap-1.5">
                                 {legalLinks.map((link) => (
                                     <li key={link.label}>
@@ -83,7 +96,7 @@ export default function Footer() {
 
                     <div className="w-full max-w-xl text-base">
                         <p className="text-muted-foreground mb-4">
-                            Copyright © 2025 Midnight Dev
+                            Copyright © {currentYear} Midnight Dev
                         </p>
                         <p className="text-muted-foreground mb-4">
                             This website's checkout process is operated by Tebex Limited, a third-party payment provider, who handle purchases, product fulfilment, billing support and refunds, allowing us to easily distribute FiveM assets. By completing a purchase, you agree to Tebex's Terms and Conditions and Privacy Policy.
@@ -94,7 +107,6 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-
         </footer>
     )
 }

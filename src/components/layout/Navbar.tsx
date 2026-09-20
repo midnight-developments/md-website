@@ -2,9 +2,8 @@
 import { useState, useEffect } from "react"
 import Link from "next/link";
 import { usePathname as useLocation } from "next/navigation"
-import { motion } from "framer-motion"
-import { ShoppingCart, ChevronDown, LogOut, Menu, X, History, Check, } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { motion, AnimatePresence } from "framer-motion"
+import { ShoppingCart, ChevronDown, LogOut, Menu, X } from "lucide-react"
 import PromoBadge from "@/components/layout/PromoBadge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -54,16 +53,12 @@ export default function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false)
 
     useEffect(() => {
-        const onScroll = (e: any) => {
-            if (e.target !== window && e.target !== document) return;
+        const onScroll = () => {
             setScrolled(window.scrollY > 20)
         }
-        window.addEventListener("scroll", onScroll, true)
-        return () => window.removeEventListener("scroll", onScroll, true)
-    }, [])
-
-    useEffect(() => {
-        setScrolled(window.scrollY > 20)
+        window.addEventListener("scroll", onScroll, { passive: true })
+        onScroll()
+        return () => window.removeEventListener("scroll", onScroll)
     }, [])
 
     useEffect(() => {
@@ -86,12 +81,13 @@ export default function Navbar() {
                         variant="ghost"
                         className="lg:hidden p-2 -ml-2"
                         onClick={() => setMobileOpen(!mobileOpen)}
+                        aria-label="Toggle navigation menu"
                     >
                         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                     </Button>
 
                     <Link href="/" className="text-xl font-bold text-primary-foreground tracking-tight flex items-center gap-0.25 shrink-0">
-                        <img src="/logo.webp" alt="Logo" className="h-8 mr-1" />
+                        <img src="/logo.webp" alt="Midnight Dev Logo" className="h-8 mr-1" />
                         Midnight<span className="text-accent-foreground">Dev</span>
                     </Link>
 
@@ -121,17 +117,17 @@ export default function Navbar() {
                                 <Link
                                     key={link.href}
                                     href={link.href!}
+                                    onClick={(e) => {
+                                        if (isActive) {
+                                            e.preventDefault()
+                                        }
+                                    }}
                                     className={`py-1.75 px-4 flex items-center text-sm font-medium transition-all border-b-2 hover:text-primary-foreground ${isActive
                                         ? "text-primary-foreground border-white"
                                         : "text-muted-foreground border-transparent"
                                         }`}
                                 >
-                                    {link.label === "Documentation" ? (
-                                        <>
-                                            <span className="lg:hidden xl:inline">Documentation</span>
-                                            <span className="hidden lg:inline xl:hidden">Docs</span>
-                                        </>
-                                    ) : link.label}
+                                    {link.label}
                                 </Link>
                             )
                         })}
@@ -164,6 +160,7 @@ export default function Navbar() {
                                 variant="ghost"
                                 className="relative p-2 xl:p-4 outline-none! shadow-none!"
                                 onClick={() => setCartOpen(true)}
+                                aria-label="Open Shopping Cart"
                             >
                                 <ShoppingCart className="h-5 w-5" />
                                 {totalItems > 0 && (
@@ -176,18 +173,22 @@ export default function Navbar() {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" className="gap-2 p-4 outline-none! shadow-none!">
-                                        <img src={avatar} alt="" className="size-6 rounded-full" />
+                                        <img src={avatar} alt={username} className="size-6 rounded-full" />
                                         <span className="hidden sm:inline text-sm">{username}</span>
                                         <ChevronDown className="h-3 w-3" />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end" className="w-56">
-                                    <DropdownMenuItem>
-                                        <History className="size-4 mr-1.5 ml-0.5" strokeWidth={2} /> View Purchase History
-                                    </DropdownMenuItem>
                                     <DropdownMenuItem onClick={toggleDiscord} className="group">
                                         <div className="flex items-center gap-1.5 flex-1">
-                                            <img src={discordLogo.src} alt="" className={cn("size-5 mr-1.5", isDiscordConnected ? "opacity-100" : "opacity-50 grayscale group-focus:grayscale-0 group-focus:opacity-100")} />
+                                            <img
+                                                src={discordLogo.src}
+                                                alt=""
+                                                className={cn(
+                                                    "size-5 mr-1.5",
+                                                    isDiscordConnected ? "opacity-100" : "opacity-50 grayscale group-focus:grayscale-0 group-focus:opacity-100"
+                                                )}
+                                            />
                                             <span className="flex-1">
                                                 {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
                                             </span>
@@ -210,54 +211,57 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {mobileOpen && (
-                <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="lg:hidden border-t-2 border-border bg-transparent backdrop-blur-lg"
-                >
-                    <div className="px-6 py-4 flex flex-col gap-3">
-                        {navLinks.map((link) => {
-                            if ('isExternal' in link) {
+            <AnimatePresence>
+                {mobileOpen && (
+                    <motion.div
+                        key="mobile-menu"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                        className="overflow-hidden lg:hidden border-t-2 border-border bg-transparent backdrop-blur-lg"
+                    >
+                        <div className="px-6 py-4 flex flex-col gap-3">
+                            {navLinks.map((link) => {
+                                if ('isExternal' in link) {
+                                    return (
+                                        <a
+                                            key={link.label}
+                                            href={link.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-lg font-medium py-1.5 transition-colors text-muted-foreground"
+                                        >
+                                            {link.label === "Documentation" ? (
+                                                <>
+                                                    <span className="lg:hidden xl:inline">Documentation</span>
+                                                    <span className="hidden lg:inline xl:hidden">Docs</span>
+                                                </>
+                                            ) : link.label}
+                                        </a>
+                                    )
+                                }
+                                const isActive = location === link.href
                                 return (
-                                    <a
-                                        key={link.label}
-                                        href={link.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-lg font-medium py-1.5 transition-colors text-muted-foreground"
+                                    <Link
+                                        key={link.href}
+                                        href={link.href!}
+                                        onClick={(e) => {
+                                            if (isActive) {
+                                                e.preventDefault()
+                                            }
+                                            setMobileOpen(false)
+                                        }}
+                                        className={`text-lg font-medium py-1.5 transition-colors ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
                                     >
-                                        {link.label === "Documentation" ? (
-                                            <>
-                                                <span className="lg:hidden xl:inline">Documentation</span>
-                                                <span className="hidden lg:inline xl:hidden">Docs</span>
-                                            </>
-                                        ) : link.label}
-                                    </a>
+                                        {link.label}
+                                    </Link>
                                 )
-                            }
-                            return (
-                                <Link
-                                    key={link.href}
-                                    href={link.href!}
-                                    className={`text-lg font-medium py-1.5 transition-colors ${location === link.href ? "text-primary-foreground" : "text-muted-foreground"
-                                        }`}
-                                >
-                                    {link.label === "Documentation" ? (
-                                        <>
-                                            <span className="lg:hidden xl:inline">Documentation</span>
-                                            <span className="hidden lg:inline xl:hidden">Docs</span>
-                                        </>
-                                    ) : link.label}
-                                </Link>
-                            )
-                        })}
-                    </div>
-
-
-                </motion.div>
-            )}
+                            })}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </nav>
     )
 }

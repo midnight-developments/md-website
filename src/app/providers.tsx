@@ -6,7 +6,7 @@ import { CurrencyProvider } from '@/context/CurrencyContext'
 import { ReactLenis } from "lenis/react"
 import Layout from "@/components/layout/AppLayout"
 import { Toaster } from "@/components/ui/sonner"
-import type { TebexBasket } from "@/services/tebex/baskets"
+import type { TebexBasket } from "@/types/tebex"
 
 export function Providers({ children, initialBasket }: { children: React.ReactNode, initialBasket: TebexBasket | null }) {
     return (

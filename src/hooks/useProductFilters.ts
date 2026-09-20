@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
-import type { Product } from "@/services/tebex/products"
-import { parseTebexDescription } from "@/lib/utils"
+import type { Product } from "@/types/tebex"
+import { stripHtml } from "@/lib/utils"
 
 export const SortType = {
     Default: "default",
@@ -16,28 +16,34 @@ export function useProductFilters(products: Product[]) {
     const [search, setSearch] = useState("")
     const [sortBy, setSortBy] = useState<SortType>(SortType.Default)
 
+    const indexedProducts = useMemo(() => {
+        return products.map((product) => ({
+            product,
+            searchText: `${product.name} ${stripHtml(product.description)}`.toLowerCase(),
+        }));
+    }, [products]);
+
     const processedProducts = useMemo(() => {
-        let result = products.filter((p) => {
-            const parsed = parseTebexDescription(p.description);
-            const about = parsed?.about || "";
-            const matchSearch =
-                p.name.toLowerCase().includes(search.toLowerCase()) ||
-                about.toLowerCase().includes(search.toLowerCase())
-            return matchSearch
-        })
+        const query = search.trim().toLowerCase();
+
+        const filtered = query
+            ? indexedProducts
+                .filter((item) => item.searchText.includes(query))
+                .map((item) => item.product)
+            : [...products];
 
         if (sortBy === SortType.NameAsc) {
-            result.sort((a, b) => a.name.localeCompare(b.name))
+            filtered.sort((a, b) => a.name.localeCompare(b.name));
         } else if (sortBy === SortType.NameDesc) {
-            result.sort((a, b) => b.name.localeCompare(a.name))
+            filtered.sort((a, b) => b.name.localeCompare(a.name));
         } else if (sortBy === SortType.PriceAsc) {
-            result.sort((a, b) => a.base_price - b.base_price)
+            filtered.sort((a, b) => a.base_price - b.base_price);
         } else if (sortBy === SortType.PriceDesc) {
-            result.sort((a, b) => b.base_price - a.base_price)
+            filtered.sort((a, b) => b.base_price - a.base_price);
         }
 
-        return result
-    }, [products, search, sortBy])
+        return filtered;
+    }, [products, indexedProducts, search, sortBy]);
 
     return {
         search,

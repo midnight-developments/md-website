@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link"
-import { Label } from "@/components/ui/label"
+import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
-import { parseTebexDescription, cn } from "@/lib/utils"
-import type { Product } from "@/services/tebex/products"
+import { stripHtml } from "@/lib/utils"
+import type { Product } from "@/types/tebex"
 import { useCurrency } from "@/context/CurrencyContext"
 import AddToCartButton from "./AddToCartButton"
 
@@ -13,7 +13,6 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
     const { formatPrice } = useCurrency();
-    const parsedData = parseTebexDescription(product.description);
 
     const isBundle = product.category?.name?.toLowerCase().includes("bundle")
     const detailPath = isBundle
@@ -30,11 +29,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <div className="relative aspect-video bg-white/[0.03] flex items-center justify-center text-muted-foreground text-sm cursor-pointer group-hover:bg-white/[0.05] transition-colors overflow-hidden">
                     {primaryImage ? (
                         <>
-                            <img
+                            <Image
                                 src={primaryImage}
                                 alt={product.name}
-                                className="w-full h-full object-cover transition-all duration-500 ease-out group-hover:scale-[1.03] hue-rotate-[230deg]"
-                                loading="lazy"
+                                fill
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                className="object-cover transition-all duration-500 ease-out group-hover:scale-[1.03]"
                             />
                             <div className="absolute top-0 bottom-0 left-0 w-[250%] -translate-x-[100%] bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 group-hover:translate-x-[150%] transition-transform duration-0 group-hover:duration-1000 group-hover:delay-150 ease-in-out z-10 pointer-events-none" />
                         </>
@@ -44,31 +44,25 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 <div className="px-4.5 pt-4.5 pb-2.5 flex flex-col gap-2.5 flex-1">
-                    <div className="flex flex-wrap gap-1.5 -ml-0.25">
-                        {(parsedData?.tags || [])
-                            .filter((tag: string) => ["qbcore", "qbox", "esx", "standalone"].includes(tag.toLowerCase()))
-                            .map((tag: string) => (
-                                <Badge
-                                    key={tag}
-                                    variant={tag.toLowerCase() as "qbcore" | "qbox" | "esx" | "standalone"}
-                                    size="sm"
-                                >
-                                    {tag.toUpperCase()}
-                                </Badge>
-                            ))}
-                    </div>
+                    {product.category?.name && (
+                        <div className="flex flex-wrap gap-1.5 -ml-0.25">
+                            <Badge variant="secondary" size="sm">
+                                {product.category.name}
+                            </Badge>
+                        </div>
+                    )}
 
-                    <div className="mb-2 flex flex-col gap-0.75 ">
+                    <div className="mb-2 flex flex-col gap-0.75">
                         <div className="flex items-center justify-between text-lg">
                             <p className="font-semibold text-primary-foreground uppercase transition-colors truncate">
                                 {product.name}
                             </p>
-                            <Label variant="price">
+                            <p className="text-lg font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent">
                                 {formatPrice(product.base_price)}
-                            </Label>
+                            </p>
                         </div>
                         <p className="text-[0.9rem] font-light text-secondary-foreground max-w-2xs line-clamp-2 leading-[1.35]">
-                            {parsedData?.about || ""}
+                            {stripHtml(product.description)}
                         </p>
                     </div>
                 </div>
@@ -77,7 +71,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             <div className="px-4.5 pb-4.5 mt-auto">
                 <AddToCartButton product={product} />
             </div>
-
         </div>
     )
 }

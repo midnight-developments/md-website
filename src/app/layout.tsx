@@ -1,19 +1,21 @@
-import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
-import { getBasketOrNull } from "@/services/tebex/baskets";
+import { getBasketOrNull } from "@/actions/baskets";
 import NextTopLoader from "nextjs-toploader";
-import { Caveat } from "next/font/google";
+import { Caveat, Outfit } from "next/font/google";
 
 const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",
+  display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Midnight Store",
-  description: "Where Premium Scripts Meet Flawless Aesthetics",
-};
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export default async function RootLayout({
   children,
@@ -24,15 +26,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          src={`https://js.tebex.io/v/1.js?public_key=${process.env.TEBEX_PUBLIC_KEY}`}
-          async
-        />
-      </head>
       <body
-        className={`antialiased ${caveat.variable}`}
+        className={`antialiased ${outfit.variable} ${caveat.variable}`}
       >
+        <Script
+          src={`https://js.tebex.io/v/1.js?public_key=${process.env.TEBEX_PUBLIC_KEY}`}
+          strategy="afterInteractive"
+        />
         <NextTopLoader
           color="#6464e6"
           initialPosition={0.08}

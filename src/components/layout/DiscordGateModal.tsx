@@ -1,5 +1,5 @@
 "use client";
-import { MessageCircle, Shield, Headphones, Gift } from "lucide-react"
+import { Shield, Headphones, Gift } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -37,7 +37,7 @@ export default function DiscordGateModal() {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        Connect Discord? <span >🥺</span>
+                        Connect Discord? <span>🥺</span>
                     </DialogTitle>
                     <DialogDescription>
                         Link your Discord account to unlock your purchase benefits and access support
@@ -46,7 +46,7 @@ export default function DiscordGateModal() {
 
                 <div className="flex flex-col gap-3">
                     {benefits.map((b) => (
-                        <div key={b.title} className="flex items-center gap-3 p-3  rounded-md bg-white/[0.03] border-2 border-border">
+                        <div key={b.title} className="flex items-center gap-3 p-3 rounded-md bg-white/[0.03] border-2 border-border">
                             <div className="p-2 rounded bg-accent/10">
                                 <b.icon className="size-6 text-accent" />
                             </div>
@@ -63,7 +63,7 @@ export default function DiscordGateModal() {
                         <img src={discord.src} alt="Discord" className="size-6" />
                         Connect Discord
                     </Button>
-                    <Button variant="ghost" className="w-full font-normal text-muted-foreground  hover:underline transition-none" onClick={handleSkip}>
+                    <Button variant="ghost" className="w-full font-normal text-muted-foreground hover:underline transition-none" onClick={handleSkip}>
                         I'll do it later
                     </Button>
                 </div>

@@ -8,8 +8,6 @@ import CartSidebar from "@/components/layout/CartSidebar"
 import DiscordGateModal from "@/components/layout/DiscordGateModal"
 import CustomScrollbar from "@/components/layout/CustomScrollbar"
 
-import { PageTransition } from "@/components/layout/PageTransition"
-
 interface AppLayoutProps {
     children: ReactNode
 }
@@ -29,7 +27,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
-                    opacity: 0.2,
+                    opacity: 0.25,
                     filter: "blur(10px) hue-rotate(45deg) ",
                 }}
             />
@@ -38,10 +36,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Navbar />
             <CartSidebar />
             <DiscordGateModal />
-            <main className="mt-20 flex-grow ">
-                <PageTransition>
-                    {children}
-                </PageTransition>
+            <main className="mt-20 flex-grow">
+                {children}
             </main>
             <Footer />
             <CustomScrollbar />

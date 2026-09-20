@@ -3,7 +3,7 @@ import ProductSearch from "@/components/products/ProductSearch"
 import ProductSort from "@/components/products/ProductSort"
 import ProductGrid from "@/components/products/ProductGrid"
 import { useProductFilters } from "@/hooks/useProductFilters"
-import type { Product } from "@/services/tebex/products"
+import type { Product } from "@/types/tebex"
 
 interface ProductsLayoutProps {
     title: string

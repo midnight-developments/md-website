@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
 import * as React from "react"
 import * as SliderPrimitive from "@radix-ui/react-slider"
-import { ChevronsLeft, ChevronsRight } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 

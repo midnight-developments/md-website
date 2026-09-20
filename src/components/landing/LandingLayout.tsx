@@ -1,9 +1,7 @@
-import { motion } from "framer-motion"
-import AccentSeparator from "@/components/ui/accent-seperator"
+import AccentSeparator from "@/components/ui/accent-separator"
 import Hero from "./Hero"
-import { containerVariants } from "../animation-variants"
 import FeaturedProducts from "./FeaturedProducts"
-import { Product } from "@/services/tebex/products"
+import type { Product } from "@/types/tebex"
 
 export default function LandingLayout({ featuredProducts }: { featuredProducts: Product[] }) {
     return (

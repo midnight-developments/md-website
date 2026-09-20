@@ -1,13 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { supabase } from '@/services/supabase';
-import { TebexWebhookPayload, TebexWebhookSubject } from '@/types/tebex-webhook';
+
+import type { TebexWebhookPayload } from '@/types/tebex';
+
+function verifyTebexSignature(rawBody: string, signature: string, secret: string): boolean {
+    const bodyHash = crypto.createHash('sha256').update(rawBody).digest('hex');
+    const expectedHash = crypto.createHmac('sha256', secret).update(bodyHash).digest('hex');
+
+    const expectedBuffer = Buffer.from(expectedHash, 'hex');
+    const signatureBuffer = Buffer.from(signature, 'hex');
+
+    if (expectedBuffer.length !== signatureBuffer.length) {
+        return false;
+    }
+
+    return crypto.timingSafeEqual(expectedBuffer, signatureBuffer);
+}
 
 export async function POST(request: NextRequest) {
     const secret = process.env.TEBEX_WEBHOOK_KEY;
-    const tebexSignature = request.headers.get('x-signature');
+    const signature = request.headers.get('x-signature');
 
-    if (!tebexSignature) {
+    if (!signature) {
         return new NextResponse('Missing X-Signature', { status: 401 });
     }
 
@@ -17,56 +32,47 @@ export async function POST(request: NextRequest) {
     }
 
     const rawBody = await request.text();
-    const bodyBuffer = Buffer.from(rawBody);
-
-    const bodyHash = crypto.createHash('sha256').update(bodyBuffer).digest('hex');
-    const finalHash = crypto.createHmac('sha256', secret).update(bodyHash).digest('hex');
 
     try {
-        const isVerified = crypto.timingSafeEqual(
-            Buffer.from(finalHash, 'hex'),
-            Buffer.from(tebexSignature, 'hex')
-        );
-
-        if (!isVerified) {
-            console.error('Tebex webhook signature mismatch');
+        if (!verifyTebexSignature(rawBody, signature, secret)) {
             return new NextResponse('Invalid signature', { status: 403 });
         }
-    } catch (e) {
-        console.error('Signature verification error:', e);
+    } catch {
         return new NextResponse('Signature verification failed', { status: 403 });
     }
 
-    const payload = JSON.parse(rawBody) as TebexWebhookPayload;
-    const { type, subject } = payload;
+    let payload: TebexWebhookPayload;
+    try {
+        payload = JSON.parse(rawBody);
+    } catch {
+        return new NextResponse('Invalid JSON', { status: 400 });
+    }
 
-    if (type === 'validation.webhook') {
+    if (payload.type === 'validation.webhook') {
         return NextResponse.json({ id: payload.id });
     }
 
-    if (type === "payment.completed") {
-        const transaction_id = subject.transaction_id
-        const discord_id = subject.custom?.discord_id
+    if (payload.type === 'payment.completed' && payload.subject?.transaction_id) {
+        const { transaction_id, custom } = payload.subject;
+        const discord_id = custom?.discord_id || null;
 
-        try {
-            const { error: supabaseError } = await supabase
-                .from('purchases')
-                .insert({
-                    transaction_id: transaction_id,
-                    discord_id: discord_id,
-                    purchase_data: subject,
-                    role_assigned: discord_id ? false : null
-                });
+        const { error: upsertError } = await supabase
+            .from('purchases')
+            .upsert(
+                {
+                    transaction_id,
+                    discord_id,
+                    purchase_data: payload.subject,
+                    role_assigned: discord_id ? false : null,
+                },
+                { onConflict: 'transaction_id' }
+            );
 
-            if (supabaseError) throw supabaseError;
-
-            console.log(`Successfully saved purchase ${transaction_id} to Supabase`);
-        } catch (error) {
-            console.error('Error processing Tebex payment in Supabase:', error);
+        if (upsertError) {
+            console.error('Database error saving purchase:', upsertError);
+            return new NextResponse('Database error', { status: 500 });
         }
-
-        return new NextResponse('Purchase processed', { status: 200 });
     }
 
-    return new NextResponse('Webhook received', { status: 200 });
+    return new NextResponse('OK', { status: 200 });
 }

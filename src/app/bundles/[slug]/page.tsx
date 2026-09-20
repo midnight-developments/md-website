@@ -1,29 +1,28 @@
-// ./src/app/bundles/[slug]/page.tsx
-import { getProductBySlug } from "@/services/tebex/products"
-import Link from "next/link";
-import { Button } from "@/components/ui/button"
+import { notFound } from "next/navigation"
+import { getProductByIdOrSlug, getBundles } from "@/services/tebex/products"
 import ProductDetailLayout from "@/components/product/ProductDetailLayout"
 
 interface PageProps {
     params: Promise<{ slug: string }>
 }
 
-export default async function ProductDetailPage({ params }: PageProps) {
+export async function generateStaticParams() {
+    try {
+        const bundles = await getBundles();
+        return bundles.map((bundle) => ({
+            slug: bundle.slug,
+        }));
+    } catch {
+        return [];
+    }
+}
+
+export default async function BundleDetailPage({ params }: PageProps) {
     const { slug } = await params;
-    const product = await getProductBySlug(slug);
+    const product = await getProductByIdOrSlug(slug);
 
     if (!product) {
-        return (
-            <div className="pt-24 pb-16 min-h-[60vh] flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
-                    <p className="text-muted-foreground mb-6">The product you're looking for doesn't exist.</p>
-                    <Button variant="outline" asChild>
-                        <Link href="/bundles">Back to Bundles</Link>
-                    </Button>
-                </div>
-            </div>
-        )
+        notFound();
     }
 
     return <ProductDetailLayout product={product} />

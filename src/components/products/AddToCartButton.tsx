@@ -4,7 +4,7 @@ import { ShoppingCart, Loader2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/AuthContext"
 import { useCart } from "@/context/CartContext"
-import { Product } from "@/services/tebex/products"
+import type { Product, TebexBasketPackage } from "@/types/tebex"
 import { cn } from "@/lib/utils"
 
 interface AddToCartButtonProps {
@@ -14,21 +14,29 @@ interface AddToCartButtonProps {
 }
 
 export default function AddToCartButton({ product, className, showIcon = true }: AddToCartButtonProps) {
-    const { isLoggedIn, isDiscordConnected, setDiscordModalOpen } = useAuth()
+    const { isLoggedIn, login } = useAuth()
     const { addItem, basket } = useCart()
     const [isAdding, setIsAdding] = useState(false)
 
-    const isInCart = basket?.packages?.some((p: any) => p.id === product.id)
+    const isInCart = basket?.packages?.some((p: TebexBasketPackage) => p.id === product.id) ?? false
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault()
         e.stopPropagation()
 
-        if (!isLoggedIn) return
+        if (!isLoggedIn) {
+            login()
+            return
+        }
+
+        if (isInCart || isAdding) return
 
         setIsAdding(true)
-        await addItem(product.id)
-        setIsAdding(false)
+        try {
+            await addItem(product.id)
+        } finally {
+            setIsAdding(false)
+        }
     }
 
     return (
@@ -36,11 +44,12 @@ export default function AddToCartButton({ product, className, showIcon = true }:
             variant="primary"
             className={cn(
                 "w-full transition-all duration-300",
-                (!isLoggedIn || isInCart) && "opacity-50 cursor-not-allowed",
+                (!isLoggedIn || isInCart) && "opacity-60 cursor-not-allowed",
                 className
             )}
             onClick={handleAddToCart}
-            disabled={!isLoggedIn || isAdding || isInCart}
+            disabled={isAdding || isInCart}
+            aria-label={isLoggedIn ? (isInCart ? "Item in Cart" : `Add ${product.name} to Cart`) : "Login to Add to Cart"}
         >
             {isAdding ? (
                 <Loader2 className="size-4.5 animate-spin" />

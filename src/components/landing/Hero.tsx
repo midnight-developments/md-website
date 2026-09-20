@@ -2,15 +2,13 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import discord from "@/assets/discord.svg"
 import { containerVariants, itemVariants } from "../animation-variants"
 import VisualPlaceholder from "./VisualPlaceholder"
 import Features from "./Features"
 import PromoBadge from "@/components/layout/PromoBadge"
-
 
 export default function Hero() {
     const [typedText, setTypedText] = useState("")
@@ -44,7 +42,7 @@ export default function Hero() {
     return (
         <motion.section
             className="flex flex-col gap-22 items-center justify-center"
-            initial="hidden"
+            initial={false}
             animate="show"
             variants={containerVariants}
         >
@@ -81,7 +79,7 @@ export default function Hero() {
                         reliable functionality and seamless integration for QBCore, QBox and ESX.
                     </motion.p>
 
-                    <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mt-4  ">
+                    <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mt-4">
                         <Button variant="primary" asChild className="px-6! py-2.5!">
                             <Link href="/scripts">
                                 Explore Scripts
@@ -89,7 +87,7 @@ export default function Hero() {
                             </Link>
                         </Button>
                         <Button variant="outline" asChild className="px-6! py-2.5! mt-[-0.05rem]!">
-                            <a href="https://discord.gg/" target="_blank" rel="noopener noreferrer">
+                            <a href="https://discord.gg/midnightdev" target="_blank" rel="noopener noreferrer">
                                 <img src={discord.src} alt="Discord" className="h-5 w-5" />
                                 Join Discord
                             </a>

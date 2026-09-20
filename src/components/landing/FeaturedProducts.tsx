@@ -10,7 +10,7 @@ import {
     CarouselContent,
     CarouselItem,
 } from "@/components/ui/carousel"
-import { Product } from "@/services/tebex/products"
+import type { Product } from "@/types/tebex"
 import { itemVariants, containerVariants } from "../animation-variants"
 
 export default function FeaturedProducts({ products }: { products: Product[] }) {

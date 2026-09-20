@@ -1,5 +1,6 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from "react";
+import { storage, STORAGE_KEYS } from "@/lib/storage";
 
 export type Currency = "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "BRL" | "MXN" | "JPY" | "CHF" | "SEK" | "NZD" | "DKK" | "NOK" | "PLN" | "TRY";
 export const CURRENCIES: Currency[] = ["USD", "EUR", "GBP", "CAD", "AUD", "BRL", "MXN", "JPY", "CHF", "SEK", "NZD", "DKK", "NOK", "PLN", "TRY"];
@@ -28,54 +29,56 @@ const EXCHANGE_RATES: Record<Currency, number> = {
     TRY: 32.0,
 };
 
-const CURRENCY_SYMBOLS: Record<Currency, string> = {
-    USD: "$",
-    EUR: "€",
-    GBP: "£",
-    CAD: "CA$",
-    AUD: "A$",
-    BRL: "R$",
-    MXN: "MX$",
-    JPY: "¥",
-    CHF: "Fr.",
-    SEK: "kr",
-    NZD: "NZ$",
-    DKK: "kr.",
-    NOK: "kr",
-    PLN: "zł",
-    TRY: "₺",
-};
-
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export function CurrencyProvider({ children }: { children: ReactNode }) {
     const [currency, setCurrencyState] = useState<Currency>("USD");
 
-    // Load from localStorage on mount
     useEffect(() => {
-        const savedCurrency = localStorage.getItem("selectedCurrency") as Currency;
+        const savedCurrency = storage.getItem(STORAGE_KEYS.SELECTED_CURRENCY) as Currency | null;
         if (savedCurrency && EXCHANGE_RATES[savedCurrency]) {
             setCurrencyState(savedCurrency);
         }
     }, []);
 
-    const setCurrency = (newCurrency: Currency) => {
+    const setCurrency = useCallback((newCurrency: Currency) => {
         setCurrencyState(newCurrency);
-        localStorage.setItem("selectedCurrency", newCurrency);
-    };
+        storage.setItem(STORAGE_KEYS.SELECTED_CURRENCY, newCurrency);
+    }, []);
+
+    const formatters = useMemo(() => new Map<Currency, Intl.NumberFormat>(), []);
 
     const formatPrice = useCallback((usdAmount: number): string => {
         if (usdAmount <= 0) return "FREE";
 
         const rate = EXCHANGE_RATES[currency] || 1;
         const convertedAmount = usdAmount * rate;
-        const symbol = CURRENCY_SYMBOLS[currency];
 
-        return `${symbol}${convertedAmount.toFixed(2)} ${currency}`;
-    }, [currency]);
+        let formatter = formatters.get(currency);
+        if (!formatter) {
+            formatter = new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency,
+                currencyDisplay: "narrowSymbol",
+                maximumFractionDigits: 2,
+            });
+            formatters.set(currency, formatter);
+        }
+
+        return formatter.format(convertedAmount);
+    }, [currency, formatters]);
+
+    const value = useMemo(
+        () => ({
+            currency,
+            setCurrency,
+            formatPrice,
+        }),
+        [currency, setCurrency, formatPrice]
+    );
 
     return (
-        <CurrencyContext.Provider value={{ currency, setCurrency, formatPrice }}>
+        <CurrencyContext.Provider value={value}>
             {children}
         </CurrencyContext.Provider>
     );
