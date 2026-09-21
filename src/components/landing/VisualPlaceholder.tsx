@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { itemVariants } from "../animation-variants"
 import { Slider } from "@/components/ui/slider"
 import Link from "next/link"
 
@@ -16,7 +15,7 @@ export default function VisualPlaceholder() {
     const [activeEffect, setActiveEffect] = useState("Rainbow")
 
     return (
-        <motion.div variants={itemVariants} className="hidden lg:flex items-center justify-center w-full lg:w-1/2 relative pt-10">
+        <div className="hidden lg:flex items-center justify-center w-full lg:w-1/2 relative pt-10">
             <div className="absolute inset-0 bg-accent/20 blur-[120px] rounded-full scale-[1.2] transform -translate-y-4 opacity-50 pointer-events-none" />
 
             <div className="max-w-[600px] flex items-center justify-center relative z-10 w-full h-full">
@@ -106,6 +105,6 @@ export default function VisualPlaceholder() {
                 </motion.div>
 
             </div>
-        </motion.div>
+        </div>
     )
 }

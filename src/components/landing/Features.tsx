@@ -1,8 +1,5 @@
-"use client";
-import { motion } from "framer-motion"
 import { Palette, RefreshCw, Puzzle, Headphones } from "lucide-react"
 import bg from "@/assets/bg.png"
-import { itemVariants, containerVariants } from "../animation-variants"
 
 const featuresData = [
     {
@@ -29,10 +26,9 @@ const featuresData = [
 
 export default function Features() {
     return (
-        <motion.div variants={containerVariants} className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
             {featuresData.map((feature) => (
-                <motion.div
-                    variants={itemVariants}
+                <div
                     key={feature.title}
                     className="relative overflow-hidden flex gap-4 p-5 rounded-md bg-card-bg border-2 border-card hover:border-accent/20 transition-colors duration-300"
                 >
@@ -54,8 +50,8 @@ export default function Features() {
                         <h4 className="font-semibold text-foreground text-[0.95rem]">{feature.title}</h4>
                         <p className="text-[0.875rem] font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{feature.description}</p>
                     </div>
-                </motion.div>
+                </div>
             ))}
-        </motion.div>
+        </div>
     )
 }

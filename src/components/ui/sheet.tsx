@@ -14,19 +14,15 @@ const SheetOverlay = React.forwardRef<
     React.ComponentRef<typeof DialogPrimitive.Overlay>,
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
-    <DialogPrimitive.Overlay ref={ref} asChild {...props}>
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className={cn(`
-                fixed inset-0 z-50
-                bg-black/60
-                backdrop-blur-sm
-            `, className)}
-        />
-    </DialogPrimitive.Overlay>
+    <DialogPrimitive.Overlay
+        ref={ref}
+        className={cn(`
+            fixed inset-0 z-50
+            bg-black/60
+            backdrop-blur-sm
+        `, className)}
+        {...props}
+    />
 ))
 SheetOverlay.displayName = "SheetOverlay"
 

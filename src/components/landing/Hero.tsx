@@ -1,11 +1,9 @@
 "use client";
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import discord from "@/assets/discord.svg"
-import { containerVariants, itemVariants } from "../animation-variants"
 import VisualPlaceholder from "./VisualPlaceholder"
 import Features from "./Features"
 import PromoBadge from "@/components/layout/PromoBadge"
@@ -40,19 +38,14 @@ export default function Hero() {
     }, [])
 
     return (
-        <motion.section
-            className="flex flex-col gap-22 items-center justify-center"
-            initial={false}
-            animate="show"
-            variants={containerVariants}
-        >
+        <section className="flex flex-col gap-22 items-center justify-center">
             <div className="flex flex-col lg:flex-row gap-8 items-center w-full">
                 <div className="flex flex-col gap-4 w-full lg:w-[55%]">
-                    <motion.div variants={itemVariants}>
+                    <div>
                         <PromoBadge className="flex xl:hidden" />
-                    </motion.div>
+                    </div>
 
-                    <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl lg:text-6xl font-[650] leading-[1.025] tracking-tight">
+                    <h1 className="text-5xl sm:text-6xl lg:text-6xl font-[650] leading-[1.025] tracking-tight">
                         <span className="bg-gradient-to-r from-white to-white/90 text-transparent bg-clip-text">Where Premium Scripts Meet</span>{" "}
                         <span className="relative inline-block">
                             <span className="opacity-0">{fullText}</span>
@@ -64,22 +57,20 @@ export default function Hero() {
                             <span className="absolute inset-0 z-20 whitespace-nowrap text-transparent pointer-events-none">
                                 {typedText}
                                 {showCursor && (
-                                    <motion.span
-                                        className="inline-block relative w-[4px] h-[0.8em] bg-accent ml-1 align-middle -mt-1.5"
-                                        animate={{ opacity: [1, 0, 1] }}
-                                        transition={{ repeat: Infinity, duration: 0.8 }}
+                                    <span
+                                        className="inline-block relative w-[4px] h-[0.8em] bg-accent ml-1 align-middle -mt-1.5 animate-pulse"
                                     />
                                 )}
                             </span>
                         </span>
-                    </motion.h1>
+                    </h1>
 
-                    <motion.p variants={itemVariants} className="text-lg text-secondary-foreground max-w-xl">
+                    <p className="text-lg text-secondary-foreground max-w-xl">
                         Midnight Dev offers premium FiveM scripts built around modern UI design,
                         reliable functionality and seamless integration for QBCore, QBox and ESX.
-                    </motion.p>
+                    </p>
 
-                    <motion.div variants={itemVariants} className="flex flex-wrap gap-4 mt-4">
+                    <div className="flex flex-wrap gap-4 mt-4">
                         <Button variant="primary" asChild className="px-6! py-2.5!">
                             <Link href="/scripts">
                                 Explore Scripts
@@ -92,11 +83,11 @@ export default function Hero() {
                                 Join Discord
                             </a>
                         </Button>
-                    </motion.div>
+                    </div>
                 </div>
                 <VisualPlaceholder />
             </div>
             <Features />
-        </motion.section>
+        </section>
     )
 }
