@@ -17,10 +17,10 @@ const Toaster = ({
                 classNames: {
                     toast:
                         "group toast group-[.toaster]:bg-popover-bg group-[.toaster]:text-foreground group-[.toaster]:border-popover group-[.toaster]:shadow-lg group-[.toaster]:border-2! items-start! gap-3!",
-                    title: "text-[0.9rem] font-medium! text-primary-foreground!",
+                    title: "text-[0.9rem] font-medium! text-foreground!",
                     description: "group-[.toast]:text-muted-foreground!",
                     actionButton:
-                        "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+                        "group-[.toast]:bg-primary group-[.toast]:text-foreground",
                     cancelButton:
                         "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
                     success: "group-[.toaster]:bg-success/10! backdrop-blur-3xl  group-[.toaster]:border-success/20! group-[.toaster]:border-2 group-[.toaster]:shadow-success!",

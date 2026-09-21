@@ -19,7 +19,7 @@
   --color-success: rgb(45, 204, 129);
   --color-info: rgb(59, 130, 255);
 
-  --color-primary-foreground: rgb(255, 255, 255);
+  --color-foreground: rgb(225, 225, 225);
   --color-secondary-foreground: rgb(125, 140, 165);
   --color-muted-foreground: rgb(153, 153, 153);
   --color-accent-foreground: color-mix(in srgb, var(--brand-base) 90%, white 15%);
@@ -99,6 +99,6 @@
     font-family: var(--font-outfit);
     margin: 0;
     min-height: 100vh;
-    @apply bg-background text-primary-foreground;
+    @apply bg-background text-foreground;
   }
 }

@@ -86,7 +86,7 @@ export default function CartSidebar() {
                                         </div>
                                         <div className="flex flex-col gap-1 justify-between  ">
                                             <div className="flex items-start justify-between">
-                                                <p className="transition-colors duration-200 font-medium text-primary-foreground text-lg uppercase truncate pr-2 leading-tight">
+                                                <p className="transition-colors duration-200 font-medium text-foreground text-lg uppercase truncate pr-2 leading-tight">
                                                     {item.name || "Unknown Item"}
                                                     {item.in_basket.quantity > 1 && <span className="ml-2 text-sm text-muted-foreground">x{item.in_basket.quantity}</span>}
                                                 </p>
@@ -133,7 +133,7 @@ export default function CartSidebar() {
                             <span>Taxes</span>
                             <span>{formatPrice(taxes || 0)}</span>
                         </p>
-                        <p className="transition-colors duration-200 font-medium leading-normal flex justify-between text-xl text-primary-foreground border-border">
+                        <p className="transition-colors duration-200 font-medium leading-normal flex justify-between text-xl text-foreground border-border">
                             <span>Total</span>
                             <span>{formatPrice(total || 0)}</span>
                         </p>

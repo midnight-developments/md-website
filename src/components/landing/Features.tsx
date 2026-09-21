@@ -51,7 +51,7 @@ export default function Features() {
                         <feature.icon className="h-10 w-10 text-accent" strokeWidth={1.5} />
                     </div>
                     <div className="relative">
-                        <h4 className="font-semibold text-primary-foreground text-[0.95rem]">{feature.title}</h4>
+                        <h4 className="font-semibold text-foreground text-[0.95rem]">{feature.title}</h4>
                         <p className="text-[0.875rem] font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{feature.description}</p>
                     </div>
                 </motion.div>

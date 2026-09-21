@@ -3,7 +3,7 @@ import { cn } from "./utils";
 export const BASE_INPUT_STYLES = cn(
     `flex w-full px-3 py-1.5 rounded
     bg-input-bg border-2 border-input outline-hidden
-    text-sm text-primary-foreground placeholder:text-muted-foreground
+    text-sm text-foreground placeholder:text-muted-foreground
     backdrop-blur-sm 
     hover:bg-input-hover-bg hover:border-input-hover
     focus-visible:bg-input-hover-bg focus-visible:border-input-active focus-visible:shadow-input-active

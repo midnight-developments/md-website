@@ -97,7 +97,7 @@ export default function ProductGallery({ video, image, media = [] }: ProductGall
             <div className={`group/main ${isFullscreen ? 'flex-1 rounded' : 'aspect-video rounded'} bg-white/[0.03] border-2 border-border overflow-hidden relative flex text-muted-foreground shadow-lg transition-all duration-300`}>
                 <button
                     onClick={() => setIsFullscreen(!isFullscreen)}
-                    className="absolute top-1 right-1 z-30 w-10 h-10 rounded-full hover:text-white flex items-center justify-center cursor-pointer shadow-lg"
+                    className="absolute top-1 right-1 z-30 w-10 h-10 rounded-full hover:text-foreground flex items-center justify-center cursor-pointer shadow-lg"
                     aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                 >
                     {isFullscreen ? <Minimize className="w-6 h-6" strokeWidth={2.5} /> : <Maximize className="w-6 h-6" strokeWidth={2.5} />}
@@ -123,7 +123,7 @@ export default function ProductGallery({ video, image, media = [] }: ProductGall
                                     >
                                         <Image src={slide.thumb} alt="Video Thumbnail" fill sizes="(max-width: 1024px) 100vw, 60vw" className={isFullscreen ? 'object-contain' : 'object-cover'} />
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                                            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/10 text-white flex items-center justify-center backdrop-blur-md transition-all duration-300 group-hover:scale-110 shadow-xl">
+                                            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/10 text-foreground flex items-center justify-center backdrop-blur-md transition-all duration-300 group-hover:scale-110 shadow-xl">
                                                 <Play className="w-6 h-6 sm:w-8 sm:h-8" fill="currentColor" strokeWidth={1.5} />
                                             </div>
                                         </div>
@@ -144,14 +144,14 @@ export default function ProductGallery({ video, image, media = [] }: ProductGall
                     <>
                         <button
                             onClick={() => navigate('left')}
-                            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 text-white/60 hover:text-white transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center drop-shadow-lg cursor-pointer"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 text-foreground/60 hover:text-foreground transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center drop-shadow-lg cursor-pointer"
                             aria-label="Previous image"
                         >
                             <ChevronLeft className="w-10 h-10 sm:w-12 sm:h-12" strokeWidth={1.5} />
                         </button>
                         <button
                             onClick={() => navigate('right')}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 text-white/60 hover:text-white transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center drop-shadow-lg cursor-pointer"
+                            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 text-foreground/60 hover:text-foreground transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center drop-shadow-lg cursor-pointer"
                             aria-label="Next image"
                         >
                             <ChevronRight className="w-10 h-10 sm:w-12 sm:h-12" strokeWidth={1.5} />

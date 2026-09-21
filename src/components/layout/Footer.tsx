@@ -31,7 +31,7 @@ export default function Footer() {
                 <div className="flex flex-col md:flex-row justify-between gap-10">
                     <div className="w-full max-w-xl flex flex-col sm:flex-row gap-10 justify-between">
                         <div className="flex flex-col gap-4">
-                            <h4 className="text-base font-semibold text-primary-foreground">PAGES</h4>
+                            <h4 className="text-base font-semibold text-foreground">PAGES</h4>
                             <ul className="flex flex-col gap-1.5">
                                 {pageLinks.map((link) => (
                                     <li key={link.label}>
@@ -40,14 +40,14 @@ export default function Footer() {
                                                 href={link.href}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
+                                                className="text-base text-muted-foreground hover:text-foreground transition-colors"
                                             >
                                                 {link.label}
                                             </a>
                                         ) : (
                                             <Link
                                                 href={link.href}
-                                                className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
+                                                className="text-base text-muted-foreground hover:text-foreground transition-colors"
                                             >
                                                 {link.label}
                                             </Link>
@@ -58,7 +58,7 @@ export default function Footer() {
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <h4 className="text-base font-semibold text-primary-foreground">SOCIALS</h4>
+                            <h4 className="text-base font-semibold text-foreground">SOCIALS</h4>
                             <ul className="flex flex-col gap-1.5">
                                 {socialLinks.map((link) => (
                                     <li key={link.label}>
@@ -66,7 +66,7 @@ export default function Footer() {
                                             href={link.href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-base text-muted-foreground hover:text-primary-foreground transition-colors flex items-center gap-2"
+                                            className="text-base text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
                                         >
                                             {link.label}
                                         </a>
@@ -76,7 +76,7 @@ export default function Footer() {
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <h4 className="text-base font-semibold text-primary-foreground">LEGAL</h4>
+                            <h4 className="text-base font-semibold text-foreground">LEGAL</h4>
                             <ul className="flex flex-col gap-1.5">
                                 {legalLinks.map((link) => (
                                     <li key={link.label}>
@@ -84,7 +84,7 @@ export default function Footer() {
                                             href={link.href}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-base text-muted-foreground hover:text-primary-foreground transition-colors"
+                                            className="text-base text-muted-foreground hover:text-foreground transition-colors"
                                         >
                                             {link.label}
                                         </a>

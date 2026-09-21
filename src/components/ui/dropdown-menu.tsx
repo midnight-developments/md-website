@@ -49,7 +49,7 @@ const DropdownMenuContent = React.forwardRef<
                 z-50 overflow-hidden rounded-sm
                 min-w-(--radix-dropdown-menu-trigger-width)
                 bg-popover-bg border-2 border-popover
-                text-primary-foreground
+                text-foreground
                 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2
                 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95
                 shadow-lg backdrop-blur-3xl p-1
@@ -72,7 +72,7 @@ const DropdownMenuItem = React.forwardRef<
             flex items-center gap-2
             bg-transparent outline-none
             text-sm text-muted-foreground select-none
-            focus:bg-accent-gradient focus:text-primary-foreground
+            focus:bg-accent-gradient focus:text-foreground
             data-disabled:pointer-events-none data-disabled:opacity-40
             cursor-pointer [&>svg]:size-4 [&>svg]:shrink-0
         `, className)}

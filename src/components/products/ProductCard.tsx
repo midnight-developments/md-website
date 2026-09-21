@@ -54,7 +54,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                     <div className="mb-2 flex flex-col gap-0.75">
                         <div className="flex items-center justify-between text-lg">
-                            <p className="font-semibold text-primary-foreground uppercase transition-colors truncate">
+                            <p className="font-semibold text-foreground uppercase transition-colors truncate">
                                 {product.name}
                             </p>
                             <p className="text-lg font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent">

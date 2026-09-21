@@ -18,7 +18,7 @@ const buttonVariants = cva(
             variant: {
                 outline:
                     `bg-black/10 border-2 border-input shadow-none
-          text-primary-foreground
+          text-foreground
           hover:bg-black/30`,
                 destructive:
                     `bg-error/20 border-2 border-error/30
@@ -26,7 +26,7 @@ const buttonVariants = cva(
           hover:scale-[1.02] hover:drop-shadow-[0_0_8px_rgba(244,63,94,0.4)] active:scale-95`,
                 primary:
                     `bg-accent-gradient border-2 border-white/5
-          text-primary-foreground
+          text-foreground
           hover:scale-[1.02] hover:shadow-accent active:scale-95`,
                 input: cn(`
           mt-0 h-auto

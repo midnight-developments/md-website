@@ -86,7 +86,7 @@ export default function Navbar() {
                         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                     </Button>
 
-                    <Link href="/" className="text-xl font-bold text-primary-foreground tracking-tight flex items-center gap-0.25 shrink-0">
+                    <Link href="/" className="text-xl font-bold text-foreground tracking-tight flex items-center gap-0.25 shrink-0">
                         <img src="/logo.webp" alt="Midnight Dev Logo" className="h-8 mr-1" />
                         Midnight<span className="text-accent-foreground">Dev</span>
                     </Link>
@@ -100,7 +100,7 @@ export default function Navbar() {
                                         href={link.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="py-1.75 px-4 flex items-center text-sm font-medium transition-all border-b-2 text-muted-foreground border-transparent hover:text-primary-foreground"
+                                        className="py-1.75 px-4 flex items-center text-sm font-medium transition-all border-b-2 text-muted-foreground border-transparent hover:text-foreground"
                                     >
                                         {link.label === "Documentation" ? (
                                             <>
@@ -122,8 +122,8 @@ export default function Navbar() {
                                             e.preventDefault()
                                         }
                                     }}
-                                    className={`py-1.75 px-4 flex items-center text-sm font-medium transition-all border-b-2 hover:text-primary-foreground ${isActive
-                                        ? "text-primary-foreground border-white"
+                                    className={`py-1.75 px-4 flex items-center text-sm font-medium transition-all border-b-2 hover:text-foreground ${isActive
+                                        ? "text-foreground border-white"
                                         : "text-muted-foreground border-transparent"
                                         }`}
                                 >
@@ -142,7 +142,7 @@ export default function Navbar() {
                         value={currency}
                         onValueChange={(v) => setCurrency(v as Currency)}
                     >
-                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-primary-foreground backdrop-blur-none! shadow-none! bg-transparent border-none p-0 outline-none!">
+                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-foreground backdrop-blur-none! shadow-none! bg-transparent border-none p-0 outline-none!">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-48 overflow-y-auto">
@@ -164,7 +164,7 @@ export default function Navbar() {
                             >
                                 <ShoppingCart className="h-5 w-5" />
                                 {totalItems > 0 && (
-                                    <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-accent text-[10px] font-bold flex items-center justify-center text-primary-foreground">
+                                    <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-accent text-[10px] font-bold flex items-center justify-center text-foreground">
                                         {totalItems}
                                     </span>
                                 )}
@@ -252,7 +252,7 @@ export default function Navbar() {
                                             }
                                             setMobileOpen(false)
                                         }}
-                                        className={`text-lg font-medium py-1.5 transition-colors ${isActive ? "text-primary-foreground" : "text-muted-foreground"}`}
+                                        className={`text-lg font-medium py-1.5 transition-colors ${isActive ? "text-foreground" : "text-muted-foreground"}`}
                                     >
                                         {link.label}
                                     </Link>

@@ -51,7 +51,7 @@ export default function DiscordGateModal() {
                                 <b.icon className="size-6 text-accent" />
                             </div>
                             <div>
-                                <p className="text-base font-medium text-primary-foreground">{b.title}</p>
+                                <p className="text-base font-medium text-foreground">{b.title}</p>
                                 <p className="text-sm text-muted-foreground">{b.description}</p>
                             </div>
                         </div>

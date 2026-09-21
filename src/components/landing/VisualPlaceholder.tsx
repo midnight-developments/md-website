@@ -28,7 +28,7 @@ export default function VisualPlaceholder() {
                     className="absolute top-[-35%] left-[-5%] w-80 backdrop-blur-3xl bg-black/25 border-2 border-card rounded-md z-9 shadow-2xl flex flex-col p-3 gap-3.25"
                 >
                     <div className="flex items-center justify-between w-full">
-                        <p className="font-medium text-primary-foreground/80 flex gap-2 items-center leading-none">
+                        <p className="font-medium text-foreground/80 flex gap-2 items-center leading-none">
                             <span>Lighting Effect</span>
                         </p>
                     </div>
@@ -47,7 +47,7 @@ export default function VisualPlaceholder() {
                                 >
                                     <div className={`w-1 h-8 rounded-[1px] bg-gradient-to-b ${effect.gradient} ${effect.shadow}`} />
                                     <div className="flex flex-col gap-1">
-                                        <p className="text-primary-foreground text-sm leading-none">{effect.name}</p>
+                                        <p className="text-foreground text-sm leading-none">{effect.name}</p>
                                         <p className="text-muted-foreground text-xs leading-none">{effect.desc}</p>
                                     </div>
                                 </button>
@@ -80,10 +80,10 @@ export default function VisualPlaceholder() {
                     className="absolute bottom-[5%] -right-[10%] w-80 backdrop-blur-3xl bg-black/20 border-2 border-card rounded-md z-11 shadow-2xl flex flex-col p-3 pb-4 gap-3.25"
                 >
                     <div className="flex items-center justify-between w-full">
-                        <p className="font-medium text-primary-foreground/80 flex gap-0.5 items-center leading-none">
+                        <p className="font-medium text-foreground/80 flex gap-0.5 items-center leading-none">
                             <span>Animation Speed</span>
                         </p>
-                        <span className="font-bold rounded-xs text-primary-foreground leading-none">
+                        <span className="font-bold rounded-xs text-foreground leading-none">
                             {speed}
                         </span>
                     </div>

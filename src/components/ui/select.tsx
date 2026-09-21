@@ -21,7 +21,7 @@ const SelectValue = React.forwardRef<
     <SelectPrimitive.Value
         ref={ref}
         data-slot="select-value"
-        className={cn("text-primary-foreground", className)}
+        className={cn("text-foreground", className)}
         {...props}
     />
 ))
@@ -72,7 +72,7 @@ const SelectContent = React.forwardRef<
                 relative z-50 overflow-hidden rounded-sm
                 p-1
                 bg-popover-bg border-2 border-popover
-                text-primary-foreground
+                text-foreground
                 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-top-2
                 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95
                 shadow-lg backdrop-blur-3xl
@@ -112,8 +112,8 @@ const SelectItem = React.forwardRef<
             flex items-center gap-2
             bg-transparent outline-none
             text-sm text-muted-foreground select-none
-            focus:bg-accent-gradient focus:text-primary-foreground
-            data-[state=checked]:text-primary-foreground
+            focus:bg-accent-gradient focus:text-foreground
+            data-[state=checked]:text-foreground
             data-disabled:pointer-events-none data-disabled:opacity-40
             cursor-pointer
         `, className)}
