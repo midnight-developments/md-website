@@ -66,7 +66,8 @@ export default function Navbar() {
     }, [location])
 
     return (
-        <nav
+        <header
+            role="banner"
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b-2",
                 scrolled ? "bg-black/50" : "bg-transparent",
@@ -91,7 +92,7 @@ export default function Navbar() {
                         Midnight<span className="text-accent-foreground">Dev</span>
                     </Link>
 
-                    <div className="hidden lg:flex items-center gap-1 h-full">
+                    <nav aria-label="Main navigation" className="hidden lg:flex items-center gap-1 h-full">
                         {navLinks.map((link) => {
                             if ('isExternal' in link) {
                                 return (
@@ -131,7 +132,7 @@ export default function Navbar() {
                                 </Link>
                             )
                         })}
-                    </div>
+                    </nav>
 
                     <PromoBadge className="hidden xl:block ml-0 xl:-ml-4 mt-0.5" />
                 </div>
@@ -221,7 +222,7 @@ export default function Navbar() {
                         transition={{ duration: 0.2, ease: "easeInOut" }}
                         className="overflow-hidden lg:hidden border-t-2 border-border bg-transparent backdrop-blur-lg"
                     >
-                        <div className="px-6 py-4 flex flex-col gap-3">
+                        <nav aria-label="Mobile navigation" className="px-6 py-4 flex flex-col gap-3">
                             {navLinks.map((link) => {
                                 if ('isExternal' in link) {
                                     return (
@@ -258,10 +259,10 @@ export default function Navbar() {
                                     </Link>
                                 )
                             })}
-                        </div>
+                        </nav>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </nav>
+        </header>
     )
 }

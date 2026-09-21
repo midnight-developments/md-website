@@ -1,16 +1,11 @@
+import { Suspense } from "react"
 import Link from "next/link"
 import { Sparkles, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import ProductCard from "@/components/products/ProductCard"
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-} from "@/components/ui/carousel"
-import type { Product } from "@/types/tebex"
+import FeaturedProducts from "./FeaturedProducts"
 
-export default function FeaturedProducts({ products }: { products: Product[] }) {
+export default function FeaturedProductsSection() {
     return (
         <section>
             <div className="flex flex-col gap-10 items-center justify-center">
@@ -22,18 +17,9 @@ export default function FeaturedProducts({ products }: { products: Product[] }) 
                     <h2 className="text-3xl sm:text-4xl font-bold">Featured Products</h2>
                 </div>
 
-                <Carousel
-                    opts={{ align: "start", loop: true }}
-                    className="w-full"
-                >
-                    <CarouselContent>
-                        {products.map((product) => (
-                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
-                                <ProductCard product={product} />
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                </Carousel>
+                <Suspense fallback={null}>
+                    <FeaturedProducts />
+                </Suspense>
 
                 <div className="flex justify-center">
                     <Button variant="outline" asChild>

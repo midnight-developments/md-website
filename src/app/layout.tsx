@@ -1,6 +1,7 @@
 import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
+import AppLayout from "@/components/layout/AppLayout";
 import { getBasketOrNull } from "@/actions/baskets";
 import NextTopLoader from "nextjs-toploader";
 import { Caveat, Outfit } from "next/font/google";
@@ -45,7 +46,9 @@ export default async function RootLayout({
           shadow="0 0 10px #6464e6,0 0 5px #6464e6"
         />
         <Providers initialBasket={basket}>
-          {children}
+          <AppLayout>
+            {children}
+          </AppLayout>
         </Providers>
       </body>
     </html>

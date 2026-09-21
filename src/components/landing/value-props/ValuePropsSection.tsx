@@ -1,7 +1,8 @@
 import { Palette, RefreshCw, Puzzle, Headphones } from "lucide-react"
 import bg from "@/assets/bg.png"
+import { cn } from "@/lib/utils"
 
-const featuresData = [
+const valuePropsData = [
     {
         icon: Palette,
         title: "Clean, Aesthetic Design",
@@ -24,12 +25,12 @@ const featuresData = [
     },
 ]
 
-export default function Features() {
+export default function ValuePropsSection({ className }: { className?: string } = {}) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-            {featuresData.map((feature) => (
+        <section className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full", className)}>
+            {valuePropsData.map((item) => (
                 <div
-                    key={feature.title}
+                    key={item.title}
                     className="relative overflow-hidden flex gap-4 p-5 rounded-md bg-card-bg border-2 border-card hover:border-accent/20 transition-colors duration-300"
                 >
                     <div
@@ -44,14 +45,14 @@ export default function Features() {
                         }}
                     />
                     <div className="relative shrink-0 p-2.5 h-fit rounded-lg bg-accent/10">
-                        <feature.icon className="h-10 w-10 text-accent" strokeWidth={1.5} />
+                        <item.icon className="h-10 w-10 text-accent" strokeWidth={1.5} />
                     </div>
                     <div className="relative">
-                        <h4 className="font-semibold text-foreground text-[0.95rem]">{feature.title}</h4>
-                        <p className="text-[0.875rem] font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{feature.description}</p>
+                        <h4 className="font-semibold text-foreground text-[0.95rem]">{item.title}</h4>
+                        <p className="text-[0.875rem] font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{item.description}</p>
                     </div>
                 </div>
             ))}
-        </div>
+        </section>
     )
 }

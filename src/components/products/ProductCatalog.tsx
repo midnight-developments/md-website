@@ -5,37 +5,40 @@ import ProductGrid from "@/components/products/ProductGrid"
 import { useProductFilters } from "@/hooks/useProductFilters"
 import type { Product } from "@/types/tebex"
 
-interface ProductsLayoutProps {
+interface ProductCatalogProps {
     title: string
     products: Product[]
-    searchPlaceholder: string
-    emptyStateTitle: string
+    searchPlaceholder?: string
+    emptyStateTitle?: string
 }
 
-export default function ProductsLayout({
+export default function ProductCatalog({
     title,
     products,
     searchPlaceholder,
     emptyStateTitle,
-}: ProductsLayoutProps) {
+}: ProductCatalogProps) {
+    const defaultPlaceholder = searchPlaceholder ?? `Search ${title.toLowerCase()}...`
+    const defaultEmptyTitle = emptyStateTitle ?? `No ${title.toLowerCase()} found in this category`
+
     const { search, setSearch, sortBy, setSortBy, processedProducts } = useProductFilters(products);
 
     return (
-        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-8 lg:pt-12 min-h-[calc(100vh-16rem)]">
+        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-8 lg:pt-12">
             <h1 className="text-3xl sm:text-4xl font-bold mb-6">{title}</h1>
 
             <div className="flex flex-col md:flex-row gap-3 mb-8">
                 <ProductSearch
                     value={search}
                     onChange={setSearch}
-                    placeholder={searchPlaceholder}
+                    placeholder={defaultPlaceholder}
                 />
                 <ProductSort value={sortBy} onChange={setSortBy} />
             </div>
 
             <ProductGrid
                 products={processedProducts}
-                emptyMessage={emptyStateTitle}
+                emptyMessage={defaultEmptyTitle}
             />
         </div>
     )

@@ -10,7 +10,7 @@ const lightingEffects = [
     { id: "UFO", name: "UFO", desc: "Rotating", gradient: "from-green-400 to-emerald-600", shadow: "shadow-[0_0_10px_rgba(16,185,129,0.2)]" }
 ]
 
-export default function VisualPlaceholder() {
+export default function InteractiveScriptDemo() {
     const [speed, setSpeed] = useState(45)
     const [activeEffect, setActiveEffect] = useState("Rainbow")
 

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import { getProductByIdOrSlug, getScripts } from "@/services/tebex/products"
-import ProductDetailLayout from "@/components/product/ProductDetailLayout"
+import ProductDetailView from "@/components/products/detailed-view/ProductDetailView"
 
 interface PageProps {
     params: Promise<{ slug: string }>
@@ -25,5 +25,5 @@ export default async function ProductDetailPage({ params }: PageProps) {
         notFound();
     }
 
-    return <ProductDetailLayout product={product} />
+    return <ProductDetailView product={product} />
 }
