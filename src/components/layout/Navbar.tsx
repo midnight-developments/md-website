@@ -21,9 +21,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { useAuth } from "@/context/AuthContext"
-import { useCart } from "@/context/CartContext"
-import { useCurrency, CURRENCIES, type Currency } from "@/context/CurrencyContext"
+import { useCartStore } from "@/stores/useCartStore"
+import { useDiscordStore } from "@/stores/useDiscordStore"
+import { useCurrencyStore, CURRENCIES, type Currency } from "@/stores/useCurrencyStore"
 import fivemLogo from "@/assets/fivem-logo.png"
 import discordLogo from "@/assets/discord.svg"
 
@@ -36,9 +36,19 @@ const navLinks = [
 ]
 
 export default function Navbar() {
-    const { currency, setCurrency } = useCurrency()
-    const { isLoggedIn, username, avatar, login, logout, connectDiscord, disconnectDiscord, isDiscordConnected, discordUser } = useAuth()
-    const { totalItems, setCartOpen } = useCart()
+    const currency = useCurrencyStore((state) => state.currency)
+    const setCurrency = useCurrencyStore((state) => state.setCurrency)
+    const isLoggedIn = useCartStore((state) => state.isLoggedIn)
+    const username = useCartStore((state) => state.username)
+    const avatar = useCartStore((state) => state.avatar)
+    const login = useCartStore((state) => state.login)
+    const logout = useCartStore((state) => state.logout)
+    const isDiscordConnected = useDiscordStore((state) => state.isDiscordConnected)
+    const discordUser = useDiscordStore((state) => state.discordUser)
+    const connectDiscord = useDiscordStore((state) => state.connectDiscord)
+    const disconnectDiscord = useDiscordStore((state) => state.disconnectDiscord)
+    const totalItems = useCartStore((state) => state.totalItems)
+    const setCartOpen = useCartStore((state) => state.setCartOpen)
     const location = useLocation()
 
     const toggleDiscord = () => {

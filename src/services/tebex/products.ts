@@ -71,7 +71,6 @@ export async function getScripts(): Promise<Product[]> {
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-    // Optional: Add a fake delay (e.g., 500ms)
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
     const allProducts = await getAllProducts();

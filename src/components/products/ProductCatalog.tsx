@@ -24,7 +24,7 @@ export default function ProductCatalog({
     const { search, setSearch, sortBy, setSortBy, processedProducts } = useProductFilters(products);
 
     return (
-        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 pt-8 lg:pt-12">
+        <>
             <h1 className="text-3xl sm:text-4xl font-bold mb-6">{title}</h1>
 
             <div className="flex flex-col md:flex-row gap-3 mb-8">
@@ -40,6 +40,6 @@ export default function ProductCatalog({
                 products={processedProducts}
                 emptyMessage={defaultEmptyTitle}
             />
-        </div>
+        </>
     )
 }

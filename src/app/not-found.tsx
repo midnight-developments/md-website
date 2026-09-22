@@ -6,7 +6,7 @@ import fivemLogo from "@/assets/fivem-logo.png";
 
 export default function NotFound() {
     return (
-        <main className="min-h-[80vh] px-8 flex flex-col items-center justify-center text-center relative select-none">
+        <div className="min-h-[80vh] flex flex-col items-center justify-center text-center relative select-none">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[28rem] h-[28rem] bg-accent/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
             <div className="relative z-10 flex flex-col items-center gap-6">
@@ -41,6 +41,6 @@ export default function NotFound() {
                 </div>
 
             </div>
-        </main>
+        </div>
     );
 }

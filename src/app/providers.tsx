@@ -1,23 +1,25 @@
 "use client";
 
-import { AuthProvider } from '@/context/AuthContext'
-import { CartProvider } from '@/context/CartContext'
-import { CurrencyProvider } from '@/context/CurrencyContext'
-import { ReactLenis } from "lenis/react"
-import { Toaster } from "@/components/ui/sonner"
-import type { TebexBasket } from "@/types/tebex"
+import { ReactLenis } from "lenis/react";
+import { Toaster } from "@/components/ui/sonner";
+import { useHydrateCart } from "@/stores/useCartStore";
+import { useDiscordOAuthListener } from "@/stores/useDiscordStore";
+import type { TebexBasket } from "@/types/tebex";
 
-export function Providers({ children, initialBasket }: { children: React.ReactNode, initialBasket: TebexBasket | null }) {
+export function Providers({
+    children,
+    initialBasket,
+}: {
+    children: React.ReactNode;
+    initialBasket: TebexBasket | null;
+}) {
+    useHydrateCart(initialBasket);
+    useDiscordOAuthListener();
+
     return (
-        <CurrencyProvider>
-            <CartProvider initialBasket={initialBasket}>
-                <AuthProvider>
-                    <ReactLenis root options={{ lerp: 0.15, wheelMultiplier: 1.2, smoothWheel: true }}>
-                        {children}
-                        <Toaster />
-                    </ReactLenis>
-                </AuthProvider>
-            </CartProvider>
-        </CurrencyProvider>
-    )
+        <ReactLenis root options={{ lerp: 0.15, wheelMultiplier: 1.2, smoothWheel: true }}>
+            {children}
+            <Toaster />
+        </ReactLenis>
+    );
 }

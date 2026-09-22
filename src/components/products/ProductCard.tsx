@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { stripHtml } from "@/lib/utils"
 import type { Product } from "@/types/tebex"
-import { useCurrency } from "@/context/CurrencyContext"
+import { useFormatPrice } from "@/stores/useCurrencyStore"
 import AddToCartButton from "./AddToCartButton"
 
 interface ProductCardProps {
@@ -12,7 +12,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    const { formatPrice } = useCurrency();
+    const formatPrice = useFormatPrice();
 
     const isBundle = product.category?.name?.toLowerCase().includes("bundle")
     const detailPath = isBundle

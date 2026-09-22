@@ -10,9 +10,9 @@ import {
     SheetTitle,
     SheetDescription,
 } from "@/components/ui/sheet"
-import { useCart } from "@/context/CartContext"
-import { useAuth } from "@/context/AuthContext"
-import { useCurrency } from "@/context/CurrencyContext"
+import { useCartStore } from "@/stores/useCartStore"
+import { useDiscordStore } from "@/stores/useDiscordStore"
+import { useFormatPrice } from "@/stores/useCurrencyStore"
 import tebexLogo from "@/assets/tebex-logo.png"
 import { stripHtml } from "@/lib/utils"
 
@@ -25,13 +25,20 @@ import amexLogo from "@/assets/amex.svg"
 
 
 export default function CartSidebar() {
-    const { basket, removeItem, subtotal, totalPrice, totalItems, isCartOpen, setCartOpen, checkout } = useCart()
-    const { isDiscordConnected, setDiscordModalOpen } = useAuth()
-    const { formatPrice } = useCurrency()
+    const basket = useCartStore((state) => state.basket)
+    const removeItem = useCartStore((state) => state.removeItem)
+    const subtotal = useCartStore((state) => state.subtotal)
+    const taxes = useCartStore((state) => state.taxes)
+    const totalPrice = useCartStore((state) => state.totalPrice)
+    const totalItems = useCartStore((state) => state.totalItems)
+    const isCartOpen = useCartStore((state) => state.isCartOpen)
+    const setCartOpen = useCartStore((state) => state.setCartOpen)
+    const checkout = useCartStore((state) => state.checkout)
+    const isDiscordConnected = useDiscordStore((state) => state.isDiscordConnected)
+    const setDiscordModalOpen = useDiscordStore((state) => state.setDiscordModalOpen)
+    const formatPrice = useFormatPrice()
     const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
 
-    const taxes = basket?.sales_tax || 0
-    const total = totalPrice
     const items = basket?.packages || []
 
     const handleRemove = async (id: number) => {
@@ -135,7 +142,7 @@ export default function CartSidebar() {
                         </p>
                         <p className="transition-colors duration-200 font-medium leading-normal flex justify-between text-xl text-foreground border-border">
                             <span>Total</span>
-                            <span>{formatPrice(total || 0)}</span>
+                            <span>{formatPrice(totalPrice || 0)}</span>
                         </p>
                     </div>
 

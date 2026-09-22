@@ -3,11 +3,11 @@ import { BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Product } from "@/types/tebex"
-import { useCurrency } from "@/context/CurrencyContext"
+import { useFormatPrice } from "@/stores/useCurrencyStore"
 import AddToCartButton from "@/components/products/AddToCartButton"
 
 export default function ProductInformation({ product }: { product: Product }) {
-    const { formatPrice } = useCurrency()
+    const formatPrice = useFormatPrice()
 
     return (
         <div className="flex flex-col gap-6">

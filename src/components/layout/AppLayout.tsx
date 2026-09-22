@@ -16,7 +16,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <AmbientBackground />
 
             <Navbar />
-            <main className="mt-20 flex-grow">
+            <main className="mt-20 py-10 md:py-12 flex-grow min-h-[calc(100dvh-5rem)] w-full max-w-screen-2xl mx-auto px-6 lg:px-12">
                 {children}
             </main>
             <Footer />

@@ -2,8 +2,7 @@
 import { useState } from "react"
 import { ShoppingCart, Loader2, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useAuth } from "@/context/AuthContext"
-import { useCart } from "@/context/CartContext"
+import { useCartStore } from "@/stores/useCartStore"
 import type { Product, TebexBasketPackage } from "@/types/tebex"
 import { cn } from "@/lib/utils"
 
@@ -14,11 +13,11 @@ interface AddToCartButtonProps {
 }
 
 export default function AddToCartButton({ product, className, showIcon = true }: AddToCartButtonProps) {
-    const { isLoggedIn, login } = useAuth()
-    const { addItem, basket } = useCart()
+    const isLoggedIn = useCartStore((state) => state.isLoggedIn)
+    const login = useCartStore((state) => state.login)
+    const addItem = useCartStore((state) => state.addItem)
+    const isInCart = useCartStore((state) => state.basket?.packages?.some((p: TebexBasketPackage) => p.id === product.id) ?? false)
     const [isAdding, setIsAdding] = useState(false)
-
-    const isInCart = basket?.packages?.some((p: TebexBasketPackage) => p.id === product.id) ?? false
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault()

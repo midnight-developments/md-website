@@ -8,8 +8,8 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog"
-import { useCart } from "@/context/CartContext"
-import { useAuth } from "@/context/AuthContext"
+import { useCartStore } from "@/stores/useCartStore"
+import { useDiscordStore } from "@/stores/useDiscordStore"
 import discord from "@/assets/discord.svg"
 
 const benefits = [
@@ -19,8 +19,10 @@ const benefits = [
 ]
 
 export default function DiscordGateModal() {
-    const { connectDiscord, isDiscordModalOpen, setDiscordModalOpen } = useAuth()
-    const { checkout } = useCart()
+    const connectDiscord = useDiscordStore((state) => state.connectDiscord)
+    const isDiscordModalOpen = useDiscordStore((state) => state.isDiscordModalOpen)
+    const setDiscordModalOpen = useDiscordStore((state) => state.setDiscordModalOpen)
+    const checkout = useCartStore((state) => state.checkout)
 
     const handleConnect = () => {
         connectDiscord()
