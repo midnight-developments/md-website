@@ -4,7 +4,7 @@ import { Providers } from "./providers";
 import AppLayout from "@/components/layout/AppLayout";
 import { getBasketOrNull } from "@/actions/baskets";
 import NextTopLoader from "nextjs-toploader";
-import { Caveat, Outfit } from "next/font/google";
+import { Caveat, Plus_Jakarta_Sans } from "next/font/google";
 
 const caveat = Caveat({
   subsets: ["latin"],
@@ -12,9 +12,9 @@ const caveat = Caveat({
   display: "swap",
 });
 
-const outfit = Outfit({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-plus-jakarta-sans",
   display: "swap",
 });
 
@@ -28,7 +28,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`antialiased ${outfit.variable} ${caveat.variable}`}
+        className={`antialiased ${plusJakartaSans.variable} ${caveat.variable}`}
       >
         <Script
           src={`https://js.tebex.io/v/1.js?public_key=${process.env.TEBEX_PUBLIC_KEY}`}

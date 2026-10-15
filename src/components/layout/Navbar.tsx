@@ -133,7 +133,7 @@ export default function Navbar() {
                                             e.preventDefault()
                                         }
                                     }}
-                                    className={`py-1.75 px-4 flex items-center text-sm font-medium transition-all border-b-2 hover:text-foreground ${isActive
+                                    className={`py-1.75 px-4 flex items-center text-[0.925rem] font-medium transition-all border-b-2 hover:text-foreground ${isActive
                                         ? "text-foreground border-white"
                                         : "text-muted-foreground border-transparent"
                                         }`}

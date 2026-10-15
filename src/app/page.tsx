@@ -5,11 +5,11 @@ import FeaturedProductsSection from "@/components/landing/featured-products/Feat
 
 export default function HomePage() {
   return (
-    <>
+    <div className="flex flex-col gap-18">
       <HeroSection />
       <ValuePropsSection />
       <AccentSeparator />
       <FeaturedProductsSection />
-    </>
+    </div>
   );
 }

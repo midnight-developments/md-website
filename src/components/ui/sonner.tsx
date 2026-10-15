@@ -8,7 +8,7 @@ const Toaster = ({
     return (
         <Sonner
             style={{
-                fontFamily: 'var(--font-outfit)',
+                fontFamily: 'var(--font-plus-jakarta-sans)',
                 "--toast-icon-margin-end": "0",
                 "--toast-icon-margin-start": "0",
             } as React.CSSProperties}

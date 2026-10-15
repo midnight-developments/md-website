@@ -25,7 +25,7 @@ export default function AmbientBackground() {
             />
 
             {/* Dark overlay for contrast */}
-            <div className="fixed inset-0 -z-10 bg-black/80" />
+            <div className="fixed inset-0 -z-10 bg-black/50" />
 
             {/* Interactive animated starfield canvas */}
             <Starfield />

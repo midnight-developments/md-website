@@ -14,6 +14,35 @@ async function getBaseUrl(): Promise<string> {
     return `${protocol}://${host}`;
 }
 
+function sanitizeRedirectUrl(url: string | undefined, baseUrl: string): string {
+    if (!url) return baseUrl;
+
+    try {
+        const parsed = new URL(url, baseUrl);
+        const base = new URL(baseUrl);
+
+        if (
+            parsed.host === base.host &&
+            (parsed.protocol === "http:" || parsed.protocol === "https:")
+        ) {
+            return parsed.toString();
+        }
+    } catch {
+        // Fall back to baseUrl if URL parsing fails
+    }
+
+    return baseUrl;
+}
+
+async function safeDeleteCookie(name: string): Promise<void> {
+    try {
+        const cookieStore = await cookies();
+        cookieStore.delete(name);
+    } catch {
+        // Silently ignore if invoked during RSC rendering where cookies cannot be mutated
+    }
+}
+
 async function getRequiredBasket(): Promise<TebexBasket> {
     const basket = await getBasketOrNull();
     if (!basket) throw new Error("No active basket found");
@@ -26,8 +55,8 @@ export async function createBasket(
     custom: TebexBasketCustomData = {}
 ): Promise<TebexBasket> {
     const baseUrl = await getBaseUrl();
-    const completeUrl = returnUrl || baseUrl;
-    const fallbackCancelUrl = cancelUrl || baseUrl;
+    const completeUrl = sanitizeRedirectUrl(returnUrl, baseUrl);
+    const fallbackCancelUrl = sanitizeRedirectUrl(cancelUrl, baseUrl);
 
     const basket = await tebexBasketService.createBasket(completeUrl, fallbackCancelUrl, custom);
 
@@ -51,15 +80,19 @@ export async function getBasketOrNull(): Promise<TebexBasket | null> {
 
     try {
         const basket = await tebexBasketService.getBasket(existingId);
-        return basket || null;
+        if (!basket) {
+            await safeDeleteCookie(TEBEX_CONFIG.cookies.basketId);
+            return null;
+        }
+        return basket;
     } catch {
+        await safeDeleteCookie(TEBEX_CONFIG.cookies.basketId);
         return null;
     }
 }
 
 export async function clearBasket(): Promise<void> {
-    const cookieStore = await cookies();
-    cookieStore.delete(TEBEX_CONFIG.cookies.basketId);
+    await safeDeleteCookie(TEBEX_CONFIG.cookies.basketId);
 }
 
 export async function addPackageToBasket(
@@ -114,12 +147,15 @@ export async function removeCreatorCodeFromBasket(): Promise<TebexBasket> {
 }
 
 export async function getAuthUrl(returnUrl: string): Promise<string> {
+    const baseUrl = await getBaseUrl();
+    const safeReturnUrl = sanitizeRedirectUrl(returnUrl, baseUrl);
+
     let basket = await getBasketOrNull();
     if (!basket) {
-        basket = await createBasket(returnUrl);
+        basket = await createBasket(safeReturnUrl);
     }
 
-    return tebexBasketService.getAuthUrl(basket.ident, returnUrl);
+    return tebexBasketService.getAuthUrl(basket.ident, safeReturnUrl);
 }
 
 export async function migrateBasketWithDiscord(
@@ -127,7 +163,7 @@ export async function migrateBasketWithDiscord(
     returnUrl?: string
 ): Promise<{ basket: TebexBasket; authUrl: string | null }> {
     const baseUrl = await getBaseUrl();
-    const actualReturnUrl = returnUrl || baseUrl;
+    const actualReturnUrl = sanitizeRedirectUrl(returnUrl, baseUrl);
 
     const basket = await createBasket(actualReturnUrl, undefined, { discord_id: discordId });
     const authUrl = await getAuthUrl(actualReturnUrl);

@@ -49,7 +49,7 @@ export default function ValuePropsSection({ className }: { className?: string } 
                     </div>
                     <div className="relative">
                         <h4 className="font-semibold text-foreground text-[0.95rem]">{item.title}</h4>
-                        <p className="text-[0.875rem] font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{item.description}</p>
+                        <p className="text-sm font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{item.description}</p>
                     </div>
                 </div>
             ))}

@@ -14,14 +14,14 @@ export default function HeroSection() {
                     <PromoBadge className="flex xl:hidden" />
                 </div>
 
-                <h1 className="text-5xl sm:text-6xl lg:text-6xl font-[650] leading-[1.025] tracking-tight">
+                <h1 className="text-5xl sm:text-6xl lg:text-6xl font-[700] leading-[1.025] tracking-tight">
                     <span className="bg-gradient-to-r from-white to-white/90 text-transparent bg-clip-text">
                         Where Premium Scripts Meet
                     </span>{" "}
                     <HeroTypewriter text="Flawless Aesthetics" />
                 </h1>
 
-                <p className="text-lg text-secondary-foreground max-w-xl">
+                <p className="text-lg text-secondary-foreground max-w-xl tracking-[-0.2px]">
                     Midnight Dev offers premium FiveM scripts built around modern UI design,
                     reliable functionality and seamless integration for QBCore, QBox and ESX.
                 </p>
