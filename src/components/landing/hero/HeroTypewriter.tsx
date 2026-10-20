@@ -37,13 +37,13 @@ export default function HeroTypewriter({ text = "Flawless Aesthetics" }: HeroTyp
     return (
         <span className="relative inline-block">
             <span className="opacity-0">{text}</span>
-            <span className="absolute inset-0 z-10 text-transparent bg-clip-text bg-accent-gradient text-shadow-accent/40 whitespace-nowrap">
+            <span className="absolute inset-0 z-10 text-transparent bg-clip-text bg-accent-gradient whitespace-nowrap">
                 {typedText}
             </span>
             <span className="absolute inset-0 z-20 whitespace-nowrap text-transparent pointer-events-none">
                 {typedText}
                 {showCursor && (
-                    <span className="inline-block relative w-[4px] h-[0.8em] bg-accent ml-1 align-middle -mt-1.5 animate-pulse" />
+                    <span className="inline-block relative w-[4px] h-[0.8em] bg-accent-gradient ml-1 align-middle -mt-1.5 animate-pulse" />
                 )}
             </span>
         </span>

@@ -85,9 +85,7 @@ export default function Navbar() {
             )}
         >
             <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
-                {/* Left */}
                 <div className="flex items-center gap-2 lg:gap-8 h-full">
-                    {/* Mobile Menu Toggle */}
                     <Button
                         variant="ghost"
                         className="lg:hidden p-2 -ml-2"
@@ -147,13 +145,12 @@ export default function Navbar() {
                     <PromoBadge className="hidden xl:block ml-0 xl:-ml-4 mt-0.5" />
                 </div>
 
-                {/* Right */}
                 <div className="flex items-center gap-0 xl:gap-2">
                     <Select
                         value={currency}
                         onValueChange={(v) => setCurrency(v as Currency)}
                     >
-                        <SelectTrigger className="hidden sm:flex justify-center w-18 gap-1 text-foreground backdrop-blur-none! shadow-none! bg-transparent border-none p-0 outline-none!">
+                        <SelectTrigger className="hidden sm:flex w-25 ">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-48 overflow-y-auto">
@@ -183,7 +180,7 @@ export default function Navbar() {
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="gap-2 p-4 outline-none! shadow-none!">
+                                    <Button variant="ghost" className="gap-2 outline-none! shadow-none!">
                                         <img src={avatar} alt={username} className="size-6 rounded-full" />
                                         <span className="hidden sm:inline text-sm">{username}</span>
                                         <ChevronDown className="h-3 w-3" />
@@ -191,30 +188,25 @@ export default function Navbar() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end" className="w-56">
                                     <DropdownMenuItem onClick={toggleDiscord} className="group">
-                                        <div className="flex items-center gap-1.5 flex-1">
-                                            <img
-                                                src={discordLogo.src}
-                                                alt=""
-                                                className={cn(
-                                                    "size-5 mr-1.5",
-                                                    isDiscordConnected ? "opacity-100" : "opacity-50 grayscale group-focus:grayscale-0 group-focus:opacity-100"
-                                                )}
-                                            />
-                                            <span className="flex-1">
-                                                {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
-                                            </span>
-                                        </div>
+                                        <img
+                                            src={discordLogo.src}
+                                            alt=""
+                                            className="size-5 opacity-50"
+                                        />
+                                        <span className="flex-1">
+                                            {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
+                                        </span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={logout}>
-                                        <LogOut className="size-4 mr-1.5 ml-0.5" strokeWidth={2} /> Log Out
+                                    <DropdownMenuItem variant="destructive" onClick={logout}>
+                                        <LogOut strokeWidth={2} />
+                                        Log Out
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </>
                     ) : (
-                        <Button variant="primary" onClick={login}>
-                            <img src={fivemLogo.src} alt="" className="h-3 w-3" />
+                        <Button variant="primary" onClick={login} className="gap-2">
+                            <img src={fivemLogo.src} alt="" className="h-3.5 w-3.5" />
                             Login with FiveM
                         </Button>
                     )}

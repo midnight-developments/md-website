@@ -148,10 +148,10 @@ export default function CartSidebar() {
 
                     <Button
                         variant="primary"
-                        className="w-full py-3.5 text-xl"
+                        className="w-full py-6 text-xl font-semibold gap-2"
                         onClick={handleCheckout}
                     >
-                        <img src={tebexLogo.src} alt="Tebex" className="w-3! " />
+                        <img src={tebexLogo.src} alt="Tebex" className="w-2.5! " />
                         CHECKOUT
                     </Button>
 

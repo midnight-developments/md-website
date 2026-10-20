@@ -1,12 +1,13 @@
 import { Palette, RefreshCw, Puzzle, Headphones } from "lucide-react"
 import bg from "@/assets/bg.png"
+import Grain from "@/components/ui/grain"
 import { cn } from "@/lib/utils"
 
 const valuePropsData = [
     {
         icon: Palette,
         title: "Clean, Aesthetic Design",
-        description: "We put a strong focus on delivering modern, sleek dark-themed UIs that feel both stylish and easy to use",
+        description: "We put a strong focus on delivering modern dark-themed UIs that feel both stylish and easy to use",
     },
     {
         icon: RefreshCw,
@@ -31,7 +32,7 @@ export default function ValuePropsSection({ className }: { className?: string } 
             {valuePropsData.map((item) => (
                 <div
                     key={item.title}
-                    className="relative overflow-hidden flex gap-4 p-5 rounded-md bg-card-bg border-2 border-card hover:border-accent/20 transition-colors duration-300"
+                    className="relative overflow-hidden flex gap-4 p-4 rounded-md bg-card-bg border border-border transition-colors duration-300"
                 >
                     <div
                         className="absolute inset-0 pointer-events-none"
@@ -40,16 +41,17 @@ export default function ValuePropsSection({ className }: { className?: string } 
                             backgroundSize: "cover",
                             backgroundPosition: "center",
                             backgroundRepeat: "no-repeat",
-                            opacity: 0.8,
-                            filter: "blur(80px) hue-rotate(45deg)",
+                            opacity: 0.7,
+                            filter: "blur(60px) hue-rotate(45deg)",
                         }}
                     />
+                    <Grain size="50px" opacity={0.1} />
                     <div className="relative shrink-0 p-2.5 h-fit rounded-lg bg-accent/10">
                         <item.icon className="h-10 w-10 text-accent" strokeWidth={1.5} />
                     </div>
                     <div className="relative">
                         <h4 className="font-semibold text-foreground text-[0.95rem]">{item.title}</h4>
-                        <p className="text-sm font-normal text-secondary-foreground mt-0.75 leading-[1.4]">{item.description}</p>
+                        <p className="text-sm font-normal text-secondary-foreground mt-0.75 leading-normal">{item.description}</p>
                     </div>
                 </div>
             ))}

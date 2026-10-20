@@ -12,11 +12,11 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
     return (
-        <div className="min-h-screen flex flex-col relative w-full overflow-x-hidden isolate bg-black">
+        <div className="min-h-screen flex flex-col relative w-full overflow-x-hidden isolate bg-[rgb(6,6,6)]">
             <AmbientBackground />
 
             <Navbar />
-            <main className="mt-20 py-10 md:py-12 flex-grow min-h-[calc(100dvh-5rem)] w-full max-w-screen-2xl mx-auto px-6 lg:px-12">
+            <main className="mt-20 py-10 md:py-12 flex-grow min-h-[calc(100dvh-5rem)] page-container">
                 {children}
             </main>
             <Footer />

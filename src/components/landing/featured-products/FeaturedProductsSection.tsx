@@ -11,7 +11,6 @@ export default function FeaturedProductsSection() {
             <div className="flex flex-col gap-10 items-center justify-center">
                 <div className="text-center">
                     <Badge className="mb-4">
-                        <Sparkles className="h-3.5 w-3.5" />
                         Our community's top picks
                     </Badge>
                     <h2 className="text-3xl sm:text-4xl font-bold">Featured Products</h2>

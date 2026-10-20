@@ -1,0 +1,253 @@
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --page-max-width: 94rem;
+
+    --font-sans: var(--font-plus-jakarta-sans), sans-serif;
+    --font-outfit: var(--font-plus-jakarta-sans), sans-serif;
+    --font-caveat: var(--font-caveat), cursive;
+
+    --letter-spacing-h1: -2.5px;
+    --letter-spacing-h2: -0.7px;
+    --letter-spacing-h3: -0.4px;
+    --letter-spacing-text: -0.3px;
+
+    --color-background: rgb(0, 0, 0);
+    --color-foreground: rgb(225, 225, 225);
+    --color-secondary: rgb(165, 165, 165);
+    --color-muted: rgb(130, 130, 130);
+    --color-accent: rgb(120, 105, 230);
+    --color-accent-text: rgba(188, 177, 247);
+    --color-destructive: rgb(242, 138, 140);
+    --color-success: rgb(165, 230, 205);
+    --color-warning: rgba(240, 215, 150);
+    --color-info: rgb(59, 130, 255);
+
+    --color-border: rgba(28, 28, 28);
+    --color-border-hover: rgba(255, 255, 255, 0.25);
+    --color-border-active: rgba(255, 255, 255, 0.8);
+    --color-popup: rgba(0, 0, 0, 0.4);
+
+    --color-input: rgba(35, 35, 35);
+    --color-input-hover: rgba(42, 42, 42);
+    --color-input-active: rgba(255, 255, 255, 0.08);
+
+    --color-card: rgba(14, 14, 14);
+    --color-card-hover: rgba(255, 255, 255, 0.08);
+    --color-card-active: rgba(255, 255, 255, 0.08);
+
+    /* Backwards compatibility token mapping */
+    --color-secondary-foreground: var(--color-secondary);
+    --color-muted-foreground: var(--color-muted);
+    --color-accent-foreground: var(--color-accent-text);
+    --color-error: var(--color-destructive);
+    --color-error-foreground: var(--color-destructive);
+    --color-warning-foreground: var(--color-warning);
+    --color-success-foreground: var(--color-success);
+    --color-info-foreground: var(--color-info);
+
+    --color-modal-bg: var(--color-background);
+    --color-modal: var(--color-border);
+    --color-popover-bg: var(--color-card);
+    --color-popover: var(--color-border);
+    --color-card-bg: var(--color-card);
+
+    --color-input-bg: var(--color-input);
+
+    --radius-md: 5px;
+
+    --text-md: 0.9375rem;
+
+    --duration-snappy: 200ms;
+    --ease-snappy: cubic-bezier(0, 0, 0.2, 1);
+
+    --duration-popup: 300ms;
+    --ease-popup: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-popup-bouncy: cubic-bezier(0.16, 1, 0.3, 1);
+
+    --shadow-accent: 0 0 15px color-mix(in srgb, var(--brand-base), transparent 70%);
+    --shadow-error: 0 0 30px color-mix(in srgb, var(--color-error), transparent 94%);
+    --shadow-warning: 0 0 30px color-mix(in srgb, var(--color-warning), transparent 94%);
+    --shadow-success: 0 0 30px color-mix(in srgb, var(--color-success), transparent 94%);
+    --shadow-info: 0 0 30px color-mix(in srgb, var(--color-info), transparent 94%);
+
+    --text-shadow-primary: 0 0 15px color-mix(in srgb, var(--color-foreground), transparent 67%);
+    --text-shadow-accent: 0 0 45px color-mix(in srgb, var(--color-accent-foreground), transparent 80%);
+    --text-shadow-error: 0 0 15px color-mix(in srgb, var(--color-error-foreground), transparent 67%);
+    --text-shadow-warning: 0 0 15px color-mix(in srgb, var(--color-warning-foreground), transparent 67%);
+    --text-shadow-success: 0 0 15px color-mix(in srgb, var(--color-success-foreground), transparent 67%);
+    --text-shadow-info: 0 0 15px color-mix(in srgb, var(--color-info-foreground), transparent 67%);
+
+    --background-image-accent-gradient: linear-gradient(90deg,
+            color-mix(in srgb, var(--color-accent) 100%, white) 0%,
+            color-mix(in srgb, var(--color-accent) 95%, white) 50%,
+            color-mix(in srgb, var(--color-accent) 80%, white));
+    --background-image-accent-gradient-x: linear-gradient(90deg,
+            color-mix(in srgb, var(--color-accent) 100%, white) 0%,
+            color-mix(in srgb, var(--color-accent) 90%, white) 50%,
+            color-mix(in srgb, var(--color-accent) 90%, white));
+}
+
+@utility transition-snappy {
+    transition-property: all;
+    transition-duration: var(--duration-snappy, 150ms);
+    transition-timing-function: var(--ease-snappy, cubic-bezier(0, 0, 0.2, 1));
+}
+
+@utility transition-popup {
+    transition-property: all;
+    transition-duration: var(--duration-popup, 200ms);
+    transition-timing-function: var(--ease-popup, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+@utility text-shadow-* {
+    text-shadow: --value(--text-shadow-);
+}
+
+@utility fade-in-0 {
+    --tw-enter-opacity: 0;
+}
+
+@utility zoom-in-95 {
+    --tw-enter-scale: 0.95;
+}
+
+@utility slide-in-from-top-2 {
+    --tw-enter-translate-y: -0.5rem;
+}
+
+@utility bg-noise {
+    background-image: url("../assets/noise-pixel.png");
+    background-size: 100px;
+    opacity: 0.2;
+    background-repeat: repeat;
+}
+
+@utility page-container {
+    width: 100%;
+    max-width: var(--page-max-width);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+
+    @media (min-width: 1024px) {
+        padding-inline: 3rem;
+    }
+}
+
+:root {
+    --font-feature-settings: "cv02" 1, "cv03" 1, "cv04" 1, "cv11" 1, "calt" 1, "liga" 1;
+}
+
+@layer base {
+
+    *,
+    *::before,
+    *::after {
+        outline: none !important;
+    }
+
+    * {
+        border-color: var(--color-border);
+    }
+
+    html {
+        scrollbar-gutter: stable;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+    }
+
+    *::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 9999px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.28);
+    }
+
+    /* Desktop native 107.5% zoom scaling */
+    @media (min-width: 1024px) {
+        html {
+            zoom: 1.075;
+        }
+    }
+
+    body {
+        font-family: var(--font-sans);
+        @apply antialiased bg-background text-foreground outline-none;
+        font-weight: var(--font-weight-normal, 380);
+        letter-spacing: var(--letter-spacing-text, -0.15px);
+        background-color: rgb(10, 10, 10);
+        position: relative;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-feature-settings: var(--font-feature-settings);
+    }
+
+    body:has([data-slot="dialog-overlay"]) {
+        overflow: hidden;
+    }
+
+    h1 {
+        letter-spacing: var(--letter-spacing-h1);
+    }
+
+    h2 {
+        letter-spacing: var(--letter-spacing-h2);
+    }
+
+    h3 {
+        letter-spacing: var(--letter-spacing-h3);
+    }
+
+    p {
+        letter-spacing: var(--letter-spacing-text);
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+}
+
+.react-colorful {
+    overflow: visible !important;
+    border-radius: 4px !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.react-colorful__saturation {
+    border-radius: 4px 4px 0px 0px !important;
+    border-bottom: none !important;
+}
+
+.react-colorful__hue {
+    border-radius: 0 0 4px 4px !important;
+    border-top: none !important;
+}

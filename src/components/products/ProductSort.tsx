@@ -14,17 +14,28 @@ interface ProductSortProps {
     onChange: (value: SortType) => void
 }
 
+const sortLabels: Record<SortType, string> = {
+    [SortType.Default]: "Default",
+    [SortType.NameAsc]: "Name (A - Z)",
+    [SortType.NameDesc]: "Name (Z - A)",
+    [SortType.PriceDesc]: "Price (High to Low)",
+    [SortType.PriceAsc]: "Price (Low to High)",
+}
+
 export default function ProductSort({ value, onChange }: ProductSortProps) {
     return (
         <Select
             value={value}
             onValueChange={(val) => onChange(val as SortType)}
+            items={sortLabels}
         >
-            <SelectTrigger className="w-full md:w-3xs gap-2.5 py-2">
+            <SelectTrigger className="w-full md:w-[18rem] gap-2.5 py-2">
                 <div className="flex items-center gap-1.5">
                     <ChevronsUpDown className="h-4 w-4 shrink-0 text-muted-foreground" />
                     <span className="text-muted-foreground whitespace-nowrap">Sort by:</span>
-                    <SelectValue />
+                    <SelectValue>
+                        {(val: SortType | null) => (val && sortLabels[val] ? sortLabels[val] : "Default")}
+                    </SelectValue>
                 </div>
             </SelectTrigger>
             <SelectContent>

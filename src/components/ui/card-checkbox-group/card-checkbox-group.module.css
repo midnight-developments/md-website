@@ -1,0 +1,175 @@
+.card {
+    position: relative;
+    border-width: 0;
+    background:
+        var(--color-card);
+    box-shadow:
+        inset 0 0 0 1px var(--color-border);
+    transition: box-shadow 0.2s ease;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+
+    background:
+        linear-gradient(160deg,
+            color-mix(in srgb, var(--color-accent) 25%, transparent) 10%,
+            color-mix(in srgb, var(--color-accent) 15%, transparent) 35%,
+            color-mix(in srgb, var(--color-accent) 0%, transparent) 100%);
+
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.card:hover:not([data-checked]):not(:disabled) {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.card[data-checked] {
+    box-shadow:
+        inset 0 0 0 2px color-mix(in srgb, var(--color-accent) 100%, transparent);
+}
+
+.card[data-checked]::before {
+    opacity: 1;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 2px solid transparent;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+
+    background: radial-gradient(ellipse 100% 100% at 0% 0%,
+            color-mix(in srgb, var(--color-accent) 95%, white) 20%,
+            transparent 50%,
+            color-mix(in srgb, var(--color-accent) 90%, black) 100%) border-box;
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.card[data-checked]::after {
+    opacity: 1;
+}
+
+.indicator {
+    position: relative;
+    display: flex;
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border-width: 0;
+    pointer-events: none;
+    user-select: none;
+
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.06) 0%, transparent 70%),
+        linear-gradient(20deg, rgb(26, 26, 28) 0%, rgb(32, 32, 36) 55%, rgb(24, 24, 26) 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+        inset 0 1px 2px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.2s ease;
+}
+
+.indicator::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1px solid transparent;
+
+    background: radial-gradient(ellipse 65% 55% at 50% 0%,
+            rgba(255, 255, 255, 0.15) 20%,
+            transparent 120%) border-box;
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+
+    transition: opacity 0.2s ease;
+}
+
+:global([data-slot="card-checkbox-group-item"][data-checked]) .indicator {
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 60%, white);
+}
+
+.activeIndicator {
+    position: relative;
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    aspect-ratio: 1 / 1;
+    margin: auto;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    pointer-events: none;
+    border-width: 0;
+
+    background:
+        linear-gradient(20deg,
+            color-mix(in srgb, var(--color-accent) 90%, black) 0%,
+            var(--color-accent) 55%,
+            color-mix(in srgb, var(--color-accent) 90%, black) 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+        inset 0 -1px 0 0 rgba(255, 255, 255, 0.12);
+}
+
+.activeIndicator::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1px solid transparent;
+
+    background: radial-gradient(ellipse 65% 55% at 50% 0%,
+            color-mix(in srgb, color-mix(in srgb, var(--color-accent) 23%, white) 75%, transparent) 20%,
+            transparent 120%) border-box;
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) padding-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+}

@@ -94,7 +94,7 @@ export default function ProductGallery({ video, image, media = [] }: ProductGall
 
     return (
         <div className={`flex flex-col ${isFullscreen ? 'fixed inset-0 z-[100] bg-background/95 backdrop-blur-2xl p-4 sm:p-8 md:p-12 gap-6' : 'gap-2'}`}>
-            <div className={`group/main ${isFullscreen ? 'flex-1 rounded' : 'aspect-video rounded'} bg-white/[0.03] border-2 border-border overflow-hidden relative flex text-muted-foreground shadow-lg transition-all duration-300`}>
+            <div className={`group/main ${isFullscreen ? 'flex-1 rounded' : 'aspect-video rounded'} bg-white/[0.03] border border-border overflow-hidden relative flex text-muted-foreground shadow-lg transition-all duration-300`}>
                 <button
                     onClick={() => setIsFullscreen(!isFullscreen)}
                     className="absolute top-1 right-1 z-30 w-10 h-10 rounded-full hover:text-foreground flex items-center justify-center cursor-pointer shadow-lg"
@@ -173,9 +173,9 @@ export default function ProductGallery({ video, image, media = [] }: ProductGall
                                     setIsPlayingVideo(false);
                                     setSelectedMedia(i);
                                 }}
-                                className={`group relative aspect-video rounded border-2 transition-colors duration-300 overflow-hidden flex-shrink-0 w-32 sm:w-40 cursor-pointer snap-start shadow-sm ${selectedMedia === i
-                                    ? "border-accent"
-                                    : "border-border hover:border-white/15"
+                                className={`group relative aspect-video rounded border transition-colors duration-300 overflow-hidden flex-shrink-0 w-32 sm:w-40 cursor-pointer snap-start shadow-sm ${selectedMedia === i
+                                    ? "border-accent border-2"
+                                    : "border-border  hover:border-white/15"
                                     }`}
                                 aria-label={`View media ${i + 1}`}
                             >

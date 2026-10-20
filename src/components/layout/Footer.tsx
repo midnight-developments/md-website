@@ -27,7 +27,7 @@ export default function Footer() {
 
     return (
         <footer className="w-full py-10 lg:py-18 bg-black/30 backdrop-blur-xl border-t-2 border-border">
-            <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+            <div className="page-container">
                 <div className="flex flex-col md:flex-row justify-between gap-10">
                     <div className="w-full max-w-xl flex flex-col sm:flex-row gap-10 justify-between">
                         <div className="flex flex-col gap-4">
