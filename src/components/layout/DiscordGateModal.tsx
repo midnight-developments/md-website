@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { useCartStore } from "@/stores/useCartStore"
 import { useDiscordStore } from "@/stores/useDiscordStore"
-import discord from "@/assets/discord.svg"
+import DiscordIcon from "@/components/icons/DiscordIcon"
 
 const benefits = [
     { icon: Gift, title: "Automatic Role Assignment", description: "Get your purchased product roles instantly" },
@@ -62,7 +62,7 @@ export default function DiscordGateModal() {
 
                 <div className="flex flex-col gap-3">
                     <Button variant="primary" className="w-full" size="lg" onClick={handleConnect}>
-                        <img src={discord.src} alt="Discord" className="size-6" />
+                        <DiscordIcon className="size-6" />
                         Connect Discord
                     </Button>
                     <Button variant="ghost" className="w-full font-normal text-muted-foreground hover:underline transition-none" onClick={handleSkip}>

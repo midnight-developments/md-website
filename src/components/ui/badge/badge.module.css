@@ -2,7 +2,8 @@
 .secondary,
 .success,
 .warning,
-.destructive {
+.destructive,
+.orange {
     position: relative;
     border-width: 0;
     color: var(--badge-text-color);
@@ -24,7 +25,8 @@
 .secondary::after,
 .success::after,
 .warning::after,
-.destructive::after {
+.destructive::after,
+.orange::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -88,4 +90,12 @@
     --badge-border: color-mix(in srgb, var(--color-destructive) 25%, transparent);
     --badge-border-shine: color-mix(in srgb, var(--color-destructive) 60%, transparent);
     --badge-glow: rgba(235, 95, 105, 0.1);
+}
+
+.orange {
+    --badge-bg: rgba(68, 38, 22);
+    --badge-text-color: rgb(255, 175, 120);
+    --badge-border: rgba(255, 175, 120, 0.25);
+    --badge-border-shine: rgba(255, 195, 150, 0.6);
+    --badge-glow: rgba(255, 140, 60, 0.1);
 }

@@ -2,10 +2,12 @@ import HeroSection from "@/components/landing/hero/HeroSection";
 import ValuePropsSection from "@/components/landing/value-props/ValuePropsSection";
 import AccentSeparator from "@/components/ui/accent-separator";
 import FeaturedProductsSection from "@/components/landing/featured-products/FeaturedProductsSection";
+import DevNoticeModal from "@/components/landing/DevNoticeModal";
 
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-20">
+      <DevNoticeModal />
       <HeroSection />
       <ValuePropsSection />
       <AccentSeparator />

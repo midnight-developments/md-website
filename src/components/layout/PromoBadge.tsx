@@ -1,6 +1,5 @@
 import React from "react"
 import { Badge } from "@/components/ui/badge"
-import discordLogo from "@/assets/discord.svg"
 import { cn } from "@/lib/utils"
 
 interface PromoBadgeProps {

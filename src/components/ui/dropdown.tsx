@@ -139,7 +139,7 @@ function DropdownMenuItem({
             data-inset={inset}
             data-variant={variant}
             className={className}
-            render={<PopupItem variant={variant} className={cn("pl-1", inset && "pl-7")} />}
+            render={<PopupItem variant={variant} className={cn(inset && "pl-7")} />}
             {...props}
         />
     )

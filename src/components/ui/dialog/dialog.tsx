@@ -5,21 +5,18 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import advancedDialogStyles from "./dialog.module.css"
-import { DialogSurface } from "./dialog-surface"
 
 interface DialogContextValue {
     open: boolean
-    inDialog: boolean
 }
 
 const DialogContext = React.createContext<DialogContextValue>({
     open: false,
-    inDialog: false,
 })
 
 function Dialog({ open = false, onOpenChange, ...props }: DialogPrimitive.Root.Props) {
     return (
-        <DialogContext.Provider value={{ open, inDialog: true }}>
+        <DialogContext.Provider value={{ open }}>
             <DialogPrimitive.Root open={open} onOpenChange={onOpenChange} {...props} />
         </DialogContext.Provider>
     )
@@ -77,7 +74,7 @@ function DialogOverlay({
                     animate="animate"
                     exit="exit"
                     className={cn(
-                        "fixed inset-0 z-50 bg-black/50 pointer-events-auto",
+                        "fixed inset-0 z-50 bg-black/60 pointer-events-auto backdrop-blur-sm",
                         className
                     )}
                 />
@@ -160,22 +157,11 @@ function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
-    const { inDialog } = React.useContext(DialogContext)
-    if (inDialog) {
-        return (
-            <DialogPrimitive.Title
-                data-slot="dialog-title"
-                className={cn("text-2xl text-foreground  font-normal", className)}
-                {...props}
-            />
-        )
-    }
-
     return (
-        <h2
+        <DialogPrimitive.Title
             data-slot="dialog-title"
-            className={cn("text-2xl text-foreground font-medium", className)}
-            {...(props as React.ComponentProps<"h2">)}
+            className={cn("text-2xl text-foreground font-normal", className)}
+            {...props}
         />
     )
 }
@@ -184,22 +170,11 @@ function DialogDescription({
     className,
     ...props
 }: DialogPrimitive.Description.Props) {
-    const { inDialog } = React.useContext(DialogContext)
-    if (inDialog) {
-        return (
-            <DialogPrimitive.Description
-                data-slot="dialog-description"
-                className={cn("text-muted text-[0.95rem] leading-normal", className)}
-                {...props}
-            />
-        )
-    }
-
     return (
-        <p
+        <DialogPrimitive.Description
             data-slot="dialog-description"
-            className={cn("text-muted text-[0.95rem] leading-normal", className)}
-            {...(props as React.ComponentProps<"p">)}
+            className={cn("text-muted text-[0.95rem] leading-[1.45]", className)}
+            {...props}
         />
     )
 }
@@ -214,7 +189,6 @@ export {
     DialogHeader,
     DialogOverlay,
     DialogPortal,
-    DialogSurface,
     DialogTitle,
     DialogTrigger,
 }

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link"
 import Image from "next/image"
-import { Badge } from "@/components/ui/badge"
+import FrameworkBadges from "./FrameworkBadges"
 import { stripHtml } from "@/lib/utils"
 import type { Product } from "@/types/tebex"
 import { useFormatPrice } from "@/stores/useCurrencyStore"
@@ -44,13 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 <div className="px-4.5 pt-4.5 pb-2.5 flex flex-col gap-2.5 flex-1">
-                    {product.category?.name && (
-                        <div className="flex flex-wrap gap-1.5 -ml-0.25">
-                            <Badge variant="secondary" size="sm">
-                                {product.category.name}
-                            </Badge>
-                        </div>
-                    )}
+                    <FrameworkBadges product={product} size="sm" className="-ml-0.25" />
 
                     <div className="mb-2 flex flex-col gap-0.75">
                         <div className="flex items-center justify-between text-lg">

@@ -96,8 +96,22 @@ export interface TebexMedia {
     primary: boolean;
 }
 
+export interface ProductRequirements {
+    framework?: string[];
+    "onesync-infinity"?: boolean;
+    "server-version"?: string;
+    resources?: Record<string, string>;
+    [key: string]: unknown;
+}
+
+export interface ProductCreatorMetaData {
+    requirements?: ProductRequirements;
+    [key: string]: unknown;
+}
+
 export interface Product {
     id: number;
+    ident?: string;
     name: string;
     slug: string;
     description: string;
@@ -110,6 +124,8 @@ export interface Product {
     total_price: number;
     currency: string;
     discount: number;
+    variables?: unknown[];
+    options?: unknown[];
     disable_quantity: boolean;
     disable_gifting: boolean;
     expiration_date: string | null;
@@ -117,6 +133,12 @@ export interface Product {
     created_at: string;
     updated_at: string;
     order: number;
+    creator_meta_data?: ProductCreatorMetaData | null;
+    vip_status?: unknown | null;
+}
+
+export interface TebexProductResponse {
+    data: Product;
 }
 
 // --- Webhook Types ---

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import discord from "@/assets/discord.svg"
+import DiscordIcon from "@/components/icons/DiscordIcon"
 import InteractiveScriptDemo from "./InteractiveScriptDemo"
 import HeroTypewriter from "./HeroTypewriter"
 import PromoBadge from "@/components/layout/PromoBadge"
@@ -35,7 +35,7 @@ export default function HeroSection() {
                     </Button>
                     <Button variant="outline" asChild className="px-6">
                         <a href="https://discord.gg/midnightdev" target="_blank" rel="noopener noreferrer">
-                            <img src={discord.src} alt="Discord" className="h-5 w-5" />
+                            <DiscordIcon className="h-4 w-4 mr-1" />
                             Join Discord
                         </a>
                     </Button>

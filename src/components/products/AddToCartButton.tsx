@@ -42,7 +42,7 @@ export default function AddToCartButton({ product, className, showIcon = true }:
         <Button
             variant="primary"
             className={cn(
-                "w-full transition-all duration-300",
+                "w-full transition-all duration-300 gap-2",
                 (!isLoggedIn || isInCart) && "opacity-60 cursor-not-allowed",
                 className
             )}

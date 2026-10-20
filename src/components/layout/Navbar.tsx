@@ -3,13 +3,14 @@ import { useState, useEffect } from "react"
 import Link from "next/link";
 import { usePathname as useLocation } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { ShoppingCart, ChevronDown, LogOut, Menu, X } from "lucide-react"
+import { ShoppingCart, ChevronDown, LogOut, Menu, X, Receipt, ExternalLink, History } from "lucide-react"
 import PromoBadge from "@/components/layout/PromoBadge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
@@ -25,7 +26,7 @@ import { useCartStore } from "@/stores/useCartStore"
 import { useDiscordStore } from "@/stores/useDiscordStore"
 import { useCurrencyStore, CURRENCIES, type Currency } from "@/stores/useCurrencyStore"
 import fivemLogo from "@/assets/fivem-logo.png"
-import discordLogo from "@/assets/discord.svg"
+import DiscordIcon from "@/components/icons/DiscordIcon"
 
 const navLinks = [
     { label: "Home", href: "/" },
@@ -188,14 +189,15 @@ export default function Navbar() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end" className="w-56">
                                     <DropdownMenuItem onClick={toggleDiscord} className="group">
-                                        <img
-                                            src={discordLogo.src}
-                                            alt=""
-                                            className="size-5 opacity-50"
-                                        />
-                                        <span className="flex-1">
-                                            {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
-                                        </span>
+                                        <DiscordIcon className="size-4" />
+                                        {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={() => window.open("https://portal.tebex.io/dashboard", "_blank", "noopener,noreferrer")}
+                                        className="cursor-pointer text-[1.025rem]"
+                                    >
+                                        <History strokeWidth={2} />
+                                        Purchase History
                                     </DropdownMenuItem>
                                     <DropdownMenuItem variant="destructive" onClick={logout}>
                                         <LogOut strokeWidth={2} />
