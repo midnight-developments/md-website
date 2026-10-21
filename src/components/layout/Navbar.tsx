@@ -146,12 +146,12 @@ export default function Navbar() {
                     <PromoBadge className="hidden xl:block ml-0 xl:-ml-4 mt-0.5" />
                 </div>
 
-                <div className="flex items-center gap-0 xl:gap-2">
+                <div className="flex items-center gap-0">
                     <Select
                         value={currency}
                         onValueChange={(v) => setCurrency(v as Currency)}
                     >
-                        <SelectTrigger className="hidden sm:flex w-25 ">
+                        <SelectTrigger className="hidden sm:flex mr-3">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="max-h-48 overflow-y-auto">
@@ -163,49 +163,47 @@ export default function Navbar() {
                         </SelectContent>
                     </Select>
 
-                    {isLoggedIn ? (
-                        <>
-                            <Button
-                                variant="ghost"
-                                className="relative p-2 xl:p-4 outline-none! shadow-none!"
-                                onClick={() => setCartOpen(true)}
-                                aria-label="Open Shopping Cart"
-                            >
-                                <ShoppingCart className="h-5 w-5" />
-                                {totalItems > 0 && (
-                                    <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-accent text-[10px] font-bold flex items-center justify-center text-foreground">
-                                        {totalItems}
-                                    </span>
-                                )}
-                            </Button>
+                    <Button
+                        variant="ghost"
+                        className="relative"
+                        onClick={() => setCartOpen(true)}
+                        aria-label="Open Shopping Cart"
+                    >
+                        <ShoppingCart className="h-5 w-5" />
+                        {totalItems > 0 && (
+                            <span className="absolute top-1 right-1 h-4 w-4 rounded-full bg-accent text-[10px] font-bold flex items-center justify-center text-foreground">
+                                {totalItems}
+                            </span>
+                        )}
+                    </Button>
 
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="gap-2 outline-none! shadow-none!">
-                                        <img src={avatar} alt={username} className="size-6 rounded-full" />
-                                        <span className="hidden sm:inline text-sm">{username}</span>
-                                        <ChevronDown className="h-3 w-3" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-56">
-                                    <DropdownMenuItem onClick={toggleDiscord} className="group">
-                                        <DiscordIcon className="size-4" />
-                                        {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        onClick={() => window.open("https://portal.tebex.io/dashboard", "_blank", "noopener,noreferrer")}
-                                        className="cursor-pointer text-[1.025rem]"
-                                    >
-                                        <History strokeWidth={2} />
-                                        Purchase History
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem variant="destructive" onClick={logout}>
-                                        <LogOut strokeWidth={2} />
-                                        Log Out
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </>
+                    {isLoggedIn ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" >
+                                    <img src={avatar} alt={username} className="size-6 rounded-full" />
+                                    <span className="hidden sm:inline text-sm">{username}</span>
+                                    <ChevronDown className="h-3 w-3" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuItem onClick={toggleDiscord} className="group">
+                                    <DiscordIcon className="size-4" />
+                                    {isDiscordConnected ? `${discordUser?.username} - Disconnect` : "Connect Discord"}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => window.open("https://portal.tebex.io/dashboard", "_blank", "noopener,noreferrer")}
+                                    className="cursor-pointer text-[1.025rem]"
+                                >
+                                    <History strokeWidth={2} />
+                                    Purchase History
+                                </DropdownMenuItem>
+                                <DropdownMenuItem variant="destructive" onClick={logout}>
+                                    <LogOut strokeWidth={2} />
+                                    Log Out
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     ) : (
                         <Button variant="primary" onClick={login} className="gap-2">
                             <img src={fivemLogo.src} alt="" className="h-3.5 w-3.5" />

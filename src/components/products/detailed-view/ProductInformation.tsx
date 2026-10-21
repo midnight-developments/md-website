@@ -5,6 +5,8 @@ import FrameworkBadges from "@/components/products/FrameworkBadges"
 import type { Product } from "@/types/tebex"
 import { useFormatPrice } from "@/stores/useCurrencyStore"
 import AddToCartButton from "@/components/products/AddToCartButton"
+import { stripHtml } from "@/lib/utils"
+import ProductRequirementsCard from "./ProductRequirementsCard"
 
 export default function ProductInformation({ product }: { product: Product }) {
     const formatPrice = useFormatPrice()
@@ -14,11 +16,11 @@ export default function ProductInformation({ product }: { product: Product }) {
             <div className="flex flex-col gap-3">
                 <FrameworkBadges product={product} />
 
-                <div className="flex flex-col gap-1">
-                    <h1 className="text-4xl sm:text-[2.625rem] font-semibold uppercase tracking-[-0.02em]">
+                <div className="flex flex-col gap-1.5">
+                    <h1 className="text-4xl sm:text-5xl font-bold  tracking-tight bg-foreground-gradient text-transparent bg-clip-text w-fit">
                         {product.name}
                     </h1>
-                    <p className="text-3xl sm:text-[2rem] font-bold text-accent">
+                    <p className="text-3xl sm:text-4xl tracking-tight font-extrabold bg-accent-gradient text-transparent bg-clip-text">
                         {formatPrice(product.base_price)}
                     </p>
                 </div>
@@ -27,9 +29,9 @@ export default function ProductInformation({ product }: { product: Product }) {
             <div className="flex flex-col sm:flex-row gap-3">
                 <AddToCartButton
                     product={product}
-                    className="h-12 text-lg gap-4 font-normal flex-1"
+                    className="h-12 text-lg gap-3 font-normal w-64"
                 />
-                <Button variant="outline" className="h-12 text-lg gap-4 font-normal flex-1" asChild>
+                <Button variant="outline" className="h-12 text-lg gap-3 font-normal w-64" asChild>
                     <a href="https://midnight-dev.gitbook.io/midnight-dev/" target="_blank" rel="noopener noreferrer">
                         <BookOpen className="size-5!" />
                         Documentation
@@ -37,7 +39,13 @@ export default function ProductInformation({ product }: { product: Product }) {
                 </Button>
             </div>
 
+            {product.description && (
+                <p className="pt-2 text-secondary-foreground text-base leading-relaxed whitespace-pre-line">
+                    {stripHtml(product.description)}
+                </p>
+            )}
 
+            <ProductRequirementsCard product={product} />
         </div>
     )
 }

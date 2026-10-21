@@ -98,8 +98,8 @@ export interface TebexMedia {
 
 export interface ProductRequirements {
     framework?: string[];
-    "onesync-infinity"?: boolean;
-    "server-version"?: string;
+    onesync_infinity?: boolean;
+    server_version?: string;
     resources?: Record<string, string>;
     [key: string]: unknown;
 }

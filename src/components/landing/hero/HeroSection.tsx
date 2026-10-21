@@ -15,7 +15,7 @@ export default function HeroSection() {
                 </div>
 
                 <h1 className="text-5xl sm:text-6xl lg:text-[4.25rem] font-[700] leading-[1.025] tracking-tighter">
-                    <span className="bg-gradient-to-r from-[rgba(212,214,231)] to-[rgb(161,157,172)] text-transparent bg-clip-text">
+                    <span className="bg-foreground-gradient text-transparent bg-clip-text">
                         Premium Scripts
                     </span>{" "}
                     <HeroTypewriter text="Flawless Aesthetics" />

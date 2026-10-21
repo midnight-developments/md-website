@@ -90,6 +90,11 @@
             color-mix(in srgb, var(--color-accent) 100%, white) 0%,
             color-mix(in srgb, var(--color-accent) 90%, white) 50%,
             color-mix(in srgb, var(--color-accent) 90%, white));
+
+    --background-image-foreground-gradient: linear-gradient(90deg,
+            var(--color-foreground) 0%,
+            color-mix(in srgb, var(--color-foreground) 50%, white) 50%,
+            color-mix(in srgb, var(--color-foreground) 80%, black) 100%);
 }
 
 @utility transition-snappy {

@@ -1,8 +1,7 @@
 "use client";
-import { useState } from "react"
 import Image from "next/image"
-import { Trash2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import RemoveFromCartButton from "@/components/products/RemoveFromCartButton"
 import {
     Sheet,
     SheetContent,
@@ -21,12 +20,13 @@ import gpayLogo from "@/assets/google-pay.svg"
 import mastercardLogo from "@/assets/mastercard.svg"
 import visaLogo from "@/assets/visa.svg"
 import amexLogo from "@/assets/amex.svg"
+import bg from "@/assets/bg.png"
+import Grain from "@/components/ui/grain"
 
 
 
 export default function CartSidebar() {
     const basket = useCartStore((state) => state.basket)
-    const removeItem = useCartStore((state) => state.removeItem)
     const subtotal = useCartStore((state) => state.subtotal)
     const taxes = useCartStore((state) => state.taxes)
     const totalPrice = useCartStore((state) => state.totalPrice)
@@ -37,22 +37,8 @@ export default function CartSidebar() {
     const isDiscordConnected = useDiscordStore((state) => state.isDiscordConnected)
     const setDiscordModalOpen = useDiscordStore((state) => state.setDiscordModalOpen)
     const formatPrice = useFormatPrice()
-    const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
 
     const items = basket?.packages || []
-
-    const handleRemove = async (id: number) => {
-        setRemovingIds(prev => new Set(prev).add(id))
-        try {
-            await removeItem(id)
-        } finally {
-            setRemovingIds(prev => {
-                const next = new Set(prev)
-                next.delete(id)
-                return next
-            })
-        }
-    }
 
     const handleCheckout = () => {
         if (!isDiscordConnected) {
@@ -64,7 +50,7 @@ export default function CartSidebar() {
 
     return (
         <Sheet open={isCartOpen} onOpenChange={setCartOpen}>
-            <SheetContent className="flex flex-col" open={isCartOpen}>
+            <SheetContent className="flex flex-col">
                 <SheetHeader>
                     <SheetTitle>Your cart</SheetTitle>
                     <SheetDescription>{totalItems} item{totalItems !== 1 ? "s" : ""}</SheetDescription>
@@ -72,7 +58,7 @@ export default function CartSidebar() {
 
                 <div className="flex-1 overflow-y-auto -mx-6 px-6">
                     {items.length === 0 ? (
-                        <p className="transition-colors duration-200 text-sm font-normal leading-tight text-muted-foreground flex items-center justify-center h-32">
+                        <p className="transition-colors duration-200 text-md font-normal leading-tight text-muted-foreground flex items-center justify-center h-32">
                             Your cart is empty
                         </p>
                     ) : (
@@ -81,45 +67,45 @@ export default function CartSidebar() {
                                 return (
                                     <div
                                         key={item.id}
-                                        className={`flex items-stretch gap-3 p-3 rounded-md bg-card-bg border-2 border-card transition-opacity duration-200 ${removingIds.has(item.id) ? "opacity-30 pointer-events-none" : ""
-                                            }`}
+                                        className="relative overflow-hidden flex items-stretch gap-3 p-3 rounded-lg bg-card-bg border border-border transition-all duration-300"
                                     >
-                                        <div className="relative w-40 aspect-video rounded bg-white/5 border-2 border-black/1 shrink-0 flex items-center justify-center overflow-hidden text-muted-foreground text-xs">
+                                        <div
+                                            className="absolute inset-0 pointer-events-none"
+                                            style={{
+                                                backgroundImage: `url(${bg.src})`,
+                                                backgroundSize: "cover",
+                                                backgroundPosition: "center",
+                                                backgroundRepeat: "no-repeat",
+                                                opacity: 0.7,
+                                                filter: "blur(60px) hue-rotate(45deg)",
+                                            }}
+                                        />
+                                        <Grain size="50px" opacity={0.1} />
+
+                                        <div className="relative z-10 w-40 aspect-video rounded bg-white/5 border-2 border-black/1 shrink-0 flex items-center justify-center overflow-hidden text-muted-foreground text-xs">
                                             {item.image ? (
                                                 <Image src={item.image} alt={item.name} fill sizes="160px" className="object-cover" />
                                             ) : (
                                                 "IMG"
                                             )}
                                         </div>
-                                        <div className="flex flex-col gap-1 justify-between  ">
-                                            <div className="flex items-start justify-between">
+                                        <div className="relative z-10 flex flex-col gap-2 justify-between flex-1 min-w-0">
+                                            <div className="flex flex-col gap-1">
                                                 <p className="transition-colors duration-200 font-medium text-foreground text-lg uppercase truncate pr-2 leading-tight">
                                                     {item.name || "Unknown Item"}
                                                     {item.in_basket.quantity > 1 && <span className="ml-2 text-sm text-muted-foreground">x{item.in_basket.quantity}</span>}
                                                 </p>
-                                                <button
-                                                    onClick={() => handleRemove(item.id)}
-                                                    className="text-muted-foreground hover:text-error-foreground transition-colors shrink-0 cursor-pointer disabled:opacity-50"
-                                                    aria-label="Remove item"
-                                                    disabled={removingIds.has(item.id)}
-                                                >
-                                                    {removingIds.has(item.id) ? (
-                                                        <Loader2 className="size-4.5 animate-spin" />
-                                                    ) : (
-                                                        <Trash2 className="size-4.5" />
-                                                    )}
-                                                </button>
-                                            </div>
-
-                                            <p className="transition-colors duration-200 text-sm font-normal leading-tight text-muted-foreground line-clamp-2 pr-12">
-                                                {stripHtml(item.description)}
-                                            </p>
-
-                                            <div className="flex justify-start ">
-                                                <p className="transition-colors duration-200 text-lg font-semibold text-accent-foreground whitespace-nowrap text-shadow-accent">
+                                                <p className="transition-colors duration-200 text-lg font-bold bg-accent-gradient text-transparent bg-clip-text whitespace-nowrap leading-none">
                                                     {formatPrice(item.in_basket.price)}
                                                 </p>
+
                                             </div>
+
+
+                                            <RemoveFromCartButton
+                                                product={item}
+                                                className="h-8 text-sm w-45 gap-1"
+                                            />
                                         </div>
                                     </div>
                                 )
@@ -128,7 +114,6 @@ export default function CartSidebar() {
                     )}
                 </div>
 
-                {/* Footer */}
                 <div className="border-t-2 border-border -mx-6 px-6 pt-4 flex flex-col gap-5 ">
                     {/* Summary */}
                     <div className="flex flex-col gap-1.5 ">
