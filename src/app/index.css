@@ -238,21 +238,4 @@
         -moz-appearance: textfield;
         appearance: textfield;
     }
-}
-
-.react-colorful {
-    overflow: visible !important;
-    border-radius: 4px !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.react-colorful__saturation {
-    border-radius: 4px 4px 0px 0px !important;
-    border-bottom: none !important;
-}
-
-.react-colorful__hue {
-    border-radius: 0 0 4px 4px !important;
-    border-top: none !important;
-}
+}
