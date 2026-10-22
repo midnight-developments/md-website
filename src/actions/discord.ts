@@ -1,7 +1,17 @@
 "use server";
 
+export async function getDiscordAuthUrl(redirectUri: string): Promise<string> {
+    const clientId = process.env.DISCORD_CLIENT_ID || process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+    if (!clientId) {
+        throw new Error("Discord client ID is not configured");
+    }
+
+    const encodedRedirectUrl = encodeURIComponent(redirectUri);
+    return `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirectUrl}&scope=identify&prompt=consent`;
+}
+
 export async function exchangeDiscordCode(code: string, redirectUri: string) {
-    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+    const clientId = process.env.DISCORD_CLIENT_ID || process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
     const clientSecret = process.env.DISCORD_CLIENT_SECRET;
     const API_ENDPOINT = 'https://discord.com/api/v10';
 

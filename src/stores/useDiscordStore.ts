@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { exchangeDiscordCode } from "@/actions/discord";
+import { exchangeDiscordCode, getDiscordAuthUrl } from "@/actions/discord";
 import { migrateBasketWithDiscord } from "@/actions/baskets";
 import { useCartStore } from "@/stores/useCartStore";
 
@@ -21,7 +21,7 @@ interface DiscordState {
     isDiscordModalOpen: boolean;
     setDiscordUser: (user: DiscordUser | null) => void;
     setDiscordModalOpen: (open: boolean) => void;
-    connectDiscord: () => void;
+    connectDiscord: () => void | Promise<void>;
     disconnectDiscord: () => void;
 }
 
@@ -33,16 +33,16 @@ export const useDiscordStore = create<DiscordState>()(
             isDiscordModalOpen: false,
             setDiscordUser: (user) => set({ discordUser: user, isDiscordConnected: Boolean(user) }),
             setDiscordModalOpen: (open) => set({ isDiscordModalOpen: open }),
-            connectDiscord: () => {
-                const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
-                if (!clientId) {
-                    toast.error("Discord client ID is not configured");
-                    return;
+            connectDiscord: async () => {
+                const toastId = toast.loading("Connecting to Discord...");
+                try {
+                    const currentUrl = window.location.origin + window.location.pathname;
+                    const oauthUrl = await getDiscordAuthUrl(currentUrl);
+                    window.location.href = oauthUrl;
+                } catch (error) {
+                    const message = error instanceof Error ? error.message : "Discord client ID is not configured";
+                    toast.error(message, { id: toastId });
                 }
-                const currentUrl = window.location.origin + window.location.pathname;
-                const encodedRedirectUrl = encodeURIComponent(currentUrl);
-                const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirectUrl}&scope=identify&prompt=consent`;
-                window.location.href = oauthUrl;
             },
             disconnectDiscord: () => {
                 set({ discordUser: null, isDiscordConnected: false });
