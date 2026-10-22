@@ -9,8 +9,17 @@ import type {
 import * as tebexBasketService from "@/services/tebex/baskets";
 
 async function getBaseUrl(): Promise<string> {
-    const host = (await headers()).get("host") || "localhost:3000";
-    const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+    const headerList = await headers();
+    const host = headerList.get("x-forwarded-host") || headerList.get("host") || "localhost:3000";
+    const forwardedProto = headerList.get("x-forwarded-proto");
+
+    let protocol = "http";
+    if (forwardedProto) {
+        protocol = forwardedProto.split(",")[0].trim();
+    } else if (process.env.NODE_ENV === "production" && !host.includes("localhost") && !/^\d+\.\d+\.\d+\.\d+/.test(host)) {
+        protocol = "https";
+    }
+
     return `${protocol}://${host}`;
 }
 
@@ -60,10 +69,14 @@ export async function createBasket(
 
     const basket = await tebexBasketService.createBasket(completeUrl, fallbackCancelUrl, custom);
 
+    const headerList = await headers();
+    const forwardedProto = headerList.get("x-forwarded-proto");
+    const isHttps = forwardedProto === "https" || baseUrl.startsWith("https://");
+
     const cookieStore = await cookies();
     cookieStore.set(TEBEX_CONFIG.cookies.basketId, basket.ident, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isHttps,
         sameSite: "lax",
         path: "/",
         maxAge: TEBEX_CONFIG.cookies.maxAge,
