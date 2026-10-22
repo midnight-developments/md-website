@@ -174,13 +174,19 @@ export async function getAuthUrl(returnUrl: string): Promise<string> {
 export async function migrateBasketWithDiscord(
     discordId: string,
     returnUrl?: string
-): Promise<{ basket: TebexBasket; authUrl: string | null }> {
-    const baseUrl = await getBaseUrl();
-    const actualReturnUrl = sanitizeRedirectUrl(returnUrl, baseUrl);
+): Promise<{ success: boolean; basket?: TebexBasket; authUrl?: string | null; error?: string }> {
+    try {
+        const baseUrl = await getBaseUrl();
+        const actualReturnUrl = sanitizeRedirectUrl(returnUrl, baseUrl);
 
-    const basket = await createBasket(actualReturnUrl, undefined, { discord_id: discordId });
-    const authUrl = await getAuthUrl(actualReturnUrl);
-    const finalBasketBeforeAuth = (await tebexBasketService.getBasket(basket.ident)) || basket;
+        const basket = await createBasket(actualReturnUrl, undefined, { discord_id: discordId });
+        const authUrl = await getAuthUrl(actualReturnUrl);
+        const finalBasketBeforeAuth = (await tebexBasketService.getBasket(basket.ident)) || basket;
 
-    return { basket: finalBasketBeforeAuth, authUrl };
+        return { success: true, basket: finalBasketBeforeAuth, authUrl };
+    } catch (err: unknown) {
+        const errorMsg = err instanceof Error ? err.message : "Failed to update basket with Discord";
+        console.error("Exception in migrateBasketWithDiscord:", err);
+        return { success: false, error: errorMsg };
+    }
 }

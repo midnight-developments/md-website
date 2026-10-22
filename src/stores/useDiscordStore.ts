@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { exchangeDiscordCode, getDiscordAuthUrl } from "@/actions/discord";
+import { exchangeDiscordCode } from "@/actions/discord";
 import { migrateBasketWithDiscord } from "@/actions/baskets";
 import { useCartStore } from "@/stores/useCartStore";
 
@@ -21,7 +21,7 @@ interface DiscordState {
     isDiscordModalOpen: boolean;
     setDiscordUser: (user: DiscordUser | null) => void;
     setDiscordModalOpen: (open: boolean) => void;
-    connectDiscord: () => void | Promise<void>;
+    connectDiscord: () => void;
     disconnectDiscord: () => void;
 }
 
@@ -33,16 +33,12 @@ export const useDiscordStore = create<DiscordState>()(
             isDiscordModalOpen: false,
             setDiscordUser: (user) => set({ discordUser: user, isDiscordConnected: Boolean(user) }),
             setDiscordModalOpen: (open) => set({ isDiscordModalOpen: open }),
-            connectDiscord: async () => {
-                const toastId = toast.loading("Connecting to Discord...");
-                try {
-                    const currentUrl = window.location.origin + window.location.pathname;
-                    const oauthUrl = await getDiscordAuthUrl(currentUrl);
-                    window.location.href = oauthUrl;
-                } catch (error) {
-                    const message = error instanceof Error ? error.message : "Discord client ID is not configured";
-                    toast.error(message, { id: toastId });
-                }
+            connectDiscord: () => {
+                const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || "1410523462585548894";
+                const currentUrl = window.location.origin + window.location.pathname;
+                const encodedRedirectUrl = encodeURIComponent(currentUrl);
+                const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirectUrl}&scope=identify&prompt=consent`;
+                window.location.href = oauthUrl;
             },
             disconnectDiscord: () => {
                 set({ discordUser: null, isDiscordConnected: false });
@@ -77,29 +73,35 @@ export function useDiscordOAuthListener() {
                 const toastId = toast.loading("Connecting Discord...");
 
                 try {
-                    const data = await exchangeDiscordCode(code, cleanUrl);
+                    const authRes = await exchangeDiscordCode(code, cleanUrl);
 
-                    if (data.id && data.username) {
-                        setDiscordUser({ id: data.id, username: data.username, avatar: data.avatar });
+                    if (!authRes.success || !authRes.user) {
+                        toast.error(authRes.error || "Failed to exchange Discord code", { id: toastId });
+                        return;
+                    }
 
-                        try {
-                            const basket = useCartStore.getState().basket;
-                            const oldItems = basket?.packages?.map((p) => ({ id: p.id, qty: p.in_basket.quantity })) || [];
-                            if (oldItems.length > 0) {
-                                useCartStore.getState().setPendingItems(oldItems);
-                            }
+                    const data = authRes.user;
+                    setDiscordUser({ id: data.id, username: data.username, avatar: data.avatar });
 
-                            const result = await migrateBasketWithDiscord(data.id, window.location.href);
-
-                            if (result.authUrl) {
-                                toast.loading("Refreshing basket data...", { id: toastId });
-                                window.location.href = result.authUrl;
-                            } else {
-                                toast.error("Failed to update basket data with Discord", { id: toastId });
-                            }
-                        } catch (e) {
-                            toast.error(e instanceof Error ? e.message : "Failed to update basket data with Discord", { id: toastId });
+                    try {
+                        const basket = useCartStore.getState().basket;
+                        const oldItems = basket?.packages?.map((p) => ({ id: p.id, qty: p.in_basket.quantity })) || [];
+                        if (oldItems.length > 0) {
+                            useCartStore.getState().setPendingItems(oldItems);
                         }
+
+                        const result = await migrateBasketWithDiscord(data.id, window.location.href);
+
+                        if (result.success && result.authUrl) {
+                            toast.loading("Refreshing basket data...", { id: toastId });
+                            window.location.href = result.authUrl;
+                        } else if (result.success) {
+                            toast.success(`Connected Discord as ${data.username}`, { id: toastId });
+                        } else {
+                            toast.error(result.error || "Failed to update basket data with Discord", { id: toastId });
+                        }
+                    } catch (e) {
+                        toast.error(e instanceof Error ? e.message : "Failed to update basket data with Discord", { id: toastId });
                     }
                 } catch (error: unknown) {
                     const message = error instanceof Error ? error.message : "Failed to connect Discord";
