@@ -6,6 +6,8 @@ import { getBasketOrNull } from "@/actions/baskets";
 import NextTopLoader from "nextjs-toploader";
 import { Caveat, Plus_Jakarta_Sans } from "next/font/google";
 
+export const dynamic = "force-dynamic";
+
 const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",

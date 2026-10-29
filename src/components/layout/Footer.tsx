@@ -1,5 +1,7 @@
 import Link from "next/link"
-import { Youtube, Instagram, Mail, Globe } from "lucide-react"
+import { Mail, Globe } from "lucide-react"
+import YoutubeIcon from "@/components/icons/YoutubeIcon"
+import InstagramIcon from "@/components/icons/InstagramIcon"
 
 const pageLinks = [
     { label: "Home", href: "/", isExternal: false },
@@ -10,9 +12,9 @@ const pageLinks = [
 ]
 
 const socialLinks = [
-    { label: "YouTube", icon: Youtube, href: "https://youtube.com" },
+    { label: "YouTube", icon: YoutubeIcon, href: "https://youtube.com" },
     { label: "Cfx.Re", icon: Globe, href: "https://forum.cfx.re" },
-    { label: "Instagram", icon: Instagram, href: "https://instagram.com" },
+    { label: "Instagram", icon: InstagramIcon, href: "https://instagram.com" },
     { label: "Email", icon: Mail, href: "mailto:contact@midnightdev.net" },
 ]
 
