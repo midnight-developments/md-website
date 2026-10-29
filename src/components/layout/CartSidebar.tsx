@@ -13,7 +13,6 @@ import { useCartStore } from "@/stores/useCartStore"
 import { useDiscordStore } from "@/stores/useDiscordStore"
 import { useFormatPrice } from "@/stores/useCurrencyStore"
 import tebexLogo from "@/assets/tebex-logo.png"
-import { stripHtml } from "@/lib/utils"
 
 import paypalLogo from "@/assets/paypal.svg"
 import gpayLogo from "@/assets/google-pay.svg"

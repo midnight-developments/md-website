@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import DiscordIcon from "@/components/icons/DiscordIcon"
-import InteractiveScriptDemo from "./InteractiveScriptDemo"
+import InteractiveScriptDemo from "./interactive-demo/InteractiveScriptDemo"
 import HeroTypewriter from "./HeroTypewriter"
 import PromoBadge from "@/components/layout/PromoBadge"
 
