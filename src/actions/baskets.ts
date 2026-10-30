@@ -179,9 +179,25 @@ export async function migrateBasketWithDiscord(
         const baseUrl = await getBaseUrl();
         const actualReturnUrl = sanitizeRedirectUrl(returnUrl, baseUrl);
 
-        const basket = await createBasket(actualReturnUrl, undefined, { discord_id: discordId });
+        const oldBasket = await getBasketOrNull();
+        const oldPackages = oldBasket?.packages || [];
+
+        const newBasket = await createBasket(actualReturnUrl, undefined, { discord_id: discordId });
+
+        for (const pkg of oldPackages) {
+            try {
+                await tebexBasketService.addPackageToBasket(
+                    newBasket.ident,
+                    pkg.id,
+                    pkg.in_basket.quantity
+                );
+            } catch (pkgErr) {
+                console.error(`Failed to transfer package ${pkg.id} to new basket:`, pkgErr);
+            }
+        }
+
         const authUrl = await getAuthUrl(actualReturnUrl);
-        const finalBasketBeforeAuth = (await tebexBasketService.getBasket(basket.ident)) || basket;
+        const finalBasketBeforeAuth = (await tebexBasketService.getBasket(newBasket.ident)) || newBasket;
 
         return { success: true, basket: finalBasketBeforeAuth, authUrl };
     } catch (err: unknown) {

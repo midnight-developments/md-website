@@ -84,13 +84,11 @@ export function useDiscordOAuthListener() {
                     setDiscordUser({ id: data.id, username: data.username, avatar: data.avatar });
 
                     try {
-                        const basket = useCartStore.getState().basket;
-                        const oldItems = basket?.packages?.map((p) => ({ id: p.id, qty: p.in_basket.quantity })) || [];
-                        if (oldItems.length > 0) {
-                            useCartStore.getState().setPendingItems(oldItems);
-                        }
-
                         const result = await migrateBasketWithDiscord(data.id, window.location.href);
+
+                        if (result.success && result.basket) {
+                            useCartStore.getState().setBasket(result.basket);
+                        }
 
                         if (result.success && result.authUrl) {
                             toast.loading("Refreshing basket data...", { id: toastId });

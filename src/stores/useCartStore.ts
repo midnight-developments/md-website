@@ -1,8 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import {
     addPackageToBasket,
@@ -29,11 +28,9 @@ interface CartState {
     isLoggedIn: boolean;
     username: string;
     avatar: string;
-    pendingItems: { id: number; qty: number }[];
 
     setBasket: (basket: TebexBasket | null) => void;
     setCartOpen: (open: boolean) => void;
-    setPendingItems: (items: { id: number; qty: number }[]) => void;
     addItem: (productId: number) => Promise<void>;
     removeItem: (productId: number) => Promise<void>;
     updateQuantity: (productId: number, quantity: number) => Promise<void>;
@@ -47,33 +44,29 @@ interface CartState {
     logout: () => Promise<void>;
 }
 
-export const useCartStore = create<CartState>()(
-    persist(
-        (set, get) => ({
-            basket: null,
-            isCartOpen: false,
-            totalItems: 0,
-            subtotal: 0,
-            taxes: 0,
-            totalPrice: 0,
-            isLoggedIn: false,
-            username: "",
-            avatar: "",
-            pendingItems: [],
+export const useCartStore = create<CartState>()((set, get) => ({
+    basket: null,
+    isCartOpen: false,
+    totalItems: 0,
+    subtotal: 0,
+    taxes: 0,
+    totalPrice: 0,
+    isLoggedIn: false,
+    username: "",
+    avatar: "",
 
-            setBasket: (basket) =>
-                set({
-                    basket,
-                    totalItems: basket?.packages?.reduce((sum, p) => sum + p.in_basket.quantity, 0) || 0,
-                    subtotal: basket?.base_price || 0,
-                    taxes: basket?.sales_tax || 0,
-                    totalPrice: basket?.total_price ?? (basket?.base_price || 0),
-                    isLoggedIn: Boolean(basket?.username_id),
-                    username: basket?.username || "",
-                    avatar: basket?.username ? `https://forum.cfx.re/user_avatar/forum.cfx.re/${basket.username}/288/5708323_2.png` : "",
-                }),
-            setCartOpen: (isCartOpen) => set({ isCartOpen }),
-            setPendingItems: (pendingItems) => set({ pendingItems }),
+    setBasket: (basket) =>
+        set({
+            basket,
+            totalItems: basket?.packages?.reduce((sum, p) => sum + p.in_basket.quantity, 0) || 0,
+            subtotal: basket?.base_price || 0,
+            taxes: basket?.sales_tax || 0,
+            totalPrice: basket?.total_price ?? (basket?.base_price || 0),
+            isLoggedIn: Boolean(basket?.username_id),
+            username: basket?.username || "",
+            avatar: basket?.username ? `https://forum.cfx.re/user_avatar/forum.cfx.re/${basket.username}/288/5708323_2.png` : "",
+        }),
+    setCartOpen: (isCartOpen) => set({ isCartOpen }),
 
             addItem: async (productId: number) => {
                 try {
@@ -230,52 +223,15 @@ export const useCartStore = create<CartState>()(
                 toast.success("Logged out successfully");
                 window.location.reload();
             },
-        }),
-        {
-            name: "cart_store",
-            partialize: (state) => ({ pendingItems: state.pendingItems }),
-        }
-    )
+        })
 );
 
 export function useHydrateCart(initialBasket: TebexBasket | null) {
-    const initialized = useRef(false);
     const setBasket = useCartStore((state) => state.setBasket);
 
     useEffect(() => {
-        if (!initialBasket) return;
-
-        setBasket(initialBasket);
-
-        if (!initialized.current) {
-            initialized.current = true;
-
-            const hasAuth = Boolean(initialBasket.username_id || initialBasket.customer);
-            if (hasAuth) {
-                const pendingItems = useCartStore.getState().pendingItems;
-                if (pendingItems.length > 0) {
-                    const restoreCart = async () => {
-                        let localBasket = initialBasket;
-                        for (const item of pendingItems) {
-                            try {
-                                const updated = await addPackageToBasket(item.id, item.qty, localBasket.ident);
-                                localBasket = updated;
-                            } catch (e) {
-                                console.error("Failed restoring item to cart:", e);
-                            }
-                        }
-                        setBasket(localBasket);
-                        useCartStore.getState().setPendingItems([]);
-                        const discordName = useDiscordStore.getState().discordUser?.username;
-                        if (discordName) {
-                            toast.success(`Successfully connected as ${discordName}`);
-                        }
-                    };
-                    restoreCart();
-                } else {
-                    useCartStore.getState().setPendingItems([]);
-                }
-            }
+        if (initialBasket) {
+            setBasket(initialBasket);
         }
     }, [initialBasket, setBasket]);
 }
