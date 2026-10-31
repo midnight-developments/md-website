@@ -68,10 +68,7 @@ export async function createBasket(
     const fallbackCancelUrl = sanitizeRedirectUrl(cancelUrl, baseUrl);
 
     const basket = await tebexBasketService.createBasket(completeUrl, fallbackCancelUrl, custom);
-
-    const headerList = await headers();
-    const forwardedProto = headerList.get("x-forwarded-proto");
-    const isHttps = forwardedProto === "https" || baseUrl.startsWith("https://");
+    const isHttps = baseUrl.startsWith("https://");
 
     const cookieStore = await cookies();
     cookieStore.set(TEBEX_CONFIG.cookies.basketId, basket.ident, {
@@ -115,13 +112,17 @@ export async function addPackageToBasket(
 ): Promise<TebexBasket> {
     const cookieStore = await cookies();
     const existingId = basketIdent || cookieStore.get(TEBEX_CONFIG.cookies.basketId)?.value;
-    let basket = existingId ? await tebexBasketService.getBasket(existingId) : null;
 
-    if (!basket) {
-        basket = await createBasket();
+    if (existingId) {
+        try {
+            return await tebexBasketService.addPackageToBasket(existingId, packageId, quantity);
+        } catch {
+            // If the basket expired or is invalid on Tebex, fall through to create a fresh one
+        }
     }
 
-    return tebexBasketService.addPackageToBasket(basket.ident, packageId, quantity);
+    const newBasket = await createBasket();
+    return tebexBasketService.addPackageToBasket(newBasket.ident, packageId, quantity);
 }
 
 export async function removePackageFromBasket(packageId: number): Promise<TebexBasket> {
@@ -181,9 +182,8 @@ export async function migrateBasketWithDiscord(
 
         const basket = await createBasket(actualReturnUrl, undefined, { discord_id: discordId });
         const authUrl = await getAuthUrl(actualReturnUrl);
-        const finalBasketBeforeAuth = (await tebexBasketService.getBasket(basket.ident)) || basket;
 
-        return { success: true, basket: finalBasketBeforeAuth, authUrl };
+        return { success: true, basket, authUrl };
     } catch (err: unknown) {
         const errorMsg = err instanceof Error ? err.message : "Failed to update basket with Discord";
         console.error("Exception in migrateBasketWithDiscord:", err);
