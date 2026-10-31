@@ -109,14 +109,18 @@ export function useDiscordOAuthListener() {
             const handleDiscordAuth = async () => {
                 const toastId = toast.loading("Connecting Discord...");
 
+                const navigateBack = () => {
+                    if (returnTo !== window.location.pathname && returnTo !== "/") {
+                        router.replace(returnTo);
+                    }
+                };
+
                 try {
                     const authRes = await exchangeDiscordCode(code, staticRedirectUri);
 
                     if (!authRes.success || !authRes.user) {
                         toast.error(authRes.error || "Failed to exchange Discord code", { id: toastId });
-                        if (returnTo !== window.location.pathname && returnTo !== "/") {
-                            router.replace(returnTo);
-                        }
+                        navigateBack();
                         return;
                     }
 
@@ -136,29 +140,23 @@ export function useDiscordOAuthListener() {
                         if (result.success && result.authUrl) {
                             toast.loading("Refreshing basket data...", { id: toastId });
                             window.location.href = result.authUrl;
-                        } else if (result.success) {
+                            return;
+                        }
+
+                        if (result.success) {
                             toast.success(`Connected Discord as ${data.username}`, { id: toastId });
-                            if (returnTo !== window.location.pathname) {
-                                router.replace(returnTo);
-                            }
                         } else {
                             toast.error(result.error || "Failed to update basket data with Discord", { id: toastId });
-                            if (returnTo !== window.location.pathname) {
-                                router.replace(returnTo);
-                            }
                         }
                     } catch (e) {
                         toast.error(e instanceof Error ? e.message : "Failed to update basket data with Discord", { id: toastId });
-                        if (returnTo !== window.location.pathname) {
-                            router.replace(returnTo);
-                        }
                     }
+
+                    navigateBack();
                 } catch (error: unknown) {
                     const message = error instanceof Error ? error.message : "Failed to connect Discord";
                     toast.error(message, { id: toastId });
-                    if (returnTo !== window.location.pathname && returnTo !== "/") {
-                        router.replace(returnTo);
-                    }
+                    navigateBack();
                 }
             };
             handleDiscordAuth();

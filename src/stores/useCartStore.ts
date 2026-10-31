@@ -243,6 +243,18 @@ export function useHydrateCart(initialBasket: TebexBasket | null) {
     const setBasket = useCartStore((state) => state.setBasket);
 
     useEffect(() => {
+        if (typeof window !== "undefined" && (window.location.search.includes("success=") || window.location.search.includes("error="))) {
+            const url = new URL(window.location.href);
+            if (url.searchParams.get("success") === "false") {
+                const errorMsg = url.searchParams.get("error") || "Authentication was cancelled or failed.";
+                toast.error("FiveM Login", { description: errorMsg });
+            }
+            url.searchParams.delete("success");
+            url.searchParams.delete("error");
+            const cleanUrl = url.pathname + (url.search ? url.search : "") + url.hash;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
+
         if (!initialBasket) return;
 
         setBasket(initialBasket);
