@@ -1,54 +1,20 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { TEBEX_CONFIG } from "@/config/tebex";
+import { sanitizeRedirectUrl } from "@/lib/utils";
+import { getBaseUrl } from "@/lib/getBaseUrl";
 import type {
     TebexBasket,
     TebexBasketCustomData,
 } from "@/types/tebex";
 import * as tebexBasketService from "@/services/tebex/baskets";
 
-async function getBaseUrl(): Promise<string> {
-    const headerList = await headers();
-    const host = headerList.get("x-forwarded-host") || headerList.get("host") || "localhost:3000";
-    const forwardedProto = headerList.get("x-forwarded-proto");
-
-    let protocol = "http";
-    if (forwardedProto) {
-        protocol = forwardedProto.split(",")[0].trim();
-    } else if (process.env.NODE_ENV === "production" && !host.includes("localhost") && !/^\d+\.\d+\.\d+\.\d+/.test(host)) {
-        protocol = "https";
-    }
-
-    return `${protocol}://${host}`;
-}
-
-function sanitizeRedirectUrl(url: string | undefined, baseUrl: string): string {
-    if (!url) return baseUrl;
-
-    try {
-        const parsed = new URL(url, baseUrl);
-        const base = new URL(baseUrl);
-
-        if (
-            parsed.host === base.host &&
-            (parsed.protocol === "http:" || parsed.protocol === "https:")
-        ) {
-            return parsed.toString();
-        }
-    } catch {
-        // Fall back to baseUrl if URL parsing fails
-    }
-
-    return baseUrl;
-}
-
 async function safeDeleteCookie(name: string): Promise<void> {
     try {
         const cookieStore = await cookies();
         cookieStore.delete(name);
     } catch {
-        // Silently ignore if invoked during RSC rendering where cookies cannot be mutated
     }
 }
 
