@@ -11,10 +11,7 @@ export interface DiscordAuthResult {
 }
 
 export async function exchangeDiscordCode(code: string, redirectUri: string): Promise<DiscordAuthResult> {
-    const clientId =
-        process.env.DISCORD_CLIENT_ID ||
-        process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID ||
-        "1410523462585548894";
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
     const clientSecret = process.env.DISCORD_CLIENT_SECRET;
     const API_ENDPOINT = 'https://discord.com/api/v10';
 

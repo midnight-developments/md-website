@@ -39,7 +39,7 @@ export const useDiscordStore = create<DiscordState>()(
             setDiscordUser: (user) => set({ discordUser: user, isDiscordConnected: Boolean(user) }),
             setDiscordModalOpen: (open) => set({ isDiscordModalOpen: open }),
             connectDiscord: () => {
-                const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || "1410523462585548894";
+                const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
                 const staticRedirectUri = getStaticDiscordRedirectUri();
                 const returnTo = window.location.pathname + window.location.search;
 
