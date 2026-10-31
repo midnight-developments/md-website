@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { exchangeDiscordCode } from "@/actions/discord";
 import { migrateBasketWithDiscord } from "@/actions/baskets";
@@ -25,6 +25,11 @@ interface DiscordState {
     disconnectDiscord: () => void;
 }
 
+function getStaticDiscordRedirectUri(): string {
+    if (typeof window === "undefined") return "";
+    return `${window.location.origin}/`;
+}
+
 export const useDiscordStore = create<DiscordState>()(
     persist(
         (set) => ({
@@ -35,9 +40,18 @@ export const useDiscordStore = create<DiscordState>()(
             setDiscordModalOpen: (open) => set({ isDiscordModalOpen: open }),
             connectDiscord: () => {
                 const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || "1410523462585548894";
-                const currentUrl = window.location.origin + window.location.pathname;
-                const encodedRedirectUrl = encodeURIComponent(currentUrl);
-                const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirectUrl}&scope=identify&prompt=consent`;
+                const staticRedirectUri = getStaticDiscordRedirectUri();
+                const returnTo = window.location.pathname + window.location.search;
+
+                try {
+                    sessionStorage.setItem("discord_return_to", returnTo);
+                } catch {
+                    // Ignore storage errors in restrictive environments
+                }
+
+                const encodedRedirectUrl = encodeURIComponent(staticRedirectUri);
+                const encodedState = encodeURIComponent(returnTo);
+                const oauthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodedRedirectUrl}&scope=identify&prompt=consent&state=${encodedState}`;
                 window.location.href = oauthUrl;
             },
             disconnectDiscord: () => {
@@ -57,26 +71,52 @@ export const useDiscordStore = create<DiscordState>()(
 
 export function useDiscordOAuthListener() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const hasCalled = useRef(false);
     const setDiscordUser = useDiscordStore((state) => state.setDiscordUser);
 
     useEffect(() => {
         const code = searchParams.get("code");
+        const stateParam = searchParams.get("state");
 
         if (code && !hasCalled.current) {
             hasCalled.current = true;
 
-            const cleanUrl = window.location.origin + window.location.pathname;
+            const staticRedirectUri = getStaticDiscordRedirectUri();
+
+            let returnTo = "/";
+            if (stateParam) {
+                try {
+                    returnTo = decodeURIComponent(stateParam);
+                } catch {
+                    returnTo = stateParam;
+                }
+            } else {
+                try {
+                    returnTo = sessionStorage.getItem("discord_return_to") || "/";
+                } catch {
+                    returnTo = "/";
+                }
+            }
+
+            try {
+                sessionStorage.removeItem("discord_return_to");
+            } catch {
+            }
+
             window.history.replaceState({}, document.title, window.location.pathname);
 
             const handleDiscordAuth = async () => {
                 const toastId = toast.loading("Connecting Discord...");
 
                 try {
-                    const authRes = await exchangeDiscordCode(code, cleanUrl);
+                    const authRes = await exchangeDiscordCode(code, staticRedirectUri);
 
                     if (!authRes.success || !authRes.user) {
                         toast.error(authRes.error || "Failed to exchange Discord code", { id: toastId });
+                        if (returnTo !== window.location.pathname && returnTo !== "/") {
+                            router.replace(returnTo);
+                        }
                         return;
                     }
 
@@ -90,26 +130,39 @@ export function useDiscordOAuthListener() {
                             useCartStore.getState().setPendingItems(oldItems);
                         }
 
-                        const result = await migrateBasketWithDiscord(data.id, window.location.href);
+                        const targetUrl = new URL(returnTo, window.location.origin).toString();
+                        const result = await migrateBasketWithDiscord(data.id, targetUrl);
 
                         if (result.success && result.authUrl) {
                             toast.loading("Refreshing basket data...", { id: toastId });
                             window.location.href = result.authUrl;
                         } else if (result.success) {
                             toast.success(`Connected Discord as ${data.username}`, { id: toastId });
+                            if (returnTo !== window.location.pathname) {
+                                router.replace(returnTo);
+                            }
                         } else {
                             toast.error(result.error || "Failed to update basket data with Discord", { id: toastId });
+                            if (returnTo !== window.location.pathname) {
+                                router.replace(returnTo);
+                            }
                         }
                     } catch (e) {
                         toast.error(e instanceof Error ? e.message : "Failed to update basket data with Discord", { id: toastId });
+                        if (returnTo !== window.location.pathname) {
+                            router.replace(returnTo);
+                        }
                     }
                 } catch (error: unknown) {
                     const message = error instanceof Error ? error.message : "Failed to connect Discord";
                     toast.error(message, { id: toastId });
+                    if (returnTo !== window.location.pathname && returnTo !== "/") {
+                        router.replace(returnTo);
+                    }
                 }
             };
             handleDiscordAuth();
         }
-    }, [searchParams, setDiscordUser]);
+    }, [searchParams, setDiscordUser, router]);
 }
 
