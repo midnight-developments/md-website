@@ -73,7 +73,7 @@ export default function ProductRequirementsCard({ product, className }: ProductR
                                 href={url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="underline underline-offset-3 hover:text-accent transition-colors inline-flex items-center gap-1"
+                                className="underline underline-offset-3 hover:text-accent-text transition-colors inline-flex items-center gap-1"
                             >
                                 <span>{name}</span>
                                 <ArrowUpRight className="size-3.5 shrink-0" />
