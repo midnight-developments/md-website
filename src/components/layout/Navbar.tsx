@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname as useLocation } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { ShoppingCart, ChevronDown, LogOut, Menu, X, Receipt, ExternalLink, History } from "lucide-react"
-import PromoBadge from "@/components/layout/PromoBadge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
@@ -142,8 +141,6 @@ export default function Navbar() {
                             )
                         })}
                     </nav>
-
-                    <PromoBadge className="hidden xl:block ml-0 xl:-ml-4 mt-0.5" />
                 </div>
 
                 <div className="flex items-center gap-0">

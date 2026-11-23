@@ -4,16 +4,11 @@ import { Button } from "@/components/ui/button"
 import DiscordIcon from "@/components/icons/DiscordIcon"
 import InteractiveScriptDemo from "./interactive-demo/InteractiveScriptDemo"
 import HeroTypewriter from "./HeroTypewriter"
-import PromoBadge from "@/components/layout/PromoBadge"
 
 export default function HeroSection() {
     return (
         <section className="flex flex-col lg:flex-row gap-8 pb-4 items-center w-full">
             <div className="flex flex-col gap-4 w-full lg:w-[50%]">
-                <div>
-                    <PromoBadge className="flex xl:hidden" />
-                </div>
-
                 <h1 className="text-5xl sm:text-6xl lg:text-[4.25rem] font-[700] leading-[1.025] tracking-tighter">
                     <span className="bg-foreground-gradient text-transparent bg-clip-text">
                         Premium Scripts
