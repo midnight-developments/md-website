@@ -8,7 +8,7 @@ export default function AmbientBackground() {
             <Grain className="fixed -z-20" size="100px" opacity={0.2} />
 
             <div
-                className="fixed inset-0 -z-20"
+                className="fixed inset-0 -z-20 transform-gpu will-change-transform"
                 style={{
                     backgroundImage: `url(${bg.src})`,
                     backgroundSize: "cover",
@@ -16,6 +16,7 @@ export default function AmbientBackground() {
                     backgroundRepeat: "no-repeat",
                     opacity: 0.25,
                     filter: "blur(15px) hue-rotate(45deg) brightness(0.65)",
+                    transform: "translateZ(0)",
                 }}
             />
 

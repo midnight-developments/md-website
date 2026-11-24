@@ -4,7 +4,6 @@ import Footer from "@/components/layout/Footer"
 import AmbientBackground from "@/components/layout/AmbientBackground"
 import CartSidebar from "@/components/layout/CartSidebar"
 import DiscordGateModal from "@/components/layout/DiscordGateModal"
-import CustomScrollbar from "@/components/layout/CustomScrollbar"
 
 interface AppLayoutProps {
     children: ReactNode
@@ -23,7 +22,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
             <CartSidebar />
             <DiscordGateModal />
-            <CustomScrollbar />
         </div>
     )
 }

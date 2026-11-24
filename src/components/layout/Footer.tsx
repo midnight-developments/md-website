@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link"
 import { Mail, Globe } from "lucide-react"
 import YoutubeIcon from "@/components/icons/YoutubeIcon"

@@ -46,19 +46,6 @@ export default function InteractiveScriptDemo() {
                     <AnimationSpeedPanel speed={speed} setSpeed={setSpeed} />
                 </motion.div>
 
-                <motion.div
-                    animate={{ rotate: [-2, 2, -2], y: [-2, 2, -2] }}
-                    transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-                    className="absolute bottom-[-5%] left-[-30%] flex flex-col items-center z-30 text-brand-light"
-                >
-                    <p className="font-caveat text-[1.75rem] tracking-wider leading-none drop-shadow-md -rotate-[5deg] transition-transform duration-200">
-                        script <br />coming soon!
-                    </p>
-                    <svg width="50" height="50" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-80 ml-40 -mt-4 -scale-y-100 -rotate-40 pointer-events-none">
-                        <path d="M 20 80 C 20 40 40 20 80 20" />
-                        <path d="M 60 10 L 80 20 L 70 40" />
-                    </svg>
-                </motion.div>
 
             </div>
         </div>

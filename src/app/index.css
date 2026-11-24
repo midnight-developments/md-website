@@ -188,6 +188,10 @@
         background: rgba(255, 255, 255, 0.28);
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     /* Desktop native 107.5% zoom scaling */
     @media (min-width: 1024px) {
         html {
